@@ -1,9 +1,11 @@
 const { DataTypes } = require('sequelize');
 const db = require('../config/database');
-const Location = db.define('location', {
-    uuid: {
+const Location = db.define('locations', {
+    id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false,
     },
     type: {
         type: DataTypes.STRING,
@@ -56,15 +58,11 @@ const Location = db.define('location', {
     script: {
         type: DataTypes.STRING,
     },
-    text: {
-        type: DataTypes.STRING,
-    },
     shelfmark: {
         type: DataTypes.STRING,
     },
     firstWord: {
         type: DataTypes.STRING,
     },
-
 });
 module.exports = Location;
