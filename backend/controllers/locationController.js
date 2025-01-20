@@ -1,6 +1,7 @@
 const Location = require('../models/location');
 // Controller method to get all locations, with filters
 exports.getAllLocations = async (req, res) => {
+    //res.send('GET / route - woo woo') // Testing the server
     try {
         var {
             type, 
@@ -77,6 +78,8 @@ exports.createLocation = async (req, res) => {
 };
 // Controller method to get a location by ID
 exports.getLocationById = async (req, res) => {
+    //let g = 'Get /' + req.params.id + ' route'
+    //res.send(g) // Testing the server
     const id = req.params.id;
     try {
         const location = await Location.findByPk(id);
@@ -107,22 +110,22 @@ exports.updateLocation = async (req, res) => {
         firstWord 
     } = req.body;
     try {
-        const location = await Location.findByPk(id);
-        if (location) {
-            location.type = type;
-            location.createdYearStart = createdYearStart;
-            location.createdYearEnd = createdYearEnd;
-            location.discoveredYear = discoveredYear;
-            location.longitude = longitude;
-            location.latitude = latitude;
-            location.text = text;
-            location.place = place;
-            location.location = location;
-            location.script = script;
-            location.shelfmark = shelfmark;
-            location.firstWord = firstWord;
-            await location.save();
-            res.json(location);
+        const loc = await Location.findByPk(id);
+        if (loc) {
+            loc.type = type;
+            loc.createdYearStart = createdYearStart;
+            loc.createdYearEnd = createdYearEnd;
+            loc.discoveredYear = discoveredYear;
+            loc.longitude = longitude;
+            loc.latitude = latitude;
+            loc.text = text;
+            loc.place = place;
+            loc.location = location;
+            loc.script = script;
+            loc.shelfmark = shelfmark;
+            loc.firstWord = firstWord;
+            await loc.save();
+            res.json(loc);
         } else {
             res.status(404).json({ error: 'Location not found' });
         }

@@ -11,37 +11,32 @@ const Location = db.define('locations', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    createdYearStart: {
+    created_year_start: {
         type: DataTypes.INTEGER,
         allowNull: false,
         min: 0,
         max: 2030,
     },
-    createdYearEnd: {
+    created_year_end: {
         type: DataTypes.INTEGER,
         min: 0,
         max: 2030,
-        isAfterCreatedYearStart(value) {
-            if (value <= this.createdYearStart) {
-              throw new Error('createdYearEnd must be after createdYearStart.');
-            }
-        }
     },
-    discoveredYear: {
+    discovered_year: {
         type: DataTypes.INTEGER,
         min: 0,
         max: 2030,
     },
     longitude: {
         type: DataTypes.REAL,
-        defaultValue: 0,
+        defaultValue: 0, // Is this needed?
         min: -180,
         max: 180,
         allowNull: false,
     },
     latitude: {
         type: DataTypes.REAL,
-        defaultValue: 0,
+        defaultValue: 0, // Is this needed?
         min: -90,
         max: 90,
         allowNull: false,
@@ -61,7 +56,7 @@ const Location = db.define('locations', {
     shelfmark: {
         type: DataTypes.STRING,
     },
-    firstWord: {
+    first_word: {
         type: DataTypes.STRING,
     },
 });
