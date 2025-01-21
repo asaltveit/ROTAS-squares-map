@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const db = require('./config/database');
 const locationRoutes = require('./routes/locationRoutes');
@@ -8,6 +9,8 @@ db.authenticate()
  .catch((err) => console.error('Error connecting to database:', err));
 // Middleware to parse JSON requests
 app.use(express.json());
+// CORS Middleware
+app.use(cors());
 // Routes
 app.use('/locations', locationRoutes);
 const PORT = process.env.PORT || 3000;

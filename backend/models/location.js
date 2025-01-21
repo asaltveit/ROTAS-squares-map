@@ -59,5 +59,8 @@ const Location = db.define('locations', {
     first_word: {
         type: DataTypes.STRING,
     },
+},
+{
+    underscored: true,
 });
 module.exports = Location;
