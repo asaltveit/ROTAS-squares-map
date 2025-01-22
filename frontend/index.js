@@ -2,11 +2,11 @@ import axios from 'axios';
 
 
 //data will be the string we send from our server
-const apiCall = () => {
+/*const apiCall = () => {
     axios.get('http://localhost:3000').then((data) => {
       //this console.log will be in our frontend console
       console.log(data)
-    })
+    }).catch((err) => err);
   }
   
 function App() {
@@ -19,6 +19,6 @@ function App() {
             </header>
         </div>
     );
-}
+}*/
 
-export default App;
+//export default App;

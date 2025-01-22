@@ -1,42 +1,13 @@
 const Location = require('../models/location');
+const _ = require('lodash');
 // Controller method to get all locations, with filters
 exports.getAllLocations = async (req, res) => {
-    //res.send('GET / route - woo woo') // Testing the server
     try {
-        var {
-            type, 
-            createdYearStart, 
-            createdYearEnd, 
-            discoveredYear, 
-            longitude, 
-            latitude, 
-            text, 
-            place, 
-            location, 
-            script, 
-            shelfmark, 
-            firstWord
-        } = req.query.filters;
-        var filters = _.omitBy({ 
-            type: type, 
-            createdYearStart: createdYearStart, 
-            createdYearEnd: createdYearEnd, 
-            discoveredYear: discoveredYear, 
-            longitude: longitude, 
-            latitude: latitude, 
-            location: location, 
-            text: text, 
-            place: place, 
-            script: script, 
-            shelfmark: shelfmark, 
-            firstWord: firstWord, 
-        }, _.isNil);
-        const locations = await Location.findAll({
-            where: filters
-        });
+        var filters = _.omitBy(req.query.filters, _.isNil);
+        const locations = await Location.findAll({where: filters});
         res.json(locations);
     } catch (error) {
-        res.status(500).json({ error }); // : 'Internal Server Error'
+        res.status(500).json({error}); // : 'Internal Server Error'
     }
 };
 
@@ -148,3 +119,22 @@ exports.deleteLocation = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+/*
+{ 
+            type: type, 
+            createdYearStart: createdYearStart, 
+            createdYearEnd: createdYearEnd, 
+            discoveredYear: discoveredYear, 
+            longitude: longitude, 
+            latitude: latitude, 
+            location: location, 
+            text: text, 
+            place: place, 
+            script: script, 
+            shelfmark: shelfmark, 
+            firstWord: firstWord, 
+        }
+
+
+*/

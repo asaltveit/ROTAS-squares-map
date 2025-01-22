@@ -29,14 +29,14 @@ const Location = db.define('locations', {
     },
     longitude: {
         type: DataTypes.REAL,
-        defaultValue: 0, // Is this needed?
+        //defaultValue: 0, // Is this needed?
         min: -180,
         max: 180,
         allowNull: false,
     },
     latitude: {
         type: DataTypes.REAL,
-        defaultValue: 0, // Is this needed?
+        //defaultValue: 0, // Is this needed?
         min: -90,
         max: 90,
         allowNull: false,
@@ -59,8 +59,33 @@ const Location = db.define('locations', {
     first_word: {
         type: DataTypes.STRING,
     },
+    createdAt: {
+        type: DataTypes.DATE,
+        field: 'created_at',
+        allowNull: false,
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        field: 'updated_at',
+        allowNull: false,
+    },
 },
 {
     underscored: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
 });
 module.exports = Location;
+
+
+/*
+created_at: {
+                type: Sequelize.DATE,
+                allowNull: false,
+            },
+            created_at: {
+                type: Sequelize.DATE,
+                allowNull: false,
+            },
+
+*/
