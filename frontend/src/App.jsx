@@ -11,62 +11,12 @@ function App() {
   useEffect(() => {
     axios.get('http://localhost:3000/locations').then((data) => {
       //console.log(data) // Data doesn't appear in console
-      setLocations(data.data)
+      setLocations(data.data);
     })
   }, []);
 
-  let symbols = ["asterisk", "circle", "square", "cross", "triangle"]
-  let types = ["manuscript", "amulet", "inscription", "graffito", "dipinto"]
-
-  /*const map = Plot.plot({ // What to do with multiple artifacts on same coordinates?
-    // May need to be more zoomed in (TODO)
-    projection: {type: "orthographic", inset: -450, rotate: [-10, -35]},//"equirectangular", // Set the projection // orthographic - current // stereographic - previous
-    marks: [
-      Plot.geo(mapData), // Add the state boundaries
-      Plot.dot(locations, {
-        x: "longitude", // Provide longitude values
-        y: "latitude", // Provide latitude values
-        stroke: "type",
-        fill: "type",
-        fillOpacity: 0.3,
-        //symbol and color need to be bound to type
-        r: 7,
-        symbol: "type",
-      }),
-      Plot.tip(locations, Plot.pointer({
-        x: "longitude", // Provide longitude values
-        y: "latitude", // Provide latitude values
-        title: (d) => ["Created from: " + d.created_year_start + "-" + d.created_year_end, "Text: " + d.text, "Place: " + d.place, "Location: " + d.location, "Year Discovered: " + d.discovered_year, "Shelfmark: " + d.shelfmark].join("\n\n")
-      })),
-    ],
-    height: 500, // Canvas height
-    width: 800, // Canvas width
-    // Binds the type to a specific color and symbol, doesn't change on reload
-    symbol: {legend: true, domain: types, range: symbols},
-    color: { legend: true, domain: types, scheme: "turbo"}//range: colors },
-  }) // { map }*/
-
-  /*const map2 = Plot.plot({ 
-    projection: {type: "orthographic", inset: -450, rotate: [-10, -35]},//"equirectangular", // Set the projection // orthographic - current // stereographic - previous
-    marks: [
-      Plot.geo(mapData), // Add the state boundaries
-    ],
-    height: 500, // Canvas height
-    width: 800, // Canvas width
-  })*/
-
-  /*useEffect(() => {
-    if (mapData === undefined || mapData == []) return;
-
-    const plot = Plot.plot({
-      projection: {type: "orthographic", inset: -450, rotate: [-10, -35]},
-      marks: [
-        Plot.geo(mapData),
-      ],
-    });
-    containerRef.current.append(plot);
-    return () => plot.remove();
-  }, [mapData]);*/
+  let symbols = ["asterisk", "circle", "square", "cross", "triangle"];
+  let types = ["manuscript", "amulet", "inscription", "graffito", "dipinto"];
 
   return (
     <>
@@ -94,9 +44,9 @@ function App() {
               })),
             ],
             height: 500, // Canvas height
-            width: 800, // Canvas width
+            width: 700, // Canvas width
             symbol: {legend: true, domain: types, range: symbols},
-            color: { legend: true, domain: types, scheme: "turbo"}//range: colors },
+            color: { domain: types, scheme: "turbo"} // legend: true,
           }}
         />
       </div>
