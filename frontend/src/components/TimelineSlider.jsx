@@ -8,12 +8,18 @@ export default function TimelineSlider({min, max, onValueChange}) {
     const [playAnimation, setPlayAnimation] = useState(false)
 
     const handleScrubStart = (value) => {
-        setPlayAnimation(false)
+        //console.log("stop animation")
+        //setPlayAnimation(false)
         setYear(Math.ceil(value))
         onValueChange(Math.ceil(value))
     }
 
     const handleScrubEnd = (value) => {
+        console.log("stop animation")
+        setPlayAnimation(false)
+        if (anim) {
+            clearInterval(anim)
+        }
         setYear(Math.ceil(value))
         onValueChange(Math.ceil(value))
     }
@@ -29,22 +35,24 @@ export default function TimelineSlider({min, max, onValueChange}) {
 
     useEffect(() => {
         if (playAnimation) {
-            let i = 0;
+            let i = min;
             anim = setInterval(() => {
                 console.log(i)
                 if (year == max) {
+                    i = min;
                     setYear(min);
                     onValueChange(min);
                 } else {
                     onValueChange(i);
                     setYear(i++); // year + 1
                 }
-            }, 100)
+            }, 500)
         }
+        return () => clearTimeout(anim)
     }, [playAnimation])
 
     // not working
-    useEffect(() => {return () => {anim ? clearInterval(anim) : ''}}, [])
+    //useEffect(() => {return () => {anim ? clearInterval(anim) : ''}}, [])
 
     return (
         <>
