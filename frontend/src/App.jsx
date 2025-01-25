@@ -13,7 +13,6 @@ function App() {
 
   let symbols = ["asterisk", "circle", "square", "cross", "triangle"];
   let types = ["manuscript", "amulet", "inscription", "graffito", "dipinto"];
-  let years = Array.from({length: 1100}, (_, i) => i);
 
   useEffect(() => {
     axios.get('http://localhost:3000/locations').then((data) => {

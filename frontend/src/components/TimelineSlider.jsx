@@ -17,9 +17,9 @@ export default function TimelineSlider({min, max, onValueChange}) {
     const handleScrubEnd = (value) => {
         console.log("stop animation")
         setPlayAnimation(false)
-        if (anim) {
+        /*if (anim) {
             clearInterval(anim)
-        }
+        }*/
         setYear(Math.ceil(value))
         onValueChange(Math.ceil(value))
     }
@@ -51,15 +51,13 @@ export default function TimelineSlider({min, max, onValueChange}) {
         return () => clearTimeout(anim)
     }, [playAnimation])
 
-    // not working
-    //useEffect(() => {return () => {anim ? clearInterval(anim) : ''}}, [])
-
     return (
         <>
-            <div style={{ float: 'left', padding: '10px', backgroundColor: '#ffffff' }}>
+            <div style={{ padding: '10px', backgroundColor: '#ffffff' }}>
                 Timeline
                 <div>
-                    <button style={{ display: 'inline-block', marginRight: '10px' }} onClick={playAnim}> Play </button>
+                    <button style={{ display: 'inline-block', marginRight: '10px', padding: '7px' }} onClick={playAnim}> Play </button>
+                    <button style={{ display: 'inline-block', marginRight: '10px', padding: '7px' }} onClick={() => setPlayAnimation(false)}> Stop </button>
                     <Scrubber
                         min={min}
                         max={max}
