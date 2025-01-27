@@ -17,11 +17,11 @@ export default function FormTypeRadioButtonRow({ onValueChange }) {
         <FormControl>
             <FormLabel id="radio-button-row-label">Form type:</FormLabel>
             <RadioGroup
-            row
-            aria-labelledby="radio-button-row-label"
-            name="radio-button-row-group"
-            onChange={handleChange}
-            value={value}
+                row
+                aria-labelledby="radio-button-row-label"
+                name="radio-button-row-group"
+                onChange={handleChange}
+                value={value}
             >
             <FormControlLabel value={formTypes.add} control={<Radio />} label="Add" />
             <FormControlLabel value={formTypes.update} control={<Radio />} label="Update" />

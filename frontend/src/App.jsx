@@ -85,6 +85,7 @@ function App() {
     <>
       <Typography variant="h1" gutterBottom>ROTAS Squares Map</Typography>
       <Box>
+        {/* TODO - Control size of map section */}
         <TimelineSlider min={0} max={1100} onValueChange={setYear}/>
         <Box className="card">
           <Box ref={mapRef}></Box>

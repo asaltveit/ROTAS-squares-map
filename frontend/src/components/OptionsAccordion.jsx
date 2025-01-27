@@ -22,7 +22,12 @@ export default function OptionsAccordion({ children }) {
         <Box>
             {children?.map((child, index) => {
                 return(
-                    <Accordion key={index} expanded={expanded === `panel${index}-header`} onChange={handleChange(`panel${index}-header`)} style={{backgroundColor:'#ef813df3', color: '#ffffff'}}>
+                    <Accordion 
+                        key={index} 
+                        expanded={expanded === `panel${index}-header`} 
+                        onChange={handleChange(`panel${index}-header`)} 
+                        style={{backgroundColor:'#ef813df3', color: '#ffffff'}}
+                    >
                         <AccordionSummary
                             expandIcon={<ArrowDropDownIcon />}
                             aria-controls={`panel${index}-header`}

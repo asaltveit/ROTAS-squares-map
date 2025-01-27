@@ -45,7 +45,7 @@ const Form = () => {
         shelfmark: location.shelfmark,
         first_word: location.first_word,
       },
-      validationSchema: locationSchema, // Our Yup schema
+      validationSchema: locationSchema,
       onSubmit: async (values) => {
         setWaiting(true)
         /*const response = await fetch(`/api/users/${user.id}`, {

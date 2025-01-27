@@ -8,8 +8,6 @@ export default function TimelineSlider({min, max, onValueChange}) {
     const [playAnimation, setPlayAnimation] = useState(false)
 
     const handleScrubStart = (value) => {
-        //console.log("stop animation")
-        //setPlayAnimation(false)
         setYear(Math.ceil(value))
         onValueChange(Math.ceil(value))
     }
@@ -17,9 +15,6 @@ export default function TimelineSlider({min, max, onValueChange}) {
     const handleScrubEnd = (value) => {
         console.log("stop animation")
         setPlayAnimation(false)
-        /*if (anim) {
-            clearInterval(anim)
-        }*/
         setYear(Math.ceil(value))
         onValueChange(Math.ceil(value))
     }
