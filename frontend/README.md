@@ -6,3 +6,6 @@
 4. Provides a section to add, update, and delete locations. (In progress)
 
 - In a terminal, run ``` npm run dev ``` to start.
+
+
+[Back to Main](../README.md)
