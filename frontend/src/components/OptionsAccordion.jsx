@@ -4,6 +4,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Box, Typography } from '@mui/material';
+import { bodyOrange, headerOrange } from '../constants/OptionsAccordion';
 
 /*
 Assumes:
@@ -26,16 +27,16 @@ export default function OptionsAccordion({ children }) {
                         key={index} 
                         expanded={expanded === `panel${index}-header`} 
                         onChange={handleChange(`panel${index}-header`)} 
-                        style={{backgroundColor:'#ef813df3', color: '#ffffff'}}
                     >
                         <AccordionSummary
                             expandIcon={<ArrowDropDownIcon />}
                             aria-controls={`panel${index}-header`}
                             id={`panel${index}-header`}
+                            style={{backgroundColor: headerOrange}}
                         >
                             <Typography>{child.header}</Typography>
                         </AccordionSummary>
-                        <AccordionDetails>
+                        <AccordionDetails style={{backgroundColor: bodyOrange}}>
                             {child.body}
                         </AccordionDetails>
                     </Accordion>
