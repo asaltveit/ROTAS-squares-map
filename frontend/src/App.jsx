@@ -4,6 +4,7 @@ import * as Plot from "@observablehq/plot";
 import './App.css';
 import mapData from "./data/custom.geo.json";
 import TimelineSlider from "./components/TimelineSlider";
+import Form from './components/Form';
 
 function App() {
   const mapRef = useRef();
@@ -22,12 +23,12 @@ function App() {
 
   useEffect(() => {
     setVisibleLocations(locations.filter((loc) => {
-      return loc.created_year_start <= year
+      return loc.created_year_start <= year;
     }))
 
-  }, [year, locations])
+  }, [year, locations]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (visibleLocations === undefined) return;
     // TODO: Move plot to separate file
     const chart = Plot.plot({
@@ -62,19 +63,22 @@ function App() {
     });
     mapRef.current.append(chart);
     return () => chart.remove();
-  }, [visibleLocations]);
+  }, [visibleLocations]);*/
 
   return (
     <>
       <h1>ROTAS Squares Map</h1>
       <div>
-        <TimelineSlider min={0} max={1100} onValueChange={setYear}/>
-        <div className="card">
-          <div ref={mapRef}></div>
-        </div>
+        
       </div>
+      <Form />
     </>
   )
 }
 
 export default App;
+/*<TimelineSlider min={0} max={1100} onValueChange={setYear}/>
+        <div className="card">
+          <div ref={mapRef}></div>
+        </div>
+        */
