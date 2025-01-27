@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const db = require('../config/database');
+// TODO: years don't need a max
 const Location = db.define('locations', {
     id: {
         type: DataTypes.UUID,

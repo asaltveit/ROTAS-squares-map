@@ -5,6 +5,7 @@ import './App.css';
 import mapData from "./data/custom.geo.json";
 import TimelineSlider from "./components/TimelineSlider";
 import Form from './components/Form';
+import Box from '@mui/material/Box';
 
 function App() {
   const mapRef = useRef();
@@ -12,6 +13,7 @@ function App() {
   const [year, setYear] = useState(0);
   const [visibleLocations, setVisibleLocations] = useState([]);
 
+  // TODO: store these in database? Or choose the current # from stored list?
   let symbols = ["asterisk", "circle", "square", "cross", "triangle"];
   let types = ["manuscript", "amulet", "inscription", "graffito", "dipinto"];
 
@@ -21,6 +23,7 @@ function App() {
     })
   }, []);
 
+  // TODO: Add an effect to set symbols and types?
   useEffect(() => {
     setVisibleLocations(locations.filter((loc) => {
       return loc.created_year_start <= year;
@@ -28,7 +31,7 @@ function App() {
 
   }, [year, locations]);
 
-  /*useEffect(() => {
+  useEffect(() => {
     if (visibleLocations === undefined) return;
     // TODO: Move plot to separate file
     const chart = Plot.plot({
@@ -63,22 +66,20 @@ function App() {
     });
     mapRef.current.append(chart);
     return () => chart.remove();
-  }, [visibleLocations]);*/
+  }, [visibleLocations]);
 
   return (
     <>
-      <h1>ROTAS Squares Map</h1>
-      <div>
-        
-      </div>
+      <Typography variant="h1" gutterBottom>ROTAS Squares Map</Typography>
+      <Box>
+        <TimelineSlider min={0} max={1100} onValueChange={setYear}/>
+        <Box className="card">
+          <Box ref={mapRef}></Box>
+        </Box>
+      </Box>
       <Form />
     </>
   )
 }
 
 export default App;
-/*<TimelineSlider min={0} max={1100} onValueChange={setYear}/>
-        <div className="card">
-          <div ref={mapRef}></div>
-        </div>
-        */
