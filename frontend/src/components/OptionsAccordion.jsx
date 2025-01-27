@@ -1,0 +1,41 @@
+import * as React from 'react';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { Box, Typography } from '@mui/material';
+
+/*
+Assumes:
+    child = {
+        header: string,
+        body: component
+    }
+*/
+
+export default function OptionsAccordion({ children }) {
+    const [expanded, setExpanded] = React.useState('panel1');
+    const handleChange = (panel) => (event, newExpanded) => {
+        setExpanded(newExpanded ? panel : false);
+    };
+    return (
+        <Box>
+            {children?.map((child, index) => {
+                return(
+                    <Accordion key={index} expanded={expanded === `panel${index}-header`} onChange={handleChange(`panel${index}-header`)} style={{backgroundColor:'#522d16f3', color: '#ffffff'}}>
+                        <AccordionSummary
+                            expandIcon={<ArrowDropDownIcon />}
+                            aria-controls={`panel${index}-header`}
+                            id={`panel${index}-header`}
+                        >
+                            <Typography>{child.header}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {child.body}
+                        </AccordionDetails>
+                    </Accordion>
+                );
+            })}
+        </Box>
+    );
+}

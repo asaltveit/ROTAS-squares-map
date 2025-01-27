@@ -6,6 +6,15 @@ import mapData from "./data/custom.geo.json";
 import TimelineSlider from "./components/TimelineSlider";
 import Form from './components/Form';
 import Box from '@mui/material/Box';
+import { Typography } from '@mui/material';
+import OptionsAccordion from './components/OptionsAccordion';
+
+const accordionChildren = [
+  {
+    header: "Manipulate Data",
+    body: <Form />,//"Moo",
+  },
+]
 
 function App() {
   const mapRef = useRef();
@@ -77,7 +86,7 @@ function App() {
           <Box ref={mapRef}></Box>
         </Box>
       </Box>
-      <Form />
+      <OptionsAccordion children={accordionChildren} />
     </>
   )
 }
