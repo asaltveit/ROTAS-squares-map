@@ -3,22 +3,11 @@ import axios from 'axios';
 import * as Plot from "@observablehq/plot";
 import mapData from "./data/custom.geo.json";
 import TimelineSlider from "./components/TimelineSlider";
-import Form from './components/Form';
 import OptionsAccordion from './components/OptionsAccordion';
+import { accordionChildren } from './constants/FormConstants';
 import './App.css';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
-
-const accordionChildren = [
-  {
-    header: "Filters",
-    body: <Box>TODO</Box>,
-  },
-  {
-    header: "Manipulate Data",
-    body: <Form />,
-  },
-]
 
 function App() {
   const mapRef = useRef();

@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import { Scrubber } from 'react-scrubber';
 import 'react-scrubber/lib/scrubber.css';
 
+// TODO - Fix timeline moving when dragged
+
 export default function TimelineSlider({min, max, onValueChange}) {
     let anim;
     const [year, setYear] = useState(0);
