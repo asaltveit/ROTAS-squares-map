@@ -1,18 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import * as Plot from "@observablehq/plot";
-import './App.css';
 import mapData from "./data/custom.geo.json";
 import TimelineSlider from "./components/TimelineSlider";
 import Form from './components/Form';
+import OptionsAccordion from './components/OptionsAccordion';
+import './App.css';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
-import OptionsAccordion from './components/OptionsAccordion';
 
 const accordionChildren = [
   {
+    header: "Filters",
+    body: <Box>TODO</Box>,
+  },
+  {
     header: "Manipulate Data",
-    body: <Form />,//"Moo",
+    body: <Form />,
   },
 ]
 
