@@ -4,10 +4,13 @@ import * as Plot from "@observablehq/plot";
 import mapData from "./data/custom.geo.json";
 import TimelineSlider from "./components/TimelineSlider";
 import OptionsAccordion from './components/OptionsAccordion';
-import { accordionChildren } from './constants/FormConstants';
-import './App.css';
+import Form from './components/Form';
+import './css/App.css';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
+import { allSymbols } from './constants/Map';
+
+// TODO: Look into state management (types prop drilling)
 
 function App() {
   const mapRef = useRef();
@@ -16,8 +19,36 @@ function App() {
   const [visibleLocations, setVisibleLocations] = useState([]);
 
   // TODO: store these in database? Or choose the current # from stored list?
-  let symbols = ["asterisk", "circle", "square", "cross", "triangle"];
+  // TODO: Add an effect to set symbols and types?
   let types = ["manuscript", "amulet", "inscription", "graffito", "dipinto"];
+  let numTypes = types.length;
+  let symbols = allSymbols.slice(0, numTypes);
+
+  const addNewType = (type) => {
+    if (types.length >= 8){
+      console.log("Error: No more symbols available to add.");
+      return -1;
+    }
+    if (types.filter(type).length > 0) {
+      console.log(`Error: Type ${type} already exists.`);
+      return -1;
+    }
+    types.append(type);
+    console.log("Success: Type added.")
+    types.length == 8 ? console.log("Warning: No more symbols available to add.") : '';
+    return 1;
+  }
+
+  const accordionChildren = [
+    {
+      header: "Filters",
+      body: <Box>TODO</Box>,
+    },
+    {
+      header: "Manipulate Data",
+      body: <Form types={types} addNewType={addNewType} />,
+    },
+  ];
 
   useEffect(() => {
     axios.get('http://localhost:3000/locations').then((data) => {
@@ -25,7 +56,6 @@ function App() {
     })
   }, []);
 
-  // TODO: Add an effect to set symbols and types?
   useEffect(() => {
     setVisibleLocations(locations.filter((loc) => {
       return loc.created_year_start <= year;

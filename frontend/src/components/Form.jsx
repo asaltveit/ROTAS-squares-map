@@ -1,12 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
-import { locationSchema } from './AddLocationSchema';
+import { locationSchema } from '../utilities/AddLocationSchema.js';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import { FormLabel, Button, Grid2 } from '@mui/material';
+import InputLabel from '@mui/material/InputLabel';
+import { FormLabel, Button, Grid2, Typography, FormControl, Input, FormHelperText } from '@mui/material';
 import FormTypeRadioButtonRow from './RadioButtonRow';
 import { formTypes } from '../constants/FormConstants';
-import './Form.css';
+import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
+import '../css/Form.css';
+import DropDown from './DropDown';
 
 // TODO - Add options for update location and delete location
 // TODO - Add option to add a type
@@ -28,9 +31,16 @@ let location = {
 }
 
 
-const Form = () => {
-    const [waiting, setWaiting] = useState(false)
-    const [formType, setFormType] = useState(formTypes.add)
+const Form = ({ types, addNewType }) => {
+    const [waiting, setWaiting] = useState(false);
+    const [formType, setFormType] = useState(formTypes.add);
+
+    let typeOptions = convertStringsToOptions(types);
+    
+    const setROTASType = (type) => {
+      formik.handleChange(type);
+      addNewType(type);
+    }
   
     const formik = useFormik({
       initialValues: {
@@ -64,31 +74,94 @@ const Form = () => {
         console.log(values)
       },
       enableReinitialize: true, // what does this do?
-    }) // sx={{ mt: 3 }}
+    });
+
+    console.log(formik.touched)
+
+    /* 
+    <InputLabel
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        fontWeight: 700,
+      }}
+    >
+      Img Upload
+    </InputLabel>
+  */
 
     // style={{display: "block"}} separates label from input box
+    // TODO - switch years+long/lat to number fields? https://base-ui.com/react/components/number-field
+    
     return (
+      <Box >
+        <Grid2 
+          container 
+          //rowSpacing={2} 
+          //columnSpacing={{ xs: 1, sm: 2, md: 3 }} 
+          //columns={24}
+          rowSpacing={2} 
+          columnSpacing={2}
+          sx={{
+            justifyContent: "center",
+            alignItems: "center",
+            //width: "800px"
+          }}
+        >
+          <Grid2 xs={12} sm={2} sx={{ alignContent: "center", justifyContent: 'space-evenly' }}>
+            <InputLabel htmlFor="my-input" >Email address</InputLabel>
+          </Grid2>
+          <Grid2 xs={12} sm={10}>
+            <FormControl>
+              <Input id="my-input" aria-describedby="my-helper-text" />
+              <FormHelperText id="my-helper-text">{formik.touched.longitude && formik.errors.longitude}</FormHelperText>
+            </FormControl>
+          </Grid2>
+        </Grid2>
+      </Box >
+    )
+    
+    
+    /*return (
       <>
         <Box >
           <FormTypeRadioButtonRow onValueChange={setFormType} />
           {formType === formTypes.add && 
             <form onSubmit={formik.handleSubmit}>
+              <DropDown onValueChange={setROTASType} items={typeOptions} label={"Type"} formik={formik} ></DropDown>
               <Grid2 
                 container 
+                //rowSpacing={2} 
+                //columnSpacing={{ xs: 1, sm: 2, md: 3 }} 
+                //columns={24}
                 rowSpacing={2} 
-                columnSpacing={{ xs: 1, sm: 2, md: 3 }} 
-                columns={24}
+                columnSpacing={2}
                 sx={{
                   justifyContent: "center",
                   alignItems: "center",
-                  width: "800px"
+                  //width: "800px"
                 }}
               >
-                <Grid2 size={8}>
+                <Grid2 xs={12} sm={2} sx={{ justifyContent: "center" }}>
+                  <InputLabel
+                    sx={{
+                      display: "flex",
+                      //alignSelf: "center",//'flex-end',
+                      //mt: 3
+                      //justifyContent: "center",
+                      //alignItems: 'flex-end'//"center",
+                      //fontWeight: 700,
+                    }}
+                  >
+                    Years created
+                  </InputLabel>
+                </Grid2>
+                <Grid2 xs={12} sm={10}>
                   <TextField
+                    variant="standard"
                     size="small"
                     required
-                    sx={{ mt: 3 }}
+                    //sx={{ mt: 3 }}
                     className="number-field"
                     label="From"
                     id="createdYearStart"
@@ -100,9 +173,12 @@ const Form = () => {
                     }
                     helperText={formik.touched.created_year_start && formik.errors.created_year_start}
                   />
+                </Grid2>
+                <Grid2 xs={12} sm={10}>
                   <TextField
+                    variant="standard"
                     size="small"
-                    sx={{ mt: 3 }}
+                    //sx={{ mt: 3 }}
                     label="To"
                     id="createdYearEnd"
                     name="createdYearEnd"
@@ -115,11 +191,24 @@ const Form = () => {
                     className="number-field"
                   />
                 </Grid2>
-                <Grid2 size={8}>
+                
+                <Grid2 xs={12} sm={2} sx={{ alignContent: "center" }}>
+                  <InputLabel
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Img Upload
+                  </InputLabel>
+                </Grid2>
+                <Grid2 xs={12} sm={10}>
                   <TextField
                     size="small"
+                    variant="standard"
                     required
-                    sx={{ mt: 3 }}
+                    //sx={{ mt: 3 }}
                     label="Longitude"
                     id="longitude"
                     name="longitude"
@@ -131,10 +220,23 @@ const Form = () => {
                     helperText={formik.touched.longitude && formik.errors.longitude}
                     className="left-couplet number-field"
                   />
+                </Grid2>
+                <Grid2 xs={12} sm={2} sx={{ alignContent: "center" }}>
+                  <InputLabel
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Img Upload
+                  </InputLabel>
+                </Grid2>
+                <Grid2 xs={12} sm={10}>
                   <TextField
                     size="small"
                     required
-                    sx={{ mt: 3 }}
+                    //sx={{ mt: 3 }}
                     label="Latitude"
                     id="latitude"
                     name="latitude"
@@ -147,7 +249,18 @@ const Form = () => {
                     className="number-field"
                   />
                 </Grid2>
-                <Grid2 size={8}>
+                <Grid2 xs={12} sm={2} sx={{ alignContent: "center" }}>
+                  <InputLabel
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Img Upload
+                  </InputLabel>
+                </Grid2>
+                <Grid2 xs={12} sm={10}>
                   <TextField
                     size="small"
                     sx={{ mt: 3 }}
@@ -162,7 +275,18 @@ const Form = () => {
                     helperText={formik.touched.discovered_year && formik.errors.discovered_year}
                   />
                 </Grid2>
-                <Grid2 size={8}>
+                <Grid2 xs={12} sm={2} sx={{ alignContent: "center" }}>
+                  <InputLabel
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Img Upload
+                  </InputLabel>
+                </Grid2>
+                <Grid2 xs={12} sm={10}>
                   <TextField
                     size="small"
                     sx={{ mt: 3 }}
@@ -177,7 +301,18 @@ const Form = () => {
                     helperText={formik.touched.location && formik.errors.location}
                   />
                 </Grid2>
-                <Grid2 size={8}>
+                <Grid2 xs={12} sm={2} sx={{ alignContent: "center" }}>
+                  <InputLabel
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Img Upload
+                  </InputLabel>
+                </Grid2>
+                <Grid2 xs={12} sm={10}>
                   <TextField
                     size="small"
                     sx={{ mt: 3 }}
@@ -192,7 +327,18 @@ const Form = () => {
                     helperText={formik.touched.place && formik.errors.place}
                   />
                 </Grid2>
-                <Grid2 size={8}>
+                <Grid2 xs={12} sm={2} sx={{ alignContent: "center" }}>
+                  <InputLabel
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Img Upload
+                  </InputLabel>
+                </Grid2>
+                <Grid2 xs={12} sm={10}>
                   <TextField
                     size="small"
                     sx={{ mt: 3 }}
@@ -207,7 +353,18 @@ const Form = () => {
                     helperText={formik.touched.shelfmark && formik.errors.shelfmark}
                   />
                 </Grid2>
-                <Grid2 size={8}>
+                <Grid2 xs={12} sm={2} sx={{ alignContent: "center" }}>
+                  <InputLabel
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Img Upload
+                  </InputLabel>
+                </Grid2>
+                <Grid2 xs={12} sm={10}>
                   <TextField
                     size="small"
                     sx={{ mt: 3 }}
@@ -222,7 +379,18 @@ const Form = () => {
                     helperText={formik.touched.script && formik.errors.script}
                   />
                 </Grid2>
-                <Grid2 size={8}>
+                <Grid2 xs={12} sm={2} sx={{ alignContent: "center" }}>
+                  <InputLabel
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Img Upload
+                  </InputLabel>
+                </Grid2>
+                <Grid2 xs={12} sm={10}>
                   <TextField
                     size="small"
                     sx={{ mt: 3 }}
@@ -237,7 +405,18 @@ const Form = () => {
                     helperText={formik.touched.text && formik.errors.text}
                   />
                 </Grid2>
-                <Grid2 size={8}>
+                <Grid2 xs={12} sm={2} sx={{ alignContent: "center" }}>
+                  <InputLabel
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Img Upload
+                  </InputLabel>
+                </Grid2>
+                <Grid2 xs={12} sm={10}>
                   <TextField
                     size="small"
                     sx={{ mt: 3 }}
@@ -256,7 +435,7 @@ const Form = () => {
               <Button
                 sx={{ mt: 3 }}
                 type="submit"
-                variant="contained"
+                variant="outlined"
                 disabled={waiting}
               >
                 {!waiting ? 'Save' : 'Saving...'}
@@ -266,7 +445,7 @@ const Form = () => {
           
         </Box>
       </>
-    )
+    )*/
   }
   
   export default Form;
