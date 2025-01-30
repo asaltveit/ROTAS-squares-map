@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useShallow } from 'zustand/react/shallow'
 import axios from 'axios';
 import * as Plot from "@observablehq/plot";
 import mapData from "./data/custom.geo.json";
@@ -10,6 +11,7 @@ import './css/App.css';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 import { allSymbols } from './constants/Map';
+import { useLocationStore } from './utilities/LocationStore'
 
 // TODO: Look into state management (types prop drilling)
 
@@ -19,9 +21,13 @@ function App() {
   const [year, setYear] = useState(0);
   const [visibleLocations, setVisibleLocations] = useState([]);
 
+  const { types, addType } = useLocationStore(
+    useShallow((state) => ({ types: state.types, addType: state.addType })),
+  )
+
   // TODO: store these in database? Or choose the current # from stored list?
   // TODO: Add an effect to set symbols and types?
-  let types = ["manuscript", "amulet", "inscription", "graffito", "dipinto"];
+  //let types = ["manuscript", "amulet", "inscription", "graffito", "dipinto"];
   let numTypes = types.length;
   let symbols = allSymbols.slice(0, numTypes);
 
@@ -34,13 +40,13 @@ function App() {
       console.log(`Error: Type ${type} already exists.`);
       return -1;
     }
-    types.append(type);
+    addType(type);
     console.log("Success: Type added.")
     types.length == 8 ? console.log("Warning: No more symbols available to add.") : '';
     return 1;
   }
 
-  // TODO - put somewhere reusable
+  // TODO - put somewhere reusable?
   const accordionChildren = [
     {
       header: "Filters",
@@ -56,7 +62,7 @@ function App() {
     axios.get('http://localhost:3000/locations').then((data) => {
       setLocations(data.data);
     })
-  }, []);
+  }, []); // TODO: add var for submitting to add location
 
   useEffect(() => {
     setVisibleLocations(locations.filter((loc) => {
