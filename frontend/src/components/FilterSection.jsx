@@ -10,7 +10,7 @@ import { useLocationStore } from '../utilities/LocationStore'
 
 export default function FilterSection() {
     const [locationTypeCheck, setLocationTypeCheck] = useState(false);
-    const [textCheck, setTextCheck] = useState(false);
+    //const [textCheck, setTextCheck] = useState(false);
     const [scriptCheck, setScriptCheck] = useState(false);
     const [firstWordCheck, setFirstWordCheck] = useState(false);
     const [placeCheck, setPlaceCheck] = useState(false);
@@ -23,7 +23,7 @@ export default function FilterSection() {
         types, 
         setTypeFilter,
         setScriptFilter,
-        setTextFilter,
+        //setTextFilter,
         setFirstWordFilter,
         setPlaceFilter,
         setLocationFilter,
@@ -36,15 +36,28 @@ export default function FilterSection() {
             types: state.types, 
             setTypeFilter: state.setTypeFilter,
             setScriptFilter: state.setScriptFilter,
-            setTextFilter: state.setTextFilter,
+            //setTextFilter: state.setTextFilter,
             setFirstWordFilter: state.setFirstWordFilter,
             setPlaceFilter: state.setPlaceFilter,
             setLocationFilter: state.setLocationFilter,
             setLongitudeFilter: state.setLongitudeFilter,
             setLatitudeFilter: state.setLatitudeFilter,
             clearFilters: state.clearFilters,
+            setYearType: state.setYearType,
         })),
     )
+
+    const clearAllFilters = () => {
+        clearFilters()
+        setLocationTypeCheck(false)
+        setScriptCheck(false)
+        setFirstWordCheck(false)
+        setPlaceCheck(false)
+        setLocationCheck(false)
+        setLongitudeCheck(false)
+        setLatitudeCheck(false)
+        setYearTypeCheck(false)
+    }
 
     let typeOptions = convertStringsToOptions(types);
 
@@ -73,13 +86,13 @@ export default function FilterSection() {
                                     { locationTypeCheck && <DropDown onValueChange={setTypeFilter} items={typeOptions} label="Type" ></DropDown> }
                                 </FormGroup>
                                 <FormGroup >
-                                    <FormControlLabel control={<Switch checked={textCheck} onChange={(event) => setScriptCheck(event.target.checked)} />} label="Script" sx={{ mt: 2.5 }} />
-                                    { textCheck && <DropDown onValueChange={setScriptFilter} items={typeOptions} label="Script" ></DropDown> }
+                                    <FormControlLabel control={<Switch checked={scriptCheck} onChange={(event) => setScriptCheck(event.target.checked)} />} label="Script" sx={{ mt: 2.5 }} />
+                                    { scriptCheck && <DropDown onValueChange={setScriptFilter} items={typeOptions} label="Script" ></DropDown> }
                                 </FormGroup>
-                                <FormGroup >
-                                    <FormControlLabel control={<Switch checked={scriptCheck} onChange={(event) => setTextCheck(event.target.checked)} />} label="Text" sx={{ mt: 2.5 }} />
-                                    { scriptCheck && <DropDown onValueChange={setTextFilter} items={typeOptions} label="Text" ></DropDown> }
-                                </FormGroup>
+                                {/*<FormGroup >
+                                    <FormControlLabel control={<Switch checked={textCheck} onChange={(event) => setTextCheck(event.target.checked)} />} label="Text" sx={{ mt: 2.5 }} />
+                                    { textCheck && <DropDown onValueChange={setTextFilter} items={typeOptions} label="Text" ></DropDown> }
+                                </FormGroup>*/}
                                 <FormGroup >
                                     <FormControlLabel control={<Switch checked={firstWordCheck} onChange={(event) => setFirstWordCheck(event.target.checked)} />} label="First word" sx={{ mt: 2.5 }} />
                                     { firstWordCheck && <DropDown onValueChange={setFirstWordFilter} items={typeOptions} label="First word" ></DropDown> }
@@ -105,7 +118,7 @@ export default function FilterSection() {
                             </Grid2>
                         </Grid2>
                         <Grid2 >
-                            <Button onClick={clearFilters} > Clear All </Button>
+                            <Button onClick={clearAllFilters} > Clear All </Button>
                         </Grid2>
                     </Grid2>
                 </Grid2>
