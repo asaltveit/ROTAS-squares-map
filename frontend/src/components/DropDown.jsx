@@ -35,19 +35,24 @@ export default function DropDown({ onValueChange, items, label, formik }) {
         label={label}
         onChange={handleChange}
         error={
-            formik.touched.type && Boolean(formik.errors.type)
+            formik && formik.touched.type && Boolean(formik.errors.type)
         }
       >
         {items.map((item) => {
-            return (
+            if (item.value == "other") {
+              return (
+                <MenuItem value="other" key="other">
+                  <em>Other</em>
+                </MenuItem>
+              )
+            } else {
+              return (
                 <MenuItem value={item.value} key={item.value} > { item.title } </MenuItem>
-            )
+              )
+            }
         })}
-        <MenuItem value="other">
-          <em>Other</em>
-        </MenuItem>
       </Select>
-      {formik.touched.type && <FormHelperText>{ formik.errors.type }</FormHelperText>}
+      {formik && formik.touched.type && <FormHelperText>{ formik.errors.type }</FormHelperText>}
     </FormControl>
   );
 }

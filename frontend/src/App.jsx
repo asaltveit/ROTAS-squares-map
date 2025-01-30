@@ -5,6 +5,7 @@ import mapData from "./data/custom.geo.json";
 import TimelineSlider from "./components/TimelineSlider";
 import OptionsAccordion from './components/OptionsAccordion';
 import Form from './components/Form';
+import FilterSection from './components/FilterSection';
 import './css/App.css';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
@@ -39,10 +40,11 @@ function App() {
     return 1;
   }
 
+  // TODO - put somewhere reusable
   const accordionChildren = [
     {
       header: "Filters",
-      body: <Box>TODO</Box>,
+      body: <FilterSection types={types} />,
     },
     {
       header: "Manipulate Data",

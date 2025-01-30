@@ -5,11 +5,11 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import { FormLabel, Button, Grid2, Typography, FormControl, Input, FormHelperText } from '@mui/material';
+import DropDown from './DropDown';
 import FormTypeRadioButtonRow from './RadioButtonRow';
 import { formTypes } from '../constants/FormConstants';
 import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
 import '../css/Form.css';
-import DropDown from './DropDown';
 
 // TODO - Add options for update location and delete location
 // TODO - Add option to add a type
@@ -36,6 +36,13 @@ const Form = ({ types, addNewType }) => {
     const [formType, setFormType] = useState(formTypes.add);
 
     let typeOptions = convertStringsToOptions(types);
+    typeOptions.push({title: "Other", value: "other"});
+    // TODO: Add other option 
+    // - .append({title: "Other", value: "other"}) above doesn't work
+    /*typeOptions.map((opt) => {
+      console.log(JSON.stringify(opt))
+    })*/
+    //console.log("typeOptions: " + typeOptions)
     
     const setROTASType = (type) => {
       formik.handleChange(type);
@@ -76,7 +83,7 @@ const Form = ({ types, addNewType }) => {
       enableReinitialize: true, // what does this do?
     });
 
-    console.log(formik.touched)
+    //console.log(formik.touched)
 
     /* 
     <InputLabel
