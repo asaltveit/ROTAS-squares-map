@@ -11,10 +11,12 @@ exports.getAllLocations = async (req, res) => {
     }
 };
 
+// Controller methods to get list of distinct possible values for field
 exports.getAllTypeValues = async (req, res) => {
     try {
-        const locations = await Location.aggregate('type', 'DISTINCT', { plain: false });
-        res.json(locations);
+        const result = await Location.findAll({attributes: ['type'], group: ['type'], logging: console.log})
+        const typeList = result.map((r) => r.type)
+        res.json(typeList);
     } catch (error) {
         res.status(500).json({error}); // : 'Internal Server Error'
     }
@@ -22,8 +24,9 @@ exports.getAllTypeValues = async (req, res) => {
 
 exports.getAllScriptValues = async (req, res) => {
     try {
-        const locations = await Location.aggregate('script', 'DISTINCT', { plain: false });
-        res.json(locations);
+        const result = await Location.findAll({attributes: ['script'], group: ['script'], logging: console.log})
+        const scriptList = result.map((r) => r.script)
+        res.json(scriptList);
     } catch (error) {
         res.status(500).json({error}); // : 'Internal Server Error'
     }
@@ -31,8 +34,9 @@ exports.getAllScriptValues = async (req, res) => {
 
 exports.getAllFirstWordValues = async (req, res) => {
     try {
-        const locations = await Location.aggregate('first_word', 'DISTINCT', { plain: false });
-        res.json(locations);
+        const result = await Location.findAll({attributes: ['first_word'], group: ['first_word'], logging: console.log})
+        const firstWordList = result.map((r) => r.first_word)
+        res.json(firstWordList);
     } catch (error) {
         res.status(500).json({error}); // : 'Internal Server Error'
     }
@@ -40,8 +44,9 @@ exports.getAllFirstWordValues = async (req, res) => {
 
 exports.getAllLocationValues = async (req, res) => {
     try {
-        const locations = await Location.aggregate('location', 'DISTINCT', { plain: false });
-        res.json(locations);
+        const result = await Location.findAll({attributes: ['location'], group: ['location'], logging: console.log})
+        const locationList = result.map((r) => r.location)
+        res.json(locationList);
     } catch (error) {
         res.status(500).json({error}); // : 'Internal Server Error'
     }
@@ -49,8 +54,9 @@ exports.getAllLocationValues = async (req, res) => {
 
 exports.getAllPlaceValues = async (req, res) => {
     try {
-        const locations = await Location.aggregate('place', 'DISTINCT', { plain: false });
-        res.json(locations);
+        const result = await Location.findAll({attributes: ['place'], group: ['place'], logging: console.log})
+        const placeList = result.map((r) => r.place)
+        res.json(placeList);
     } catch (error) {
         res.status(500).json({error}); // : 'Internal Server Error'
     }
@@ -58,8 +64,9 @@ exports.getAllPlaceValues = async (req, res) => {
 
 exports.getAllTextValues = async (req, res) => {
     try {
-        const locations = await Location.aggregate('text', 'DISTINCT', { plain: false });
-        res.json(locations);
+        const result = await Location.findAll({attributes: ['text'], group: ['text'], logging: console.log})
+        const textList = result.map((r) => r.text)
+        res.json(textList);
     } catch (error) {
         res.status(500).json({error}); // : 'Internal Server Error'
     }

@@ -5,11 +5,12 @@ import DropDown from './DropDown';
 import { convertStringsToOptions, collectVariableOptions, collectVariableGroups } from '../utilities/UtilityFunctions.js';
 import { yearTypeOptions } from '../constants/FilterSection.js'
 import { useLocationStore } from '../utilities/LocationStore'
+import axios from 'axios';
 
 
 export default function FilterSection() {
     const [locationTypeCheck, setLocationTypeCheck] = useState(false);
-    //const [textCheck, setTextCheck] = useState(false);
+    const [textCheck, setTextCheck] = useState(false);
     // Assume 2 scripts, have option to add like type?
     const [scriptCheck, setScriptCheck] = useState(false);
     const [firstWordCheck, setFirstWordCheck] = useState(false);
@@ -25,7 +26,7 @@ export default function FilterSection() {
         locations, 
         setTypeFilter,
         setScriptFilter,
-        //setTextFilter,
+        setTextFilter,
         setFirstWordFilter,
         setPlaceFilter,
         setLocationFilter,
@@ -39,7 +40,7 @@ export default function FilterSection() {
             locations: state.locations,
             setTypeFilter: state.setTypeFilter,
             setScriptFilter: state.setScriptFilter,
-            //setTextFilter: state.setTextFilter,
+            setTextFilter: state.setTextFilter,
             setFirstWordFilter: state.setFirstWordFilter,
             setPlaceFilter: state.setPlaceFilter,
             setLocationFilter: state.setLocationFilter,
@@ -49,14 +50,51 @@ export default function FilterSection() {
             setYearType: state.setYearType,
         })),
     )
-    let scriptOptions, firstWordOptions, locationOptions, typeOptions, placeOptions
 
     useEffect(() => {
+        axios.get('http://localhost:3000/locations/types').then((data) => {
+            setTypeFilter(convertStringsToOptions(data.data));
+        })
+    }, []);
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/locations/scripts').then((data) => {
+            setScriptFilter(convertStringsToOptions(data.data))
+        })
+    }, []);
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/locations/texts').then((data) => {
+            setTextFilter(convertStringsToOptions(data.data))
+        })
+    }, []);
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/locations/words').then((data) => {
+            setFirstWordFilter(convertStringsToOptions(data.data));
+        })
+    }, []);
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/locations/places').then((data) => {
+            setPlaceFilter(convertStringsToOptions(data.data));
+        })
+    }, []);
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/locations/locations').then((data) => {
+            setLocationFilter(convertStringsToOptions(data.data));
+        })
+    }, []);
+
+    //let scriptOptions, firstWordOptions, locationOptions, typeOptions, placeOptions
+
+    /*useEffect(() => {
         [ scriptOptions, firstWordOptions, locationOptions, typeOptions, placeOptions ] = collectVariableOptions(collectVariableGroups(locations))
         typeOptions.map((loco) => {
             console.log(JSON.stringify(loco))
         })
-    }, [locations])
+    }, [locations])*/
 
     const clearAllFilters = () => {
         clearFilters()
@@ -101,10 +139,10 @@ export default function FilterSection() {
                                     <FormControlLabel control={<Switch checked={scriptCheck} onChange={(event) => setScriptCheck(event.target.checked)} />} label="Script" sx={{ mt: 2.5 }} />
                                     { scriptCheck && <DropDown onValueChange={setScriptFilter} items={scriptOptions} label="Script" ></DropDown> }
                                 </FormGroup>
-                                {/*<FormGroup >
+                                <FormGroup >
                                     <FormControlLabel control={<Switch checked={textCheck} onChange={(event) => setTextCheck(event.target.checked)} />} label="Text" sx={{ mt: 2.5 }} />
                                     { textCheck && <DropDown onValueChange={setTextFilter} items={typeOptions} label="Text" ></DropDown> }
-                                </FormGroup>*/}
+                                </FormGroup>
                                 <FormGroup >
                                     <FormControlLabel control={<Switch checked={firstWordCheck} onChange={(event) => setFirstWordCheck(event.target.checked)} />} label="First word" sx={{ mt: 2.5 }} />
                                     { firstWordCheck && <DropDown onValueChange={setFirstWordFilter} items={firstWordOptions} label="First word" ></DropDown> }
