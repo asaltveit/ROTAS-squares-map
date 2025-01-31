@@ -5,7 +5,7 @@ import { immer } from 'zustand/middleware/immer'
 export const useLocationStore = create()(
   immer((set) => ({
     // Does locations need to be stored here?
-    //locations: [],
+    locations: [],
     filters: {
       type: null,
       script: null,
@@ -26,10 +26,10 @@ export const useLocationStore = create()(
           state.yearType = type
         }),
     // locations function
-    /*setLocations: (locations) =>
+    setLocations: (locations) =>
         set((state) => {
           state.locations = locations
-        }),*/
+        }),
     // types functions
     setTypes: (types) =>
         set((state) => {

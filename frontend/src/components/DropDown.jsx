@@ -25,6 +25,8 @@ export default function DropDown({ onValueChange, items, label, formik }) {
     onValueChange(event.target.value);
   };
 
+  console.log("items: ", items)
+
   return (
     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} size="small">
       <InputLabel id="dropdown-select-label">{label}</InputLabel>
@@ -39,6 +41,7 @@ export default function DropDown({ onValueChange, items, label, formik }) {
         }
       >
         {items.map((item) => {
+          
             if (item.value == "other") {
               return (
                 <MenuItem value="other" key="other">

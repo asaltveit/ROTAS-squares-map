@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow'
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Box, Typography, FormGroup, FormControlLabel, Button, Switch, Grid2 } from '@mui/material';
 import DropDown from './DropDown';
-import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
+import { convertStringsToOptions, collectVariableOptions, collectVariableGroups } from '../utilities/UtilityFunctions.js';
 import { yearTypeOptions } from '../constants/FilterSection.js'
 import { useLocationStore } from '../utilities/LocationStore'
 
@@ -11,16 +10,19 @@ import { useLocationStore } from '../utilities/LocationStore'
 export default function FilterSection() {
     const [locationTypeCheck, setLocationTypeCheck] = useState(false);
     //const [textCheck, setTextCheck] = useState(false);
+    // Assume 2 scripts, have option to add like type?
     const [scriptCheck, setScriptCheck] = useState(false);
     const [firstWordCheck, setFirstWordCheck] = useState(false);
     const [placeCheck, setPlaceCheck] = useState(false);
     const [locationCheck, setLocationCheck] = useState(false);
+    // Just check all numbers for these?
     const [longitudeTypeCheck, setLongitudeCheck] = useState(false);
     const [latitudeCheck, setLatitudeCheck] = useState(false);
     const [yearTypeCheck, setYearTypeCheck] = useState(false);
 
     const { 
-        types, 
+        types,
+        locations, 
         setTypeFilter,
         setScriptFilter,
         //setTextFilter,
@@ -34,6 +36,7 @@ export default function FilterSection() {
     } = useLocationStore(
         useShallow((state) => ({ 
             types: state.types, 
+            locations: state.locations,
             setTypeFilter: state.setTypeFilter,
             setScriptFilter: state.setScriptFilter,
             //setTextFilter: state.setTextFilter,
@@ -46,6 +49,14 @@ export default function FilterSection() {
             setYearType: state.setYearType,
         })),
     )
+    let scriptOptions, firstWordOptions, locationOptions, typeOptions, placeOptions
+
+    useEffect(() => {
+        [ scriptOptions, firstWordOptions, locationOptions, typeOptions, placeOptions ] = collectVariableOptions(collectVariableGroups(locations))
+        typeOptions.map((loco) => {
+            console.log(JSON.stringify(loco))
+        })
+    }, [locations])
 
     const clearAllFilters = () => {
         clearFilters()
@@ -59,7 +70,8 @@ export default function FilterSection() {
         setYearTypeCheck(false)
     }
 
-    let typeOptions = convertStringsToOptions(types);
+    //let typeOptions = convertStringsToOptions(types);
+
 
     return (
         
@@ -87,7 +99,7 @@ export default function FilterSection() {
                                 </FormGroup>
                                 <FormGroup >
                                     <FormControlLabel control={<Switch checked={scriptCheck} onChange={(event) => setScriptCheck(event.target.checked)} />} label="Script" sx={{ mt: 2.5 }} />
-                                    { scriptCheck && <DropDown onValueChange={setScriptFilter} items={typeOptions} label="Script" ></DropDown> }
+                                    { scriptCheck && <DropDown onValueChange={setScriptFilter} items={scriptOptions} label="Script" ></DropDown> }
                                 </FormGroup>
                                 {/*<FormGroup >
                                     <FormControlLabel control={<Switch checked={textCheck} onChange={(event) => setTextCheck(event.target.checked)} />} label="Text" sx={{ mt: 2.5 }} />
@@ -95,17 +107,17 @@ export default function FilterSection() {
                                 </FormGroup>*/}
                                 <FormGroup >
                                     <FormControlLabel control={<Switch checked={firstWordCheck} onChange={(event) => setFirstWordCheck(event.target.checked)} />} label="First word" sx={{ mt: 2.5 }} />
-                                    { firstWordCheck && <DropDown onValueChange={setFirstWordFilter} items={typeOptions} label="First word" ></DropDown> }
+                                    { firstWordCheck && <DropDown onValueChange={setFirstWordFilter} items={firstWordOptions} label="First word" ></DropDown> }
                                 </FormGroup>
                             </Grid2>
                             <Grid2 justifyContent="flex-end">
                                 <FormGroup >
                                     <FormControlLabel control={<Switch checked={placeCheck} onChange={(event) => setPlaceCheck(event.target.checked)} />} label="Place" sx={{ mt: 2.5 }} />
-                                    { placeCheck && <DropDown onValueChange={setPlaceFilter} items={typeOptions} label="Place" ></DropDown> }
+                                    { placeCheck && <DropDown onValueChange={setPlaceFilter} items={placeOptions} label="Place" ></DropDown> }
                                 </FormGroup>
                                 <FormGroup >
                                     <FormControlLabel control={<Switch checked={locationCheck} onChange={(event) => setLocationCheck(event.target.checked)} />} label="Location" sx={{ mt: 2.5 }} />
-                                    { locationCheck && <DropDown onValueChange={setLocationFilter} items={typeOptions} label="Location" ></DropDown> }
+                                    { locationCheck && <DropDown onValueChange={setLocationFilter} items={locationOptions} label="Location" ></DropDown> }
                                 </FormGroup>
                                 <FormGroup >
                                     <FormControlLabel control={<Switch checked={longitudeTypeCheck} onChange={(event) => setLongitudeCheck(event.target.checked)} />} label="Longitude" sx={{ mt: 2.5 }} />

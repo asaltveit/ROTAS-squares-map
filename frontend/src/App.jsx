@@ -17,12 +17,17 @@ import { useLocationStore } from './utilities/LocationStore'
 
 function App() {
   const mapRef = useRef();
-  const [locations, setLocations] = useState([]);
+  const [locs, setLocs] = useState([]);
   const [year, setYear] = useState(0);
   const [visibleLocations, setVisibleLocations] = useState([]);
 
-  const { types, addType } = useLocationStore(
-    useShallow((state) => ({ types: state.types, addType: state.addType })),
+  const { types, addType, setLocations, locations } = useLocationStore(
+    useShallow((state) => ({ 
+      types: state.types, 
+      addType: state.addType, 
+      setLocations: state.setLocations, 
+      locations: state.locations 
+    })),
   )
 
   // TODO: store these in database? Or choose the current # from stored list?

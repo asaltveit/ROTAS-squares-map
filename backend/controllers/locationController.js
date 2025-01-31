@@ -11,6 +11,60 @@ exports.getAllLocations = async (req, res) => {
     }
 };
 
+exports.getAllTypeValues = async (req, res) => {
+    try {
+        const locations = await Location.aggregate('type', 'DISTINCT', { plain: false });
+        res.json(locations);
+    } catch (error) {
+        res.status(500).json({error}); // : 'Internal Server Error'
+    }
+};
+
+exports.getAllScriptValues = async (req, res) => {
+    try {
+        const locations = await Location.aggregate('script', 'DISTINCT', { plain: false });
+        res.json(locations);
+    } catch (error) {
+        res.status(500).json({error}); // : 'Internal Server Error'
+    }
+};
+
+exports.getAllFirstWordValues = async (req, res) => {
+    try {
+        const locations = await Location.aggregate('first_word', 'DISTINCT', { plain: false });
+        res.json(locations);
+    } catch (error) {
+        res.status(500).json({error}); // : 'Internal Server Error'
+    }
+};
+
+exports.getAllLocationValues = async (req, res) => {
+    try {
+        const locations = await Location.aggregate('location', 'DISTINCT', { plain: false });
+        res.json(locations);
+    } catch (error) {
+        res.status(500).json({error}); // : 'Internal Server Error'
+    }
+};
+
+exports.getAllPlaceValues = async (req, res) => {
+    try {
+        const locations = await Location.aggregate('place', 'DISTINCT', { plain: false });
+        res.json(locations);
+    } catch (error) {
+        res.status(500).json({error}); // : 'Internal Server Error'
+    }
+};
+
+exports.getAllTextValues = async (req, res) => {
+    try {
+        const locations = await Location.aggregate('text', 'DISTINCT', { plain: false });
+        res.json(locations);
+    } catch (error) {
+        res.status(500).json({error}); // : 'Internal Server Error'
+    }
+};
+
 // Controller method to create a new location
 exports.createLocation = async (req, res) => {
     const { 
