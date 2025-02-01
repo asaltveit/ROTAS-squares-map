@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import { locationSchema } from '../utilities/AddLocationSchema.js';
+import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -8,6 +9,9 @@ import { FormLabel, Button, Grid2, Typography, FormControl, Input, FormHelperTex
 import DropDown from './DropDown';
 import FormTypeRadioButtonRow from './RadioButtonRow';
 import { formTypes } from '../constants/FormConstants';
+import { useMapStore } from '../utilities/MapStore.jsx'
+import { useFilterStore } from '../utilities/FilterStore.jsx'
+import { useShallow } from 'zustand/react/shallow'
 import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
 import '../css/Form.css';
 
@@ -31,24 +35,34 @@ let location = {
 }
 
 
-const Form = ({ types, addNewType }) => {
+const Form = () => {
     const [waiting, setWaiting] = useState(false);
     const [formType, setFormType] = useState(formTypes.add);
 
-    let typeOptions = convertStringsToOptions(types);
-    typeOptions.push({title: "Other", value: "other"});
-    // TODO: Add other option 
-    // - .append({title: "Other", value: "other"}) above doesn't work
-    /*typeOptions.map((opt) => {
-      console.log(JSON.stringify(opt))
-    })*/
-    //console.log("typeOptions: " + typeOptions)
+    const { locationTypes, setLocationTypes, updateformSubmitted, formSubmitted } = useMapStore(
+      useShallow((state) => ({ 
+        locationTypes: state.locationTypes, 
+        setLocationTypes: state.setLocationTypes, 
+        updateformSubmitted: state.updateformSubmitted,
+        formSubmitted: state.formSubmitted,
+      })),
+    )
+
+    const { optionTypes, setOptionTypes } = useFilterStore(
+      useShallow((state) => ({ 
+        optionTypes: state.optionTypes, 
+        setOptionTypes: state.setOptionTypes,
+      })),
+    )
+
+    let typeOptions = []
+    // TODO - only use this once?
+    useEffect(() => {
+      axios.get('http://localhost:3000/locations/types').then((data) => {
+        setOptionTypes(convertStringsToOptions(data.data));
+      })
+    }, [formSubmitted]);
     
-    const setROTASType = (type) => {
-      formik.handleChange(type);
-      addNewType(type);
-    }
-  
     const formik = useFormik({
       initialValues: {
         type: location.type,
@@ -78,12 +92,9 @@ const Form = ({ types, addNewType }) => {
         const json = await response.json()*/
         setWaiting(false)
         // ... handle response/error
-        console.log(values)
       },
       enableReinitialize: true, // what does this do?
     });
-
-    //console.log(formik.touched)
 
     /* 
     <InputLabel

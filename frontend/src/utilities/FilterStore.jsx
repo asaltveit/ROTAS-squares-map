@@ -1,11 +1,10 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
+import { yearType } from '../constants/FilterSection'
 
 
-export const useLocationStore = create()(
+export const useFilterStore = create()(
   immer((set) => ({
-    // Does locations need to be stored here?
-    locations: [],
     filters: {
       type: null,
       script: null,
@@ -16,42 +15,49 @@ export const useLocationStore = create()(
       longitude: null,
       latitude: null,
     },
-    newType: null,
-    // TODO: manually get list of types from locations?
-    types: ["manuscript", "amulet", "inscription", "graffito", "dipinto"],
-    yearType: "created",
-    // yearType functions
+    // 6 below are fetched
+    optionTypes: ["manuscript", "amulet", "inscription", "graffito", "dipinto"],
+    scripts: null,
+    texts: null,
+    locs: null,
+    firstWords: null,
+    places: null,
+    yearType: yearType.created, // "created" vs "discovered"
+    // Lists of values to be turned into options (for fetched fields)
+    setOptionTypes: (types) =>
+        set((state) => {
+          state.optionTypes = types
+        }),  
+    setFirstWords: (firstWords) =>
+      set((state) => {
+        state.firstWords = firstWords
+      }
+    ),
+    setScripts: (scripts) =>
+      set((state) => {
+        state.scripts = scripts
+      }
+    ),
+    setTexts: (texts) =>
+      set((state) => {
+        state.texts = texts
+      }
+    ),
+    setLocs: (locs) =>
+      set((state) => {
+        state.locs = locs
+      }
+    ),
+    setPlaces: (places) =>
+      set((state) => {
+        state.places = places
+      }
+    ),
+    // Set filters to be searched
     setYearType: (type) =>
         set((state) => {
           state.yearType = type
         }),
-    // locations function
-    setLocations: (locations) =>
-        set((state) => {
-          state.locations = locations
-        }),
-    // types functions
-    setTypes: (types) =>
-        set((state) => {
-          state.types = types
-        }),
-    addType: (type) =>
-        set((state) => {
-          state.types.push(type)
-        }),
-    // For the future
-    removeType: (type) =>
-        set((state) => {
-          state.types.filter((t) => {
-            return t == type
-          })
-        }),
-    // newType functions
-    setNewTypeFilter: (type) =>
-        set((state) => {
-          state.newType = type
-        }),
-    // filters functions
     setTypeFilter: (type) =>
       set((state) => {
         state.filters.type = type
@@ -76,6 +82,7 @@ export const useLocationStore = create()(
         set((state) => {
             state.filters.location = location
         }),
+    // Do we want these?
     setLongitudeFilter: (longitude) =>
         set((state) => {
             state.filters.longitude = longitude
@@ -95,7 +102,7 @@ export const useLocationStore = create()(
                 location: null,
                 longitude: null,
                 latitude: null,
-              }
+            }
         }),
                                                                                                         
   })),

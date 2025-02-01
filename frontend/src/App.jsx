@@ -11,55 +11,39 @@ import './css/App.css';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 import { allSymbols } from './constants/Map';
-import { useLocationStore } from './utilities/LocationStore'
+import { useMapStore} from './utilities/MapStore'
 
-// TODO: Look into state management (types prop drilling)
 
 function App() {
   const mapRef = useRef();
-  const [locs, setLocs] = useState([]);
+  const [locs, setLocs] = useState([]); // Needed?
   const [year, setYear] = useState(0);
   const [visibleLocations, setVisibleLocations] = useState([]);
 
-  const { types, addType, setLocations, locations } = useLocationStore(
+  const { locations, setLocations, formSubmitted, locationTypes, setLocationTypes } = useMapStore(
     useShallow((state) => ({ 
-      types: state.types, 
-      addType: state.addType, 
+      formSubmitted: state.formSubmitted, 
       setLocations: state.setLocations, 
-      locations: state.locations 
+      locations: state.locations,
+      locationTypes: state.locationTypes,
+      setLocationTypes: state.setLocationTypes,
     })),
   )
 
   // TODO: store these in database? Or choose the current # from stored list?
   // TODO: Add an effect to set symbols and types?
-  //let types = ["manuscript", "amulet", "inscription", "graffito", "dipinto"];
-  let numTypes = types.length;
+  let numTypes = locationTypes.length;
   let symbols = allSymbols.slice(0, numTypes);
-
-  const addNewType = (type) => {
-    if (types.length >= 8){
-      console.log("Error: No more symbols available to add.");
-      return -1;
-    }
-    if (types.filter(type).length > 0) {
-      console.log(`Error: Type ${type} already exists.`);
-      return -1;
-    }
-    addType(type);
-    console.log("Success: Type added.")
-    types.length == 8 ? console.log("Warning: No more symbols available to add.") : '';
-    return 1;
-  }
 
   // TODO - put somewhere reusable?
   const accordionChildren = [
     {
       header: "Filters",
-      body: <FilterSection types={types} />,
+      body: <FilterSection />,
     },
     {
       header: "Manipulate Data",
-      body: <Form types={types} addNewType={addNewType} />,
+      body: <Form />,
     },
   ];
 
@@ -67,7 +51,7 @@ function App() {
     axios.get('http://localhost:3000/locations').then((data) => {
       setLocations(data.data);
     })
-  }, []); // TODO: add var for submitting to add location
+  }, [formSubmitted]);
 
   useEffect(() => {
     setVisibleLocations(locations.filter((loc) => {
@@ -75,6 +59,12 @@ function App() {
     }))
 
   }, [year, locations]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/locations/types').then((data) => {
+      setLocationTypes(data.data);
+    })
+  }, [formSubmitted]);
 
   useEffect(() => {
     if (visibleLocations === undefined) return;
@@ -106,8 +96,8 @@ function App() {
         // Canvas doesn't include legend
         height: 600, // Canvas height
         width: 800, // Canvas width
-        symbol: {legend: true, domain: types, range: symbols},
-        color: { domain: types, scheme: "turbo"},
+        symbol: {legend: true, domain: locationTypes, range: symbols},
+        color: { domain: locationTypes, scheme: "turbo"},
     });
     mapRef.current.append(chart);
     return () => chart.remove();

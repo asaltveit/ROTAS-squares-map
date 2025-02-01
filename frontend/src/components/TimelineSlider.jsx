@@ -15,7 +15,6 @@ export default function TimelineSlider({min, max, onValueChange}) {
     }
 
     const handleScrubEnd = (value) => {
-        console.log("stop animation")
         setPlayAnimation(false)
         setYear(Math.ceil(value))
         onValueChange(Math.ceil(value))
@@ -34,7 +33,6 @@ export default function TimelineSlider({min, max, onValueChange}) {
         if (playAnimation) {
             let i = min;
             anim = setInterval(() => {
-                console.log(i)
                 if (year == max) {
                     i = min;
                     setYear(min);

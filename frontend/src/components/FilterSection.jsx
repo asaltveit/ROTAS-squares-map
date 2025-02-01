@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow'
 import { Box, Typography, FormGroup, FormControlLabel, Button, Switch, Grid2 } from '@mui/material';
 import DropDown from './DropDown';
-import { convertStringsToOptions, collectVariableOptions, collectVariableGroups } from '../utilities/UtilityFunctions.js';
+import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
 import { yearTypeOptions } from '../constants/FilterSection.js'
-import { useLocationStore } from '../utilities/LocationStore'
+import { useMapStore } from '../utilities/MapStore.jsx'
+import { useFilterStore } from '../utilities/FilterStore.jsx'
 import axios from 'axios';
 
 
@@ -16,99 +17,113 @@ export default function FilterSection() {
     const [firstWordCheck, setFirstWordCheck] = useState(false);
     const [placeCheck, setPlaceCheck] = useState(false);
     const [locationCheck, setLocationCheck] = useState(false);
-    // Just check all numbers for these?
-    const [longitudeTypeCheck, setLongitudeCheck] = useState(false);
-    const [latitudeCheck, setLatitudeCheck] = useState(false);
     const [yearTypeCheck, setYearTypeCheck] = useState(false);
 
+    const { updateformSubmitted, formSubmitted } = useMapStore(
+        useShallow((state) => ({ 
+          updateformSubmitted: state.updateformSubmitted,
+          formSubmitted: state.formSubmitted,
+        })),
+      )
+
     const { 
-        types,
-        locations, 
+        optionTypes, // used in form too
+        scripts,
+        texts,
+        locs,
+        firstWords,
+        places,
+
+        setPlaces,
+        setOptionTypes,
+        setFirstWords,
+        setScripts,
+        setTexts,
+        setLocs,
+
         setTypeFilter,
         setScriptFilter,
         setTextFilter,
         setFirstWordFilter,
         setPlaceFilter,
         setLocationFilter,
-        setLongitudeFilter,
-        setLatitudeFilter,
-        clearFilters, 
         setYearType,
-    } = useLocationStore(
+        clearFilters, 
+    } = useFilterStore(
         useShallow((state) => ({ 
-            types: state.types, 
-            locations: state.locations,
+            optionTypes: state.optionTypes, // used in form too
+            scripts: state.scripts,
+            texts: state.texts,
+            locs: state.locs,
+            firstWords: state.firstWords,
+            places: state.places,
+
+            setPlaces: state.setPlaces,
+            setOptionTypes: state.setOptionTypes,
+            setFirstWords: state.setFirstWords,
+            setScripts: state.setScripts,
+            setTexts: state.setTexts,
+            setLocs: state.setLocs,
+
             setTypeFilter: state.setTypeFilter,
             setScriptFilter: state.setScriptFilter,
             setTextFilter: state.setTextFilter,
             setFirstWordFilter: state.setFirstWordFilter,
             setPlaceFilter: state.setPlaceFilter,
-            setLocationFilter: state.setLocationFilter,
-            setLongitudeFilter: state.setLongitudeFilter,
             setLatitudeFilter: state.setLatitudeFilter,
-            clearFilters: state.clearFilters,
             setYearType: state.setYearType,
+            clearFilters: state.clearFilters,
         })),
     )
 
     useEffect(() => {
         axios.get('http://localhost:3000/locations/types').then((data) => {
-            setTypeFilter(convertStringsToOptions(data.data));
+            setOptionTypes(convertStringsToOptions(data.data));
         })
-    }, []);
+    }, [formSubmitted]);
 
     useEffect(() => {
         axios.get('http://localhost:3000/locations/scripts').then((data) => {
-            setScriptFilter(convertStringsToOptions(data.data))
+            setScripts(convertStringsToOptions(data.data))
         })
-    }, []);
+    }, [formSubmitted]);
 
     useEffect(() => {
         axios.get('http://localhost:3000/locations/texts').then((data) => {
-            setTextFilter(convertStringsToOptions(data.data))
+            setTexts(convertStringsToOptions(data.data))
         })
-    }, []);
+    }, [formSubmitted]);
 
     useEffect(() => {
         axios.get('http://localhost:3000/locations/words').then((data) => {
-            setFirstWordFilter(convertStringsToOptions(data.data));
+            setFirstWords(convertStringsToOptions(data.data));
         })
-    }, []);
+    }, [formSubmitted]);
 
     useEffect(() => {
         axios.get('http://localhost:3000/locations/places').then((data) => {
-            setPlaceFilter(convertStringsToOptions(data.data));
+            setPlaces(convertStringsToOptions(data.data));
         })
-    }, []);
+    }, [formSubmitted]);
 
     useEffect(() => {
         axios.get('http://localhost:3000/locations/locations').then((data) => {
-            setLocationFilter(convertStringsToOptions(data.data));
+            setLocs(convertStringsToOptions(data.data));
         })
-    }, []);
-
-    //let scriptOptions, firstWordOptions, locationOptions, typeOptions, placeOptions
-
-    /*useEffect(() => {
-        [ scriptOptions, firstWordOptions, locationOptions, typeOptions, placeOptions ] = collectVariableOptions(collectVariableGroups(locations))
-        typeOptions.map((loco) => {
-            console.log(JSON.stringify(loco))
-        })
-    }, [locations])*/
+    }, [formSubmitted]);
 
     const clearAllFilters = () => {
+        // Store
         clearFilters()
+        // Local state
         setLocationTypeCheck(false)
         setScriptCheck(false)
         setFirstWordCheck(false)
         setPlaceCheck(false)
         setLocationCheck(false)
-        setLongitudeCheck(false)
-        setLatitudeCheck(false)
         setYearTypeCheck(false)
+        setTextCheck(false)
     }
-
-    //let typeOptions = convertStringsToOptions(types);
 
 
     return (
@@ -133,37 +148,29 @@ export default function FilterSection() {
                             <Grid2 justifyContent="flex-start">
                                 <FormGroup >
                                     <FormControlLabel control={<Switch checked={locationTypeCheck} onChange={(event) => setLocationTypeCheck(event.target.checked)} />} label="Type" sx={{ mt: 2.5 }} />
-                                    { locationTypeCheck && <DropDown onValueChange={setTypeFilter} items={typeOptions} label="Type" ></DropDown> }
+                                    { locationTypeCheck && <DropDown onValueChange={setTypeFilter} items={optionTypes} label="Type" ></DropDown> }
                                 </FormGroup>
                                 <FormGroup >
                                     <FormControlLabel control={<Switch checked={scriptCheck} onChange={(event) => setScriptCheck(event.target.checked)} />} label="Script" sx={{ mt: 2.5 }} />
-                                    { scriptCheck && <DropDown onValueChange={setScriptFilter} items={scriptOptions} label="Script" ></DropDown> }
+                                    { scriptCheck && <DropDown onValueChange={setScriptFilter} items={scripts} label="Script" ></DropDown> }
                                 </FormGroup>
                                 <FormGroup >
                                     <FormControlLabel control={<Switch checked={textCheck} onChange={(event) => setTextCheck(event.target.checked)} />} label="Text" sx={{ mt: 2.5 }} />
-                                    { textCheck && <DropDown onValueChange={setTextFilter} items={typeOptions} label="Text" ></DropDown> }
+                                    { textCheck && <DropDown onValueChange={setTextFilter} items={texts} label="Text" ></DropDown> }
                                 </FormGroup>
                                 <FormGroup >
                                     <FormControlLabel control={<Switch checked={firstWordCheck} onChange={(event) => setFirstWordCheck(event.target.checked)} />} label="First word" sx={{ mt: 2.5 }} />
-                                    { firstWordCheck && <DropDown onValueChange={setFirstWordFilter} items={firstWordOptions} label="First word" ></DropDown> }
+                                    { firstWordCheck && <DropDown onValueChange={setFirstWordFilter} items={firstWords} label="First word" ></DropDown> }
                                 </FormGroup>
                             </Grid2>
                             <Grid2 justifyContent="flex-end">
                                 <FormGroup >
                                     <FormControlLabel control={<Switch checked={placeCheck} onChange={(event) => setPlaceCheck(event.target.checked)} />} label="Place" sx={{ mt: 2.5 }} />
-                                    { placeCheck && <DropDown onValueChange={setPlaceFilter} items={placeOptions} label="Place" ></DropDown> }
+                                    { placeCheck && <DropDown onValueChange={setPlaceFilter} items={places} label="Place" ></DropDown> }
                                 </FormGroup>
                                 <FormGroup >
                                     <FormControlLabel control={<Switch checked={locationCheck} onChange={(event) => setLocationCheck(event.target.checked)} />} label="Location" sx={{ mt: 2.5 }} />
-                                    { locationCheck && <DropDown onValueChange={setLocationFilter} items={locationOptions} label="Location" ></DropDown> }
-                                </FormGroup>
-                                <FormGroup >
-                                    <FormControlLabel control={<Switch checked={longitudeTypeCheck} onChange={(event) => setLongitudeCheck(event.target.checked)} />} label="Longitude" sx={{ mt: 2.5 }} />
-                                    { longitudeTypeCheck && <DropDown onValueChange={setLongitudeFilter} items={typeOptions} label="Longitude" ></DropDown> }
-                                </FormGroup>
-                                <FormGroup >
-                                    <FormControlLabel control={<Switch checked={latitudeCheck} onChange={(event) => setLatitudeCheck(event.target.checked)} />} label="Latitude" sx={{ mt: 2.5 }} />
-                                    { latitudeCheck && <DropDown onValueChange={setLatitudeFilter} items={typeOptions} label="Latitude" ></DropDown> }
+                                    { locationCheck && <DropDown onValueChange={setLocationFilter} items={locs} label="Location" ></DropDown> /* something wrong when selecting long text? */}
                                 </FormGroup>
                             </Grid2>
                         </Grid2>

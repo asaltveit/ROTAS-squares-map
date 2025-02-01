@@ -17,15 +17,13 @@ Assumes:
     label = string
 */
 
-export default function DropDown({ onValueChange, items, label, formik }) {
+export default function DropDown({ onValueChange, items, label, formik, other=false }) {
   const [value, setValue] = useState('');
 
   const handleChange = (event) => {
     setValue(event.target.value);
     onValueChange(event.target.value);
   };
-
-  console.log("items: ", items)
 
   return (
     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} size="small">
@@ -41,19 +39,12 @@ export default function DropDown({ onValueChange, items, label, formik }) {
         }
       >
         {items.map((item) => {
-          
-            if (item.value == "other") {
-              return (
-                <MenuItem value="other" key="other">
-                  <em>Other</em>
-                </MenuItem>
-              )
-            } else {
               return (
                 <MenuItem value={item.value} key={item.value} > { item.title } </MenuItem>
               )
             }
-        })}
+        )}
+        {other && <MenuItem value={"other"} key={"other"} > <em> Other </em> </MenuItem>}
       </Select>
       {formik && formik.touched.type && <FormHelperText>{ formik.errors.type }</FormHelperText>}
     </FormControl>
