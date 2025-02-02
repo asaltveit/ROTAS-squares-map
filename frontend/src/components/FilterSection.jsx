@@ -121,13 +121,17 @@ export default function FilterSection() {
         setFirstWordCheck(false)
         setPlaceCheck(false)
         setLocationCheck(false)
-        setYearTypeCheck(false)
+        setYearTypeCheck(false) // do we want this?
         setTextCheck(false)
+    }
+
+    const submitSearch = () => {
+        console.log("search")
     }
 
 
     return (
-        
+        <Box>
             <Grid2 container direction="row" columnSpacing={3} size={12} justifyContent="center">
                 <Grid2
                     justifyContent="center"
@@ -174,9 +178,7 @@ export default function FilterSection() {
                                 </FormGroup>
                             </Grid2>
                         </Grid2>
-                        <Grid2 >
-                            <Button onClick={clearAllFilters} > Clear All </Button>
-                        </Grid2>
+                        
                     </Grid2>
                 </Grid2>
                 <Grid2 
@@ -188,7 +190,11 @@ export default function FilterSection() {
                         <FormControlLabel control={<Switch checked={yearTypeCheck} onChange={(event) => setYearTypeCheck(event.target.checked)} />} label="Year type" sx={{ mt: 2.5 }} />
                         { yearTypeCheck && <DropDown onValueChange={setYearType} items={yearTypeOptions} label="Year type" ></DropDown> }
                     </FormGroup>
+                    
                 </Grid2>
             </Grid2>
+            <Button onClick={submitSearch} > Submit </Button>
+            <Button onClick={clearAllFilters} > Clear All </Button>
+        </Box>
     );
 }

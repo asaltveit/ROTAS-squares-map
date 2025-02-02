@@ -12,6 +12,8 @@ import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 import { allSymbols } from './constants/Map';
 import { useMapStore} from './utilities/MapStore'
+import { useFilterStore } from './utilities/FilterStore';
+import _ from 'lodash'
 
 
 function App() {
@@ -29,6 +31,8 @@ function App() {
       setLocationTypes: state.setLocationTypes,
     })),
   )
+
+  const filters = useFilterStore((state) => state.filters)
 
   // TODO: store these in database? Or choose the current # from stored list?
   // TODO: Add an effect to set symbols and types?
@@ -48,10 +52,14 @@ function App() {
   ];
 
   useEffect(() => {
-    axios.get('http://localhost:3000/locations').then((data) => {
+
+    axios.get('http://localhost:3000/locations', { params: filters }).then((data) => {
+      console.log("get filter filtered: ", )
+      console.log("get filter: ", filters)
+      console.log("get data: ", data.data)
       setLocations(data.data);
     })
-  }, [formSubmitted]);
+  }, [formSubmitted, filters]);
 
   useEffect(() => {
     setVisibleLocations(locations.filter((loc) => {
@@ -90,7 +98,7 @@ function App() {
           Plot.tip(visibleLocations, Plot.pointer({
             x: "longitude",
             y: "latitude",
-            title: (d) => ["Created from: " + d.created_year_start + "-" + d.created_year_end, "Text: " + d.text, "Place: " + d.place, "Location: " + d.location, "Year Discovered: " + d.discovered_year, "Shelfmark: " + d.shelfmark].join("\n\n")
+            title: (d) => ["Created from: " + d.created_year_start + "-" + d.created_year_end, "Script: " + d.script, "Text: " + d.text, "Place: " + d.place, "Location: " + d.location, "Year Discovered: " + d.discovered_year, "Shelfmark: " + d.shelfmark].join("\n\n")
           })),
         ],
         // Canvas doesn't include legend

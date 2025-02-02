@@ -6,6 +6,7 @@ export const useMapStore = create()(
   immer((set) => ({
     locations: [],
     formSubmitted: 0,
+    filtersSubmitted: 0,
     // Should these be here?
     locationTypes: ["manuscript", "amulet", "inscription", "graffito", "dipinto"],
     
@@ -18,6 +19,11 @@ export const useMapStore = create()(
       // Just increment for change, so that setting to false doesn't rerun?
       set((state) => {
           state.formSubmitted++
+        }),
+    updateFiltersSubmitted: () => 
+      // Just increment for change, so that setting to false doesn't rerun?
+      set((state) => {
+          state.filtersSubmitted++
         }),
     setLocationTypes: (types) =>
       set((state) => {

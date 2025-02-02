@@ -3,7 +3,7 @@ const _ = require('lodash');
 // Controller method to get all locations, with filters
 exports.getAllLocations = async (req, res) => {
     try {
-        var filters = _.omitBy(req.query.filters, _.isNil);
+        let filters = _.omitBy(req.query, _.isNil);
         const locations = await Location.findAll({where: filters});
         res.json(locations);
     } catch (error) {

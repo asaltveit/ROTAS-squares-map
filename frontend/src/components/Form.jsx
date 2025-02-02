@@ -33,7 +33,10 @@ let location = {
     shelfmark: '',
     first_word: '',
 }
+/*
+If someone clicks submit multiple times, it'll create multiple?
 
+*/
 
 const Form = () => {
     const [waiting, setWaiting] = useState(false);
