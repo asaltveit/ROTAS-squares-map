@@ -128,11 +128,13 @@ function App() {
   return (
     <>
       <Typography variant="h1" gutterBottom>ROTAS Squares Map</Typography>
-      <Box>
-        {/* TODO - Control size of map section */}
-        <TimelineSlider onValueChange={setYear} type={yearType} />
-        <Box className="card">
-          <Box ref={mapRef}></Box>
+      <Box  >
+        <Box >
+          {/* TODO - Control size of map section */}
+          <TimelineSlider onValueChange={setYear} type={yearType} />
+          <Box className="card">
+            <Box ref={mapRef}></Box>
+          </Box>
         </Box>
       </Box>
       <OptionsAccordion children={accordionChildren} />

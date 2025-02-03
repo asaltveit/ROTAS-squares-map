@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import { useShallow } from 'zustand/react/shallow'
-import Slider from '@mui/material/Slider';
+import { Slider, Button, Box } from '@mui/material';
 import { convertYearTypetoView } from '../utilities/UtilityFunctions'
 import { useFilterStore } from '../utilities/FilterStore';
 
-// TODO - Fix timeline moving when dragged
+// TODO - Add breakpoints for smaller windows
 
 export default function TimelineSlider({ onValueChange}) {
     let anim;
@@ -54,27 +54,27 @@ export default function TimelineSlider({ onValueChange}) {
         }
         return () => clearTimeout(anim)
     }, [playAnimation])
-
+    // padding: '7px'
     return (
         <>
-            <div style={{ padding: '10px', backgroundColor: '#ffffff' }}>
-                Timeline - {convertYearTypetoView(yearType)}
-                <div>
-                    <button style={{ display: 'inline-block', marginRight: '10px', padding: '7px' }} onClick={playAnim}> Play </button>
-                    <button style={{ display: 'inline-block', marginRight: '10px', padding: '7px' }} onClick={() => setPlayAnimation(false)}> Stop </button>
+            <Box style={{ backgroundColor: '#ffffff', paddingTop: '20px', paddingLeft: '40px' }}>
+                <Box sx={{ marginBottom: '5px' }}> Timeline - {convertYearTypetoView(yearType)} </Box>
+                <Box sx={{ display: 'flex', alignContent: 'center' }}>
+                    <Button variant='outlined' sx={{ marginRight: '10px' }} onClick={playAnim}> Play </Button>
+                    <Button variant='outlined' sx={{ marginRight: '30px' }} onClick={() => setPlayAnimation(false)}> Stop </Button>
                     <Slider
                         min={min}
                         max={max}
                         value={year}
                         aria-label={`timeline-${yearType} year`}
                         onChange={handleChange}
-                        style={{ display: 'inline-block', width: '500px'}}
+                        sx={{ width: '500px'}}
                     />
-                    <div style={{ paddingLeft: '10px', display: 'inline-block'}}>
+                    <Box style={{ paddingLeft: '30px'}}>
                         Year: {year}
-                    </div>
-                </div>
-            </div>
+                    </Box>
+                </Box>
+            </Box>
         </>
     );
 }
