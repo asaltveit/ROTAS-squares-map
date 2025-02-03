@@ -33,10 +33,12 @@ function App() {
     })),
   )
 
-  const { filters, yearType } = useFilterStore(
+  const { filters, yearType, timelineStart, timelineEnd } = useFilterStore(
     useShallow((state) => ({ 
       filters: state.filters, 
       yearType: state.yearType, 
+      timelineStart: state.timelineStart,
+      timelineEnd: state.timelineEnd,
     })),
   )
 
@@ -128,7 +130,7 @@ function App() {
       <Typography variant="h1" gutterBottom>ROTAS Squares Map</Typography>
       <Box>
         {/* TODO - Control size of map section */}
-        <TimelineSlider min={0} max={2100} onValueChange={setYear} type={yearType} />
+        <TimelineSlider min={timelineStart} max={timelineEnd} onValueChange={setYear} type={yearType} />
         <Box className="card">
           <Box ref={mapRef}></Box>
         </Box>

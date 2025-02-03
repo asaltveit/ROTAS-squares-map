@@ -7,6 +7,7 @@ import { yearTypeOptions } from '../constants/FilterSection.js'
 import { useMapStore } from '../utilities/MapStore.jsx'
 import { useFilterStore } from '../utilities/FilterStore.jsx'
 import axios from 'axios';
+import RangeField from './RangeField.jsx'
 
 
 export default function FilterSection() {
@@ -18,6 +19,7 @@ export default function FilterSection() {
     const [placeCheck, setPlaceCheck] = useState(false);
     const [locationCheck, setLocationCheck] = useState(false);
     const [yearTypeCheck, setYearTypeCheck] = useState(false);
+    const [yearRangeCheck, setYearRangeCheck] = useState(false);
 
     const { updateformSubmitted, formSubmitted } = useMapStore(
         useShallow((state) => ({ 
@@ -48,6 +50,8 @@ export default function FilterSection() {
         setPlaceFilter,
         setLocationFilter,
         setYearType,
+        setTimelineStart,
+        setTimelineEnd,
         clearFilters, 
     } = useFilterStore(
         useShallow((state) => ({ 
@@ -72,6 +76,8 @@ export default function FilterSection() {
             setPlaceFilter: state.setPlaceFilter,
             setLocationFilter: state.setLocationFilter,
             setYearType: state.setYearType,
+            setTimelineStart: state.setTimelineStart,
+            setTimelineEnd: state.setTimelineEnd,
             clearFilters: state.clearFilters,
         })),
     )
@@ -123,6 +129,8 @@ export default function FilterSection() {
         setLocationCheck(false)
         setYearTypeCheck(false) // do we want this?
         setTextCheck(false)
+        setTimelineStart(0)
+        setTimelineEnd(2100)
     }
 
 
@@ -185,6 +193,10 @@ export default function FilterSection() {
                     <FormGroup sx={{display: "inline-block" }}>
                         <FormControlLabel control={<Switch checked={yearTypeCheck} onChange={(event) => { setYearTypeCheck(event.target.checked) }} />} label="Year type" sx={{ mt: 2.5 }} />
                         { yearTypeCheck && <DropDown onValueChange={setYearType} items={yearTypeOptions} label="Year type" ></DropDown> }
+                    </FormGroup>
+                    <FormGroup sx={{display: "inline-block" }}>
+                        <FormControlLabel control={<Switch checked={yearRangeCheck} onChange={(event) => { setYearRangeCheck(event.target.checked) }} />} label="Year range" sx={{ mt: 2.5 }} />
+                        { yearRangeCheck && <RangeField onValueChangeStart={setTimelineStart} onValueChangeEnd={setTimelineEnd} ></RangeField> }
                     </FormGroup>
                     
                 </Grid2>

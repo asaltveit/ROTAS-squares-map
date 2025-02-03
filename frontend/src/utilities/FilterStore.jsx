@@ -23,6 +23,8 @@ export const useFilterStore = create()(
     firstWords: null,
     places: null,
     yearType: yrType.created, // "created" vs "discovered"
+    timelineStart: 0,
+    timelineEnd: 2100,
     // Lists of values to be turned into options (for fetched fields)
     setOptionTypes: (types) =>
         set((state) => {
@@ -51,6 +53,16 @@ export const useFilterStore = create()(
     setPlaces: (places) =>
       set((state) => {
         state.places = places
+      }
+    ),
+    setTimelineStart: (year) =>
+      set((state) => {
+        state.timelineStart = year
+      }
+    ),
+    setTimelineEnd: (year) =>
+      set((state) => {
+        state.timelineEnd = year
       }
     ),
     // Set filters to be searched
