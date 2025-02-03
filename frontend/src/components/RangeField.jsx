@@ -18,21 +18,21 @@ export default function DropDown({ onValueChangeStart, onValueChangeEnd, label='
     const [endValue, setEndValue] = useState(null);
 
     const handleChangeStart = (event) => {
-        setStartValue(event.target.value);
-        onValueChangeStart(event.target.value);
+        setStartValue(parseInt(event.target.value));
+        onValueChangeStart(parseInt(event.target.value));
     };
 
     const handleChangeEnd = (event) => {
-        setEndValue(event.target.value);
-        onValueChangeEnd(event.target.value);
+        setEndValue(parseInt(event.target.value));
+        onValueChangeEnd(parseInt(event.target.value));
     };
 
     return (
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, display: "inline-block" }} size="small">
             <InputLabel id="dropdown-select-label">{label}</InputLabel>
-            <TextField sx={{width: '5em', marginRight: '1em'}} type="number" size="small" label="Start" variant="outlined" onChange={handleChangeStart} />
+            <TextField sx={{width: '5em', marginRight: '1em'}} type="number" size="small" label="Start" variant="outlined" onBlur={handleChangeStart} />
             <span style={{ height: '2.5em', lineHeight: '2.5em', alignText: 'center', justifyContent: 'center', alignItems: 'center'}}> - </span>
-            <TextField sx={{width: '5em', marginLeft: '1em'}} type="number" size="small" label="End" variant="outlined" onChange={handleChangeEnd}/>
+            <TextField sx={{width: '5em', marginLeft: '1em'}} type="number" size="small" label="End" variant="outlined" onBlur={handleChangeEnd}/>
         </FormControl>
     );
 }
