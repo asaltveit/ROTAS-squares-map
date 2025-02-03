@@ -1,7 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import { useShallow } from 'zustand/react/shallow'
-import { Scrubber } from 'react-scrubber';
-import 'react-scrubber/lib/scrubber.css';
 import Slider from '@mui/material/Slider';
 import { convertYearTypetoView } from '../utilities/UtilityFunctions'
 import { useFilterStore } from '../utilities/FilterStore';
@@ -24,29 +22,13 @@ export default function TimelineSlider({ onValueChange}) {
     let min = timelineStart != null ? timelineStart : 0;
     let max = timelineEnd != null ? timelineEnd : 2100;
 
-    // Reset start and label?
+    // Reset start and label
     useEffect(() => {
         setYear(min)
       }, [min]);
 
-    const handleScrubStart = (value) => {
-        setYear(Math.ceil(value))
-        onValueChange(Math.ceil(value))
-    }
-
-    const handleScrubEnd = (value) => {
-        setPlayAnimation(false)
-        setYear(Math.ceil(value))
-        onValueChange(Math.ceil(value))
-    }
-
-    /*const handleScrubChange = (value) => {
-        setYear(Math.ceil(value))
-        onValueChange(Math.ceil(value))
-    }*/
-
     const handleChange = (event, newValue) => {
-        setYear(newValue) // Math.ceil(value)
+        setYear(newValue)
         onValueChange(newValue)
     }
 
@@ -96,16 +78,3 @@ export default function TimelineSlider({ onValueChange}) {
         </>
     );
 }
-
-/*
-<Scrubber
-    min={min}
-    max={max}
-    value={year}
-    onScrubStart={() => handleScrubStart}
-    onScrubEnd={handleScrubEnd}
-    onScrubChange={handleScrubChange}
-    style={{ display: 'inline-block', width: '500px'}}
-/>
-
-*/
