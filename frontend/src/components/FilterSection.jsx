@@ -35,6 +35,8 @@ export default function FilterSection() {
         locs,
         firstWords,
         places,
+        timelineStart,
+        timelineEnd,
 
         setPlaces,
         setOptionTypes,
@@ -196,12 +198,12 @@ export default function FilterSection() {
                     </FormGroup>
                     <FormGroup sx={{display: "inline-block" }}>
                         <FormControlLabel control={<Switch checked={yearRangeCheck} onChange={(event) => { setYearRangeCheck(event.target.checked) }} />} label="Year range" sx={{ mt: 2.5 }} />
-                        { yearRangeCheck && <RangeField onValueChangeStart={setTimelineStart} onValueChangeEnd={setTimelineEnd} ></RangeField> }
+                        { yearRangeCheck && <RangeField onValueChangeStart={setTimelineStart} onValueChangeEnd={setTimelineEnd} valueStart={timelineStart} valueEnd={timelineEnd}  ></RangeField> }
                     </FormGroup>
                     
                 </Grid2>
             </Grid2>
-            <Button onClick={clearAllFilters} > Clear All </Button>
+            <Button variant='outlined' onClick={clearAllFilters} > Clear All </Button>
         </Box>
     );
 }

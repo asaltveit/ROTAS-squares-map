@@ -5,6 +5,7 @@ import { convertYearTypetoView } from '../utilities/UtilityFunctions'
 import { useFilterStore } from '../utilities/FilterStore';
 
 // TODO - Add breakpoints for smaller windows
+// TODO - Stop animation when clicked
 
 export default function TimelineSlider({ onValueChange}) {
     let anim;
@@ -19,8 +20,8 @@ export default function TimelineSlider({ onValueChange}) {
         })),
     )
 
-    let min = timelineStart != null ? timelineStart : 0;
-    let max = timelineEnd != null ? timelineEnd : 2100;
+    let min = timelineStart == null || typeof timelineStart == 'string'  ? 0 : timelineStart;
+    let max = timelineEnd == null || typeof timelineEnd == 'string' ? 2100 : timelineEnd;
 
     // Reset start and label
     useEffect(() => {
@@ -38,6 +39,7 @@ export default function TimelineSlider({ onValueChange}) {
 
     useEffect(() => {
         // TODO: Change rate of animation?
+        //    - through filters?
         if (playAnimation) {
             let i = year; // start wherever it is
             anim = setInterval(() => {
@@ -54,7 +56,7 @@ export default function TimelineSlider({ onValueChange}) {
         }
         return () => clearTimeout(anim)
     }, [playAnimation])
-    // padding: '7px'
+
     return (
         <>
             <Box style={{ backgroundColor: '#ffffff', paddingTop: '20px', paddingLeft: '40px' }}>

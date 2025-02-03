@@ -19,7 +19,6 @@ import { yearType as yrType } from './constants/FilterSection';
 
 function App() {
   const mapRef = useRef();
-  const [locs, setLocs] = useState([]); // Needed?
   const [year, setYear] = useState(0);
   const [visibleLocations, setVisibleLocations] = useState([]);
 
@@ -33,12 +32,10 @@ function App() {
     })),
   )
 
-  const { filters, yearType, timelineStart, timelineEnd } = useFilterStore(
+  const { filters, yearType } = useFilterStore(
     useShallow((state) => ({ 
       filters: state.filters, 
       yearType: state.yearType, 
-      timelineStart: state.timelineStart,
-      timelineEnd: state.timelineEnd,
     })),
   )
 
@@ -61,9 +58,6 @@ function App() {
   useEffect(() => {
 
     axios.get('http://localhost:3000/locations', { params: filters }).then((data) => {
-      console.log("get filter filtered: ", )
-      console.log("get filter: ", filters)
-      console.log("get data: ", data.data)
       setLocations(data.data);
     })
   }, [formSubmitted, filters]);
@@ -75,7 +69,6 @@ function App() {
       }))
     } else {
       setVisibleLocations(locations.filter((loc) => {
-        console.log("loc.discovered_year: ", loc.discovered_year, " year: ", year)
         return loc.discovered_year <= year;
       }))
     }
