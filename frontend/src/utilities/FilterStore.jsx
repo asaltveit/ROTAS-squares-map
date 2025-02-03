@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
-import { yearType } from '../constants/FilterSection'
+import { yearType as yrType } from '../constants/FilterSection'
 
 
 export const useFilterStore = create()(
@@ -22,7 +22,7 @@ export const useFilterStore = create()(
     locs: null,
     firstWords: null,
     places: null,
-    yearType: yearType.created, // "created" vs "discovered"
+    yearType: yrType.created, // "created" vs "discovered"
     // Lists of values to be turned into options (for fetched fields)
     setOptionTypes: (types) =>
         set((state) => {

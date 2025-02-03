@@ -7,3 +7,7 @@ export function convertStringsToOptions(strings) {
         return {title: capitalize(s), value: s};
     });
 }
+
+export function convertYearTypetoView(type) {
+    return capitalize(type) + " year";
+}

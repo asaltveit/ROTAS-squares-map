@@ -14,6 +14,7 @@ import { allSymbols } from './constants/Map';
 import { useMapStore} from './utilities/MapStore'
 import { useFilterStore } from './utilities/FilterStore';
 import _ from 'lodash'
+import { yearType as yrType } from './constants/FilterSection';
 
 
 function App() {
@@ -32,9 +33,13 @@ function App() {
     })),
   )
 
-  const filters = useFilterStore((state) => state.filters)
+  const { filters, yearType } = useFilterStore(
+    useShallow((state) => ({ 
+      filters: state.filters, 
+      yearType: state.yearType, 
+    })),
+  )
 
-  // TODO: store these in database? Or choose the current # from stored list?
   // TODO: Add an effect to set symbols and types?
   let numTypes = locationTypes.length;
   let symbols = allSymbols.slice(0, numTypes);
@@ -62,11 +67,18 @@ function App() {
   }, [formSubmitted, filters]);
 
   useEffect(() => {
-    setVisibleLocations(locations.filter((loc) => {
-      return loc.created_year_start <= year;
-    }))
+    if (yearType == yrType.created) {
+      setVisibleLocations(locations.filter((loc) => {
+        return loc.created_year_start <= year;
+      }))
+    } else {
+      setVisibleLocations(locations.filter((loc) => {
+        console.log("loc.discovered_year: ", loc.discovered_year, " year: ", year)
+        return loc.discovered_year <= year;
+      }))
+    }
 
-  }, [year, locations]);
+  }, [year, locations, yearType]);
 
   useEffect(() => {
     axios.get('http://localhost:3000/locations/types').then((data) => {
@@ -116,7 +128,7 @@ function App() {
       <Typography variant="h1" gutterBottom>ROTAS Squares Map</Typography>
       <Box>
         {/* TODO - Control size of map section */}
-        <TimelineSlider min={0} max={1100} onValueChange={setYear}/>
+        <TimelineSlider min={0} max={2100} onValueChange={setYear} type={yearType} />
         <Box className="card">
           <Box ref={mapRef}></Box>
         </Box>

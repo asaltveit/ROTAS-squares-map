@@ -70,7 +70,7 @@ export default function FilterSection() {
             setTextFilter: state.setTextFilter,
             setFirstWordFilter: state.setFirstWordFilter,
             setPlaceFilter: state.setPlaceFilter,
-            setLatitudeFilter: state.setLatitudeFilter,
+            setLocationFilter: state.setLocationFilter,
             setYearType: state.setYearType,
             clearFilters: state.clearFilters,
         })),
@@ -123,10 +123,6 @@ export default function FilterSection() {
         setLocationCheck(false)
         setYearTypeCheck(false) // do we want this?
         setTextCheck(false)
-    }
-
-    const submitSearch = () => {
-        console.log("search")
     }
 
 
@@ -187,13 +183,12 @@ export default function FilterSection() {
                 >
                     <Typography> Timeline Filters </Typography>
                     <FormGroup sx={{display: "inline-block" }}>
-                        <FormControlLabel control={<Switch checked={yearTypeCheck} onChange={(event) => { setYearType(null); setYearTypeCheck(event.target.checked)}} />} label="Year type" sx={{ mt: 2.5 }} />
+                        <FormControlLabel control={<Switch checked={yearTypeCheck} onChange={(event) => { setYearTypeCheck(event.target.checked) }} />} label="Year type" sx={{ mt: 2.5 }} />
                         { yearTypeCheck && <DropDown onValueChange={setYearType} items={yearTypeOptions} label="Year type" ></DropDown> }
                     </FormGroup>
                     
                 </Grid2>
             </Grid2>
-            <Button onClick={submitSearch} > Submit </Button>
             <Button onClick={clearAllFilters} > Clear All </Button>
         </Box>
     );
