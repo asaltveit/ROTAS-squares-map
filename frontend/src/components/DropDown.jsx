@@ -3,7 +3,6 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-// <em></em> italisizes
 
 /*
 Assumes:
@@ -26,7 +25,7 @@ export default function DropDown({ onValueChange, items, label, formik, other=fa
   };
 
   return (
-    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} size="small">
+    <FormControl variant="standard" sx={{ minWidth: 120 }} size="small">
       <InputLabel id="dropdown-select-label">{label}</InputLabel>
       <Select
         labelId="dropdown-select-label"

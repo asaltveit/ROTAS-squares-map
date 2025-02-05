@@ -21,15 +21,14 @@ export default function FilterSection() {
     const [yearTypeCheck, setYearTypeCheck] = useState(false);
     const [yearRangeCheck, setYearRangeCheck] = useState(false);
 
-    const { updateformSubmitted, formSubmitted } = useMapStore(
+    const { formSubmitted } = useMapStore(
         useShallow((state) => ({ 
-          updateformSubmitted: state.updateformSubmitted,
           formSubmitted: state.formSubmitted,
         })),
       )
 
     const { 
-        optionTypes, // used in form too
+        optionTypes,
         scripts,
         texts,
         locs,
@@ -57,7 +56,7 @@ export default function FilterSection() {
         clearFilters, 
     } = useFilterStore(
         useShallow((state) => ({ 
-            optionTypes: state.optionTypes, // used in form too
+            optionTypes: state.optionTypes,
             scripts: state.scripts,
             texts: state.texts,
             locs: state.locs,

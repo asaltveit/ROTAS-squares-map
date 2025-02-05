@@ -43,7 +43,6 @@ function App() {
   let numTypes = locationTypes.length;
   let symbols = allSymbols.slice(0, numTypes);
 
-  // TODO - put somewhere reusable?
   const accordionChildren = [
     {
       header: "Filters",

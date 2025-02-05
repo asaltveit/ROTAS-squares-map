@@ -30,14 +30,12 @@ const Location = db.define('locations', {
     },
     longitude: {
         type: DataTypes.REAL,
-        //defaultValue: 0, // Is this needed?
         min: -180,
         max: 180,
         allowNull: false,
     },
     latitude: {
         type: DataTypes.REAL,
-        //defaultValue: 0, // Is this needed?
         min: -90,
         max: 90,
         allowNull: false,
@@ -77,16 +75,3 @@ const Location = db.define('locations', {
     updatedAt: 'updated_at',
 });
 module.exports = Location;
-
-
-/*
-created_at: {
-                type: Sequelize.DATE,
-                allowNull: false,
-            },
-            created_at: {
-                type: Sequelize.DATE,
-                allowNull: false,
-            },
-
-*/

@@ -110,8 +110,6 @@ exports.createLocation = async (req, res) => {
 };
 // Controller method to get a location by ID
 exports.getLocationById = async (req, res) => {
-    //let g = 'Get /' + req.params.id + ' route'
-    //res.send(g) // Testing the server
     const id = req.params.id;
     try {
         const location = await Location.findByPk(id);
@@ -180,22 +178,3 @@ exports.deleteLocation = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
-
-/*
-{ 
-            type: type, 
-            createdYearStart: createdYearStart, 
-            createdYearEnd: createdYearEnd, 
-            discoveredYear: discoveredYear, 
-            longitude: longitude, 
-            latitude: latitude, 
-            location: location, 
-            text: text, 
-            place: place, 
-            script: script, 
-            shelfmark: shelfmark, 
-            firstWord: firstWord, 
-        }
-
-
-*/

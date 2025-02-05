@@ -36,6 +36,5 @@ export default function RangeField({ onValueChangeStart, onValueChangeEnd }) {
             <span style={{ height: '2.5em', lineHeight: '2.5em', alignText: 'center', justifyContent: 'center', alignItems: 'center'}}> - </span>
             <TextField sx={{width: '5em', marginRight: '1em', marginLeft: '1em'}} type="number" size="small" label="End" variant="outlined" onBlur={handleChangeEnd} />
         </Stack>
-
     );
 }

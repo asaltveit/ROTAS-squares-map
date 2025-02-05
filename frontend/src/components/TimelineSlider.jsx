@@ -49,7 +49,7 @@ export default function TimelineSlider({ onValueChange}) {
                     onValueChange(min);
                 } else {
                     onValueChange(i);
-                    setYear(i); // i++
+                    setYear(i);
                     i += 10
                 }
             }, 500)
