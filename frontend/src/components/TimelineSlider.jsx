@@ -9,14 +9,15 @@ import { useFilterStore } from '../utilities/FilterStore';
 
 export default function TimelineSlider({ onValueChange}) {
     let anim;
-    const [year, setYear] = useState(0);
     const [playAnimation, setPlayAnimation] = useState(false)
 
-    const { yearType, timelineStart, timelineEnd } = useFilterStore(
+    const { yearType, timelineStart, timelineEnd, timelineYear, setTimelineYear } = useFilterStore(
         useShallow((state) => ({ 
             yearType: state.yearType, 
             timelineStart: state.timelineStart,
             timelineEnd: state.timelineEnd,
+            timelineYear: state.timelineYear,
+            setTimelineYear: state.setTimelineYear,
         })),
     )
 
@@ -25,11 +26,11 @@ export default function TimelineSlider({ onValueChange}) {
 
     // Reset start and label
     useEffect(() => {
-        setYear(min)
+        setTimelineYear(min)
       }, [min]);
 
     const handleChange = (event, newValue) => {
-        setYear(newValue)
+        setTimelineYear(newValue)
         onValueChange(newValue)
     }
 
@@ -41,15 +42,15 @@ export default function TimelineSlider({ onValueChange}) {
         // TODO: Change rate of animation?
         //    - through filters?
         if (playAnimation) {
-            let i = year; // start wherever it is
+            let i = timelineYear; // start wherever it is
             anim = setInterval(() => {
-                if (year == max) {
+                if (timelineYear == max) {
                     i = min;
-                    setYear(min);
+                    setTimelineYear(min);
                     onValueChange(min);
                 } else {
                     onValueChange(i);
-                    setYear(i);
+                    setTimelineYear(i);
                     i += 10
                 }
             }, 500)
@@ -67,13 +68,13 @@ export default function TimelineSlider({ onValueChange}) {
                     <Slider
                         min={min}
                         max={max}
-                        value={year}
+                        value={timelineYear}
                         aria-label={`timeline-${yearType} year`}
                         onChange={handleChange}
                         sx={{ width: '500px'}}
                     />
                     <Box style={{ paddingLeft: '30px'}}>
-                        Year: {year}
+                        Year: {timelineYear}
                     </Box>
                 </Box>
             </Box>

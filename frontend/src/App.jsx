@@ -19,7 +19,6 @@ import { yearType as yrType } from './constants/FilterSection';
 
 function App() {
   const mapRef = useRef();
-  const [year, setYear] = useState(0);
   const [visibleLocations, setVisibleLocations] = useState([]);
 
   const { locations, setLocations, formSubmitted, locationTypes, setLocationTypes } = useMapStore(
@@ -32,10 +31,12 @@ function App() {
     })),
   )
 
-  const { filters, yearType } = useFilterStore(
+  const { filters, yearType, timelineYear, setTimelineYear } = useFilterStore(
     useShallow((state) => ({ 
       filters: state.filters, 
       yearType: state.yearType, 
+      timelineYear: state.timelineYear,
+      setTimelineYear: state.setTimelineYear,
     })),
   )
 
@@ -64,15 +65,15 @@ function App() {
   useEffect(() => {
     if (yearType == yrType.created) {
       setVisibleLocations(locations.filter((loc) => {
-        return loc.created_year_start <= year;
+        return loc.created_year_start <= timelineYear;
       }))
     } else {
       setVisibleLocations(locations.filter((loc) => {
-        return loc.discovered_year <= year;
+        return loc.discovered_year <= timelineYear;
       }))
     }
 
-  }, [year, locations, yearType]);
+  }, [timelineYear, locations, yearType]);
 
   useEffect(() => {
     axios.get('http://localhost:3000/locations/types').then((data) => {
@@ -115,7 +116,7 @@ function App() {
     });
     mapRef.current.append(chart);
     return () => chart.remove();
-  }, [visibleLocations]);
+  }, [visibleLocations]); // , year
 
   return (
     <>
@@ -123,7 +124,7 @@ function App() {
       <Box  >
         <Box >
           {/* TODO - Control size of map section */}
-          <TimelineSlider onValueChange={setYear} type={yearType} />
+          <TimelineSlider onValueChange={setTimelineYear} type={yearType} />
           <Box className="card">
             <Box ref={mapRef}></Box>
           </Box>
