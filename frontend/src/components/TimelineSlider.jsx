@@ -10,6 +10,8 @@ import { useFilterStore } from '../utilities/FilterStore';
 export default function TimelineSlider({ onValueChange}) {
     let anim;
     const [playAnimation, setPlayAnimation] = useState(false)
+    const [min, setMin] = useState(0)
+    const [max, setMax] = useState(2100)
 
     const { yearType, timelineStart, timelineEnd, timelineYear, setTimelineYear } = useFilterStore(
         useShallow((state) => ({ 
@@ -20,14 +22,28 @@ export default function TimelineSlider({ onValueChange}) {
             setTimelineYear: state.setTimelineYear,
         })),
     )
+    // Set min from filter change
+    useEffect(() => {
+        if (timelineStart == null || typeof timelineStart == 'string') {
+            setMin(0)
+        } else {
+            setMin(timelineStart)
+        }
+    }, [timelineStart]);
 
-    let min = timelineStart == null || typeof timelineStart == 'string'  ? 0 : timelineStart;
-    let max = timelineEnd == null || typeof timelineEnd == 'string' ? 2100 : timelineEnd;
+    // Set max from filter change
+    useEffect(() => {
+    if (timelineEnd == null || typeof timelineEnd == 'string') {
+        setMax(2100)
+    } else {
+        setMax(timelineEnd)
+    }
+    }, [timelineEnd]);
 
     // Reset start and label
     useEffect(() => {
         setTimelineYear(min)
-      }, [min]);
+      }, [min, max]); // Reset timeline to beginning when start or end is changed
 
     const handleChange = (event, newValue) => {
         setTimelineYear(newValue)
