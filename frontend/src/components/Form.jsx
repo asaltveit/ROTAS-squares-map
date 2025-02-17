@@ -5,7 +5,7 @@ import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
-import { FormLabel, Button, Grid2, Typography, FormControl, Input, FormHelperText, Container } from '@mui/material';
+import { FormLabel, Button, Grid2, Typography, FormControl, Input, FormHelperText, Container, CircularProgress } from '@mui/material';
 import DropDown from './DropDown';
 import FormTypeRadioButtonRow from './RadioButtonRow';
 import { formTypes } from '../constants/FormConstants';
@@ -16,26 +16,21 @@ import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
 import '../css/Form.css';
 
 // TODO - Add options for update location and delete location
-// TODO - Add option to add a type
 // TODO - created start, created end, and discovered year don't accept input
-
-const setROTASType = () => {
-  // TODO
-}
 
 let location = {
     type: '',
-    created_year_start: undefined,
-    created_year_end: undefined,
-    discovered_year: undefined,
-    longitude: undefined,
-    latitude: undefined,
+    createdYearStart: '', 
+    createdYearEnd: '', 
+    discoveredYear: '', 
+    longitude: '', 
+    latitude: '',
     text: '',
     place: '',
     location: '',
     script: '',
     shelfmark: '',
-    first_word: '',
+    firstWord: '',
 }
 /*
 If someone clicks submit multiple times, it'll create multiple?
@@ -55,27 +50,26 @@ const Form = () => {
       })),
     )
 
-    const { optionTypes, setOptionTypes } = useFilterStore(
+    /*const { optionTypes, setOptionTypes } = useFilterStore(
       useShallow((state) => ({ 
         optionTypes: state.optionTypes, 
         setOptionTypes: state.setOptionTypes,
       })),
-    )
+    )*/
 
-    let typeOptions = []
     // TODO - only use this once?
-    useEffect(() => {
+    /*useEffect(() => {
       axios.get('http://localhost:3000/locations/types').then((data) => {
         setOptionTypes(convertStringsToOptions(data.data));
       })
-    }, [formSubmitted]);
+    }, [formSubmitted]);*/
     
     const formik = useFormik({
       initialValues: {
         type: location.type,
-        created_year_start: location.created_year_start,
-        created_year_end: location.created_year_end,
-        discovered_year: location.discovered_year,
+        createdYearStart: location.createdYearStart, // camel case worked
+        createdYearEnd: location.createdYearEnd,
+        discoveredYear: location.discoveredYear,
         longitude: location.longitude,
         latitude: location.latitude,
         text: location.text,
@@ -83,20 +77,19 @@ const Form = () => {
         location: location.location,
         script: location.script,
         shelfmark: location.shelfmark,
-        first_word: location.first_word,
+        firstWord: location.firstWord,
       },
       validationSchema: locationSchema,
       onSubmit: async (values) => {
         setWaiting(true)
-        axios.post('http://localhost:3000/locations', values, {headers: {
-          'Content-Type': 'multipart/form-data'
-        }}).then((res) => {
+        axios.post('http://localhost:3000/locations', values).then((res) => {
           console.log("port res: ", res)
         }).catch((e) => {
           console.log("post error: ", e)
         })
         
         setWaiting(false)
+        updateformSubmitted()
         // ... handle response/error
       },
       enableReinitialize: true,
@@ -129,7 +122,19 @@ const Form = () => {
                         }}>
                       Type
                     </InputLabel>
-                    <DropDown onValueChange={formik.handleChange} items={typeOptions} label={"Type"} formik={formik} ></DropDown>
+                    <TextField
+                      size="small"
+                      required
+                      id="type"
+                      name="type"
+                      sx={{ width: '6em' }}
+                      value={formik.values.type}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.type && Boolean(formik.errors.type)
+                      }
+                      helperText={formik.touched.type && formik.errors.type}
+                    />
                   </Grid2>
                   <Grid2 
                     sx={{
@@ -147,14 +152,13 @@ const Form = () => {
                       >
                         Longitude
                     </InputLabel>
-                  </Grid2>
-                  <Grid2 >
                     <TextField
                       size="small"
                       required
+                      type="number"
                       id="longitude"
                       name="longitude"
-                      sx={{ width: '4em' }}
+                      sx={{ width: '6em' }}
                       value={formik.values.longitude}
                       onChange={formik.handleChange}
                       error={
@@ -170,19 +174,24 @@ const Form = () => {
                       
                     }}
                   >
-                    <InputLabel>
+                    <InputLabel 
+                      sx={{
+                        display: "flex",
+                        alignSelf: 'center',
+                        marginRight: '15px'
+                      }}
+                    >
                       Latitude
                     </InputLabel>
-                  </Grid2>
-                  <Grid2 >
                     <TextField
                       size="small"
                       required
+                      type="number"
                       id="latitude"
                       name="latitude"
                       value={formik.values.latitude}
                       onChange={formik.handleChange}
-                      sx={{ width: '4em' }}
+                      sx={{ width: '6em' }}
                       error={
                         formik.touched.latitude && Boolean(formik.errors.latitude)
                       }
@@ -199,51 +208,24 @@ const Form = () => {
                         sx={{
                           display: "flex",
                           alignSelf: 'center',
+                          marginRight: '15px'
                         }}
                       >
-                        Discovered year
+                        Created year
                     </InputLabel>
-                  </Grid2>
-                  <Grid2>
                     <TextField
                       size="small"
                       required
-                      id="discoveredYear"
-                      name="discoveredYear"
-                      sx={{ width: '4em' }}
-                      value={formik.values.discoveredYear}
+                      type="number"
+                      id="createdYearStart"
+                      name="createdYearStart"
+                      sx={{ width: '6em' }}
+                      value={formik.values.createdYearStart}
                       onChange={formik.handleChange}
                       error={
-                        formik.touched.discoveredYear && Boolean(formik.errors.discoveredYear)
+                        formik.touched.createdYearStart && Boolean(formik.errors.createdYearStart)
                       }
-                      helperText={formik.touched.discoveredYear && formik.errors.discoveredYear}
-                    />
-                  </Grid2>
-                  <Grid2 sx={{
-                      display: "flex",
-                      alignSelf: 'center'
-                    }}>
-                    <InputLabel
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      Location
-                    </InputLabel>
-                  </Grid2>
-                  <Grid2 >
-                    <TextField
-                      size="small"
-                      sx={{ width: '4em' }}
-                      id="location"
-                      name="location"
-                      value={formik.values.location}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.location && Boolean(formik.errors.location)
-                      }
-                      helperText={formik.touched.location && formik.errors.location}
+                      helperText={formik.touched.createdYearStart && formik.errors.createdYearStart}
                     />
                   </Grid2>
                 </Grid2>
@@ -251,9 +233,13 @@ const Form = () => {
                   sx={{ mt: 3 }}
                   type="submit"
                   variant="outlined"
+                  id="saveButton"
+                  name="saveButton"
                   disabled={waiting}
+                  onClick={formik.handleSubmit}
                 >
                   {!waiting ? 'Save' : 'Saving...'}
+                  { waiting ? <CircularProgress /> : '' /* trying a loading symbol */}
                 </Button>
               </form>
             }

@@ -55,6 +55,7 @@ function App() {
     },
   ];
 
+  // TODO - all gets getting called twice
   useEffect(() => {
 
     axios.get('http://localhost:3000/locations', { params: filters }).then((data) => {
