@@ -1,22 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useFormik } from 'formik';
 import { locationSchema } from '../utilities/AddLocationSchema.js';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
-import { FormLabel, Button, Grid2, Typography, FormControl, Input, FormHelperText, Container, CircularProgress } from '@mui/material';
-import DropDown from './DropDown';
+import { Button, Grid2, Container, CircularProgress } from '@mui/material';
 import FormTypeRadioButtonRow from './RadioButtonRow';
 import { formTypes } from '../constants/FormConstants';
 import { useMapStore } from '../utilities/MapStore.jsx'
-import { useFilterStore } from '../utilities/FilterStore.jsx'
 import { useShallow } from 'zustand/react/shallow'
-import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
 import '../css/Form.css';
 
 // TODO - Add options for update location and delete location
-// TODO - created start, created end, and discovered year don't accept input
 
 let location = {
     type: '',
@@ -35,7 +31,7 @@ let location = {
 
 function cleanValues(values) {
   let data = {}
-  // Number fields shouldn't be strings?
+  // Number fields shouldn't be strings
   if (!values.createdYearEnd || typeof values.createdYearEnd == "string") {
     data.created_year_end = 2100;
   }
@@ -64,33 +60,16 @@ const Form = () => {
     const [waiting, setWaiting] = useState(false);
     const [formType, setFormType] = useState(formTypes.add);
 
-    const { locationTypes, setLocationTypes, updateformSubmitted, formSubmitted } = useMapStore(
+    const { updateformSubmitted } = useMapStore(
       useShallow((state) => ({ 
-        locationTypes: state.locationTypes, 
-        setLocationTypes: state.setLocationTypes, 
         updateformSubmitted: state.updateformSubmitted,
-        formSubmitted: state.formSubmitted,
       })),
-    )
-
-    /*const { optionTypes, setOptionTypes } = useFilterStore(
-      useShallow((state) => ({ 
-        optionTypes: state.optionTypes, 
-        setOptionTypes: state.setOptionTypes,
-      })),
-    )*/
-
-    // TODO - only use this once?
-    /*useEffect(() => {
-      axios.get('http://localhost:3000/locations/types').then((data) => {
-        setOptionTypes(convertStringsToOptions(data.data));
-      })
-    }, [formSubmitted]);*/
+    );
     
     const formik = useFormik({
       initialValues: {
         type: location.type,
-        createdYearStart: location.createdYearStart, // camel case worked
+        createdYearStart: location.createdYearStart,
         createdYearEnd: location.createdYearEnd,
         discoveredYear: location.discoveredYear,
         longitude: location.longitude,
@@ -102,7 +81,7 @@ const Form = () => {
         shelfmark: location.shelfmark,
         firstWord: location.firstWord,
       },
-      validationSchema: locationSchema, // axios.post('http://localhost:3000/locations', cleanValues(values))
+      validationSchema: locationSchema,
       onSubmit: async (values) => {
         console.log("cleanValues(values): ", cleanValues(values))
         setWaiting(true)
@@ -123,7 +102,6 @@ const Form = () => {
       enableReinitialize: true,
     });
     
-    
     return (
       <>
         <Box >
@@ -132,129 +110,368 @@ const Form = () => {
             {formType === formTypes.add && 
               <form onSubmit={formik.handleSubmit}>
                 <Grid2 
-                  container 
-                  spacing={2}
+                  // add sizing per screen size
                 >
-                  <Grid2 
-                    sx={{
-                      display: "flex",
-                      alignSelf: 'center'
-                    }}
-                    container
-                    size={3}
-                  >
-                    <InputLabel sx={{
-                          display: "flex",
-                          alignSelf: 'center',
-                          marginRight: '15px'
-                        }}>
-                      Type
-                    </InputLabel>
-                    <TextField
-                      size="small"
-                      required
-                      id="type"
-                      name="type"
-                      sx={{ width: '6em' }}
-                      value={formik.values.type}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.type && Boolean(formik.errors.type)
-                      }
-                      helperText={formik.touched.type && formik.errors.type}
-                    />
+                  <Grid2 container sx={{marginBottom: '25px'}} >
+                    <Grid2 
+                      sx={{
+                        display: "flex",
+                        alignSelf: 'center'
+                      }}
+                    >
+                      <InputLabel
+                          sx={{
+                            display: "flex",
+                            alignSelf: 'center',
+                            marginRight: '15px'
+                          }}
+                        >
+                          Years created
+                      </InputLabel>
+                      <TextField
+                        size="small"
+                        required
+                        type="number"
+                        id="createdYearStart"
+                        name="createdYearStart"
+                        sx={{ width: '6em' }}
+                        value={formik.values.createdYearStart}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.createdYearStart && Boolean(formik.errors.createdYearStart)
+                        }
+                        helperText={formik.touched.createdYearStart && formik.errors.createdYearStart}
+                      />
+                    </Grid2>
+                    <Grid2 
+                      sx={{
+                        display: "flex",
+                        alignSelf: 'center',
+                        
+                      }}
+                      container
+                    >
+                      <InputLabel sx={{
+                            display: "flex",
+                            alignSelf: 'center',
+                            marginRight: '15px',
+                            marginLeft: '15px'
+                          }}>
+                        to
+                      </InputLabel>
+                      <TextField
+                        size="small"
+                        required
+                        id="createdYearEnd"
+                        name="createdYearEnd"
+                        sx={{ width: '6em' }}
+                        value={formik.values.createdYearEnd}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.createdYearEnd && Boolean(formik.errors.createdYearEnd)
+                        }
+                        helperText={formik.touched.createdYearEnd && formik.errors.createdYearEnd}
+                      />
+                    </Grid2>
                   </Grid2>
-                  <Grid2 
-                    sx={{
-                      display: "flex",
-                      alignSelf: 'center'
-                    }}
-                    container
-                  >
-                    <InputLabel
-                        sx={{
-                          display: "flex",
-                          alignSelf: 'center',
-                          marginRight: '15px'
-                        }}
-                      >
-                        Longitude
-                    </InputLabel>
-                    <TextField
-                      size="small"
-                      required
-                      type="number"
-                      id="longitude"
-                      name="longitude"
-                      sx={{ width: '6em' }}
-                      value={formik.values.longitude}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.longitude && Boolean(formik.errors.longitude)
-                      }
-                      helperText={formik.touched.longitude && formik.errors.longitude}
-                    />
-                  </Grid2>
-                  <Grid2 
-                    sx={{
-                      display: "flex",
-                      alignSelf: 'center'
-                      
-                    }}
-                  >
-                    <InputLabel 
+                  <Grid2 container rowSpacing={3}>
+                    <Grid2 
                       sx={{
                         display: "flex",
                         alignSelf: 'center',
                         marginRight: '15px'
                       }}
+                      container
                     >
-                      Latitude
-                    </InputLabel>
-                    <TextField
-                      size="small"
-                      required
-                      type="number"
-                      id="latitude"
-                      name="latitude"
-                      value={formik.values.latitude}
-                      onChange={formik.handleChange}
-                      sx={{ width: '6em' }}
-                      error={
-                        formik.touched.latitude && Boolean(formik.errors.latitude)
-                      }
-                      helperText={formik.touched.latitude && formik.errors.latitude}
-                    />
-                  </Grid2>
-                  <Grid2 
-                    sx={{
-                      display: "flex",
-                      alignSelf: 'center'
-                    }}
-                  >
-                    <InputLabel
+                      <InputLabel sx={{
+                            display: "flex",
+                            alignSelf: 'center',
+                            marginRight: '15px'
+                          }}>
+                        Type
+                      </InputLabel>
+                      <TextField
+                        size="small"
+                        required
+                        id="type"
+                        name="type"
+                        sx={{ width: '6em' }}
+                        value={formik.values.type}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.type && Boolean(formik.errors.type)
+                        }
+                        helperText={formik.touched.type && formik.errors.type}
+                      />
+                    </Grid2>
+                    <Grid2 
+                      sx={{
+                        display: "flex",
+                        alignSelf: 'center',
+                        marginRight: '15px'
+                      }}
+                      container
+                    >
+                      <InputLabel
+                          sx={{
+                            display: "flex",
+                            alignSelf: 'center',
+                            marginRight: '15px'
+                          }}
+                        >
+                          Longitude
+                      </InputLabel>
+                      <TextField
+                        size="small"
+                        required
+                        type="number"
+                        id="longitude"
+                        name="longitude"
+                        sx={{ width: '6em' }}
+                        value={formik.values.longitude}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.longitude && Boolean(formik.errors.longitude)
+                        }
+                        helperText={formik.touched.longitude && formik.errors.longitude}
+                      />
+                    </Grid2>
+                    <Grid2 
+                      sx={{
+                        display: "flex",
+                        alignSelf: 'center',
+                        marginRight: '15px'
+                        
+                      }}
+                    >
+                      <InputLabel 
                         sx={{
                           display: "flex",
                           alignSelf: 'center',
                           marginRight: '15px'
                         }}
                       >
-                        Created year
-                    </InputLabel>
-                    <TextField
-                      size="small"
-                      required
-                      type="number"
-                      id="createdYearStart"
-                      name="createdYearStart"
-                      sx={{ width: '6em' }}
-                      value={formik.values.createdYearStart}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.createdYearStart && Boolean(formik.errors.createdYearStart)
-                      }
-                      helperText={formik.touched.createdYearStart && formik.errors.createdYearStart}
-                    />
+                        Latitude
+                      </InputLabel>
+                      <TextField
+                        size="small"
+                        required
+                        type="number"
+                        id="latitude"
+                        name="latitude"
+                        value={formik.values.latitude}
+                        onChange={formik.handleChange}
+                        sx={{ width: '6em' }}
+                        error={
+                          formik.touched.latitude && Boolean(formik.errors.latitude)
+                        }
+                        helperText={formik.touched.latitude && formik.errors.latitude}
+                      />
+                    </Grid2>
+                    
+                    <Grid2 
+                      sx={{
+                        display: "flex",
+                        alignSelf: 'center',
+                        marginRight: '15px'
+                      }}
+                      container
+                    >
+                      <InputLabel sx={{
+                            display: "flex",
+                            alignSelf: 'center',
+                            marginRight: '15px'
+                          }}>
+                        Discovered Year
+                      </InputLabel>
+                      <TextField
+                        size="small"
+                        required
+                        id="discoveredYear"
+                        name="discoveredYear"
+                        sx={{ width: '6em' }}
+                        value={formik.values.discoveredYear}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.discoveredYear && Boolean(formik.errors.discoveredYear)
+                        }
+                        helperText={formik.touched.discoveredYear && formik.errors.discoveredYear}
+                      />
+                    </Grid2>
+                    <Grid2 
+                      sx={{
+                        display: "flex",
+                        alignSelf: 'center',
+                        marginRight: '15px'
+                      }}
+                      container
+                    >
+                      <InputLabel sx={{
+                            display: "flex",
+                            alignSelf: 'center',
+                            marginRight: '15px'
+                          }}>
+                        Text
+                      </InputLabel>
+                      <TextField
+                        size="small"
+                        required
+                        id="text"
+                        name="text"
+                        sx={{ width: '6em' }}
+                        value={formik.values.text}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.text && Boolean(formik.errors.text)
+                        }
+                        helperText={formik.touched.text && formik.errors.text}
+                      />
+                    </Grid2>
+                    <Grid2 
+                      sx={{
+                        display: "flex",
+                        alignSelf: 'center',
+                        marginRight: '15px'
+                      }}
+                      container
+                    >
+                      <InputLabel sx={{
+                            display: "flex",
+                            alignSelf: 'center',
+                            marginRight: '15px'
+                          }}>
+                        Place
+                      </InputLabel>
+                      <TextField
+                        size="small"
+                        required
+                        id="place"
+                        name="place"
+                        sx={{ width: '6em' }}
+                        value={formik.values.place}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.place && Boolean(formik.errors.place)
+                        }
+                        helperText={formik.touched.place && formik.errors.place}
+                      />
+                    </Grid2>
+                    <Grid2 
+                      sx={{
+                        display: "flex",
+                        alignSelf: 'center',
+                        marginRight: '15px'
+                      }}
+                      container
+                    >
+                      <InputLabel sx={{
+                            display: "flex",
+                            alignSelf: 'center',
+                            marginRight: '15px'
+                          }}>
+                        Location
+                      </InputLabel>
+                      <TextField
+                        size="small"
+                        required
+                        id="location"
+                        name="location"
+                        sx={{ width: '6em' }}
+                        value={formik.values.location}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.location && Boolean(formik.errors.location)
+                        }
+                        helperText={formik.touched.location && formik.errors.location}
+                      />
+                    </Grid2>
+                    <Grid2 
+                      sx={{
+                        display: "flex",
+                        alignSelf: 'center',
+                        marginRight: '15px'
+                      }}
+                      container
+                    >
+                      <InputLabel sx={{
+                            display: "flex",
+                            alignSelf: 'center',
+                            marginRight: '15px'
+                          }}>
+                        Script
+                      </InputLabel>
+                      <TextField
+                        size="small"
+                        required
+                        id="script"
+                        name="script"
+                        sx={{ width: '6em' }}
+                        value={formik.values.script}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.script && Boolean(formik.errors.script)
+                        }
+                        helperText={formik.touched.script && formik.errors.script}
+                      />
+                    </Grid2>
+                    <Grid2 
+                      sx={{
+                        display: "flex",
+                        alignSelf: 'center',
+                        marginRight: '15px'
+                      }}
+                      container
+                    >
+                      <InputLabel sx={{
+                            display: "flex",
+                            alignSelf: 'center',
+                            marginRight: '15px'
+                          }}>
+                        Shelfmark
+                      </InputLabel>
+                      <TextField
+                        size="small"
+                        required
+                        id="shelfmark"
+                        name="shelfmark"
+                        sx={{ width: '6em' }}
+                        value={formik.values.shelfmark}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.shelfmark && Boolean(formik.errors.shelfmark)
+                        }
+                        helperText={formik.touched.shelfmark && formik.errors.shelfmark}
+                      />
+                    </Grid2>
+                    <Grid2 
+                      sx={{
+                        display: "flex",
+                        alignSelf: 'center',
+                        marginRight: '15px'
+                      }}
+                      container
+                    >
+                      <InputLabel sx={{
+                            display: "flex",
+                            alignSelf: 'center',
+                            marginRight: '15px'
+                          }}>
+                        First word
+                      </InputLabel>
+                      <TextField
+                        size="small"
+                        required
+                        id="firstWord"
+                        name="firstWord"
+                        sx={{ width: '6em' }}
+                        value={formik.values.firstWord}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.firstWord && Boolean(formik.errors.firstWord)
+                        }
+                        helperText={formik.touched.firstWord && formik.errors.firstWord}
+                      />
+                    </Grid2>
                   </Grid2>
                 </Grid2>
                 <Button

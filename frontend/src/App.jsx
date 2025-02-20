@@ -9,7 +9,7 @@ import Form from './components/Form';
 import FilterSection from './components/FilterSection';
 import './css/App.css';
 import Box from '@mui/material/Box';
-import { Typography } from '@mui/material';
+import { Typography, Grid2 } from '@mui/material';
 import { allSymbols } from './constants/Map';
 import { useMapStore} from './utilities/MapStore'
 import { useFilterStore } from './utilities/FilterStore';
@@ -117,21 +117,23 @@ function App() {
     });
     mapRef.current.append(chart);
     return () => chart.remove();
-  }, [visibleLocations]); // , year
+  }, [visibleLocations]);
 
   return (
     <>
-      <Typography variant="h1" gutterBottom>ROTAS Squares Map</Typography>
-      <Box  >
-        <Box >
-          {/* TODO - Control size of map section */}
-          <TimelineSlider onValueChange={setTimelineYear} type={yearType} />
-          <Box className="card">
-            <Box ref={mapRef}></Box>
+      <Grid2 sx={{ width: '75%', justifySelf: 'center' }} >
+        <Typography variant="h1" gutterBottom>ROTAS Squares Map</Typography>
+        <Box  >
+          <Box >
+            {/* TODO - Control size of map section */}
+            <TimelineSlider onValueChange={setTimelineYear} type={yearType} />
+            <Box className="card">
+              <Box ref={mapRef}></Box>
+            </Box>
           </Box>
         </Box>
-      </Box>
-      <OptionsAccordion children={accordionChildren} />
+        <OptionsAccordion children={accordionChildren} />
+      </Grid2>
     </>
   )
 }
