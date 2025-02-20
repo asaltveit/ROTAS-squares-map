@@ -76,9 +76,9 @@ exports.getAllTextValues = async (req, res) => {
 exports.createLocation = async (req, res) => {
     const { 
         type, 
-        createdYearStart, 
-        createdYearEnd, 
-        discoveredYear, 
+        created_year_start, 
+        created_year_end, 
+        discovered_year, 
         longitude, 
         latitude, 
         text, 
@@ -86,14 +86,14 @@ exports.createLocation = async (req, res) => {
         location, 
         script, 
         shelfmark, 
-        firstWord 
+        first_word
     } = req.body;
     try {
         const newLocation = await Location.create({
             type, 
-            createdYearStart, 
-            createdYearEnd, 
-            discoveredYear, 
+            created_year_start, 
+            created_year_end, 
+            discovered_year, 
             longitude, 
             latitude, 
             text, 
@@ -101,11 +101,13 @@ exports.createLocation = async (req, res) => {
             location, 
             script, 
             shelfmark, 
-            firstWord
+            first_word,
+            createdAt: new Date(),
+            updatedAt: new Date(),
         });
         res.status(201).json(newLocation);
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error });
     }
 };
 // Controller method to get a location by ID

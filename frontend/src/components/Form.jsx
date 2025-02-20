@@ -32,6 +32,29 @@ let location = {
     shelfmark: '',
     firstWord: '',
 }
+
+function cleanValues(values) {
+  let data = {}
+  // Number fields shouldn't be strings?
+  if (!values.createdYearEnd || typeof values.createdYearEnd == "string") {
+    data.created_year_end = 2100;
+  }
+  if (!values.discoveredYear || typeof values.discoveredYear == "string") {
+    data.discovered_year = 2000;
+  }
+  data.type = values.type
+  data.created_year_start = values.createdYearStart;
+  data.longitude = values.longitude
+  data.latitude = values.latitude
+  data.text = values.text
+  data.place = values.place
+  data.location = values.location
+  data.script = values.script
+  data.shelfmark = values.shelfmark
+  data.first_word = values.firstWord
+  return data;
+
+}
 /*
 If someone clicks submit multiple times, it'll create multiple?
 
@@ -79,10 +102,15 @@ const Form = () => {
         shelfmark: location.shelfmark,
         firstWord: location.firstWord,
       },
-      validationSchema: locationSchema,
+      validationSchema: locationSchema, // axios.post('http://localhost:3000/locations', cleanValues(values))
       onSubmit: async (values) => {
+        console.log("cleanValues(values): ", cleanValues(values))
         setWaiting(true)
-        axios.post('http://localhost:3000/locations', values).then((res) => {
+        axios({
+          method: 'POST',
+          url: 'http://localhost:3000/locations',
+          data: cleanValues(values)
+        }).then((res) => {
           console.log("port res: ", res)
         }).catch((e) => {
           console.log("post error: ", e)
