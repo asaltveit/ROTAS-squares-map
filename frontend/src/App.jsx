@@ -6,6 +6,7 @@ import mapData from "./data/custom.geo.json";
 import TimelineSlider from "./components/TimelineSlider";
 import OptionsAccordion from './components/OptionsAccordion';
 import Form from './components/Form';
+import FormLayout from './components/FormLayout';
 import FilterSection from './components/FilterSection';
 import './css/App.css';
 import Box from '@mui/material/Box';
@@ -121,19 +122,19 @@ function App() {
 
   return (
     <>
-      <Grid2 sx={{ width: '75%', justifySelf: 'center' }} >
+      <Box sx={{ width: '85%', justifySelf: 'center' }} >
         <Typography variant="h1" gutterBottom>ROTAS Squares Map</Typography>
-        <Box  >
-          <Box >
+        <Box  sx={{margin: '20px'}}  >
+          <Box className="card">
             {/* TODO - Control size of map section */}
             <TimelineSlider onValueChange={setTimelineYear} type={yearType} />
             <Box className="card">
               <Box ref={mapRef}></Box>
             </Box>
           </Box>
+          <OptionsAccordion children={accordionChildren} />
         </Box>
-        <OptionsAccordion children={accordionChildren} />
-      </Grid2>
+      </Box>
     </>
   )
 }

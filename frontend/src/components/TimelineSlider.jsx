@@ -73,10 +73,9 @@ export default function TimelineSlider({ onValueChange}) {
         }
         return () => clearTimeout(anim)
     }, [playAnimation])
-
     return (
         <>
-            <Box style={{ backgroundColor: '#ffffff', paddingTop: '20px', paddingLeft: '40px' }}>
+            <Box >
                 <Box sx={{ marginBottom: '5px' }}> Timeline - {convertYearTypetoView(yearType)} </Box>
                 <Box sx={{ display: 'flex', alignContent: 'center' }}>
                     <Button variant='outlined' sx={{ marginRight: '10px' }} onClick={playAnim}> Play </Button>

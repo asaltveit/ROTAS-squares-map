@@ -6,7 +6,6 @@
 }
 
 .card {
-  padding-bottom: 1em;
-  padding-top: 1em;
+  padding: 2em;
   background-color: #ffffff;
 }

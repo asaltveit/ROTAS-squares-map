@@ -37,7 +37,7 @@ export default function OptionsAccordion({ children }) {
                             <Typography>{child.header}</Typography>
                         </AccordionSummary>
                         <AccordionDetails style={{backgroundColor: bodyOrange}}>
-                            {child.body}
+                            <Box sx={{margin: '10px'}}> {child.body} </Box>
                         </AccordionDetails>
                     </Accordion>
                 );
