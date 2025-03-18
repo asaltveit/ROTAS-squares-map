@@ -3,6 +3,10 @@ An interactive map and timeline of the locations where ROTAS Squares were create
 
 Per the request of someone doing historical research.
 
+## Current Version
+
+<img width="1373" alt="Screenshot 2025-03-17 at 5 06 14 PM" src="https://github.com/user-attachments/assets/7fb72b07-13c8-4ddc-b915-201db71e240d" />
+
 ## Why I built it this way
 - I wanted to work with d3, and found that Observable Plot (which is built off of d3) had the functionality I needed to create the map.
 - I started with creating just the map in an Observable Notebook - [link](https://observablehq.com/d/7f4625aa405d37c1). But connecting that to a database and restricting access to users was expensive, so the project was moved to a fullstack standalone website.
