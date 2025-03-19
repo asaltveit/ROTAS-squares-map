@@ -12,14 +12,14 @@ export default function TimelineSlider({ onValueChange}) {
     const [playAnimation, setPlayAnimation] = useState(false)
     const [min, setMin] = useState(0)
     const [max, setMax] = useState(2100)
+    const [year, setYear] = useState(0)
 
-    const { yearType, timelineStart, timelineEnd, timelineYear, setTimelineYear } = useFilterStore(
+
+    const { yearType, timelineStart, timelineEnd } = useFilterStore(
         useShallow((state) => ({ 
             yearType: state.yearType, 
             timelineStart: state.timelineStart,
             timelineEnd: state.timelineEnd,
-            timelineYear: state.timelineYear,
-            setTimelineYear: state.setTimelineYear,
         })),
     )
     // Set min from filter change
@@ -42,11 +42,12 @@ export default function TimelineSlider({ onValueChange}) {
 
     // Reset start and label
     useEffect(() => {
-        setTimelineYear(min)
+        setYear(min)
+        onValueChange(min)
       }, [min, max]); // Reset timeline to beginning when start or end is changed
 
     const handleChange = (event, newValue) => {
-        setTimelineYear(newValue)
+        setYear(newValue)
         onValueChange(newValue)
     }
 
@@ -58,15 +59,15 @@ export default function TimelineSlider({ onValueChange}) {
         // TODO: Change rate of animation?
         //    - through filters?
         if (playAnimation) {
-            let i = timelineYear; // start wherever it is
+            let i = year; // start wherever it is
             anim = setInterval(() => {
-                if (timelineYear == max) {
+                if (year == max) {
                     i = min;
-                    setTimelineYear(min);
+                    setYear(min);
                     onValueChange(min);
                 } else {
                     onValueChange(i);
-                    setTimelineYear(i);
+                    setYear(i);
                     i += 10
                 }
             }, 500)
@@ -76,20 +77,20 @@ export default function TimelineSlider({ onValueChange}) {
     return (
         <>
             <Box >
-                <Box sx={{ marginBottom: '5px' }}> Timeline - {convertYearTypetoView(yearType)} </Box>
+                <Box aria-label="timeline type" sx={{ marginBottom: '5px' }}> Timeline - {convertYearTypetoView(yearType)} </Box>
                 <Box sx={{ display: 'flex', alignContent: 'center' }}>
-                    <Button variant='outlined' sx={{ marginRight: '10px' }} onClick={playAnim}> Play </Button>
-                    <Button variant='outlined' sx={{ marginRight: '30px' }} onClick={() => setPlayAnimation(false)}> Stop </Button>
+                    <Button aria-label="play button" variant='outlined' sx={{ marginRight: '10px' }} onClick={playAnim}> Play </Button>
+                    <Button aria-label="stop button" variant='outlined' sx={{ marginRight: '30px' }} onClick={() => setPlayAnimation(false)}> Stop </Button>
                     <Slider
                         min={min}
                         max={max}
-                        value={timelineYear}
-                        aria-label={`timeline-${yearType} year`}
+                        value={year}
+                        aria-label={`timeline-${yearType} year slider`}
                         onChange={handleChange}
                         sx={{ width: '500px'}}
                     />
                     <Box style={{ paddingLeft: '30px'}}>
-                        Year: {timelineYear}
+                        Year: {year}
                     </Box>
                 </Box>
             </Box>
