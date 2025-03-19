@@ -20,7 +20,7 @@ export default function OptionsAccordion({ children }) {
         setExpanded(newExpanded ? panel : false);
     };
     return (
-        <Box>
+        <Box >
             {children?.map((child, index) => {
                 return(
                     <Accordion 

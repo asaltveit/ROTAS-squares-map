@@ -6,7 +6,6 @@ import mapData from "./data/custom.geo.json";
 import TimelineSlider from "./components/TimelineSlider";
 import OptionsAccordion from './components/OptionsAccordion';
 import Form from './components/Form';
-import FormLayout from './components/FormLayout';
 import FilterSection from './components/FilterSection';
 import './css/App.css';
 import Box from '@mui/material/Box';
