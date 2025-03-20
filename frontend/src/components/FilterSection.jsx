@@ -156,30 +156,30 @@ export default function FilterSection() {
                         <Grid2 direction="row" container justifyContent="center">
                             <Grid2 justifyContent="flex-start">
                                 <FormGroup >
-                                    <FormControlLabel control={<Switch checked={locationTypeCheck} onChange={(event) => { setTypeFilter(null); setLocationTypeCheck(event.target.checked)}} />} label="Type" sx={{ mt: 2.5 }} />
-                                    { locationTypeCheck && <DropDown onValueChange={setTypeFilter} items={optionTypes} label="Type" ></DropDown> }
+                                    <FormControlLabel control={<Switch aria-label="location-type-switch" checked={locationTypeCheck} onChange={(event) => { setTypeFilter(null); setLocationTypeCheck(event.target.checked)}} />} label="Type" sx={{ mt: 2.5 }} />
+                                    { locationTypeCheck && <DropDown aria-label="location-type-dropdown" onValueChange={setTypeFilter} items={optionTypes} label="Type" ></DropDown> }
                                 </FormGroup>
                                 <FormGroup >
-                                    <FormControlLabel control={<Switch checked={scriptCheck} onChange={(event) => { setScriptFilter(null); setScriptCheck(event.target.checked)}} />} label="Script" sx={{ mt: 2.5 }} />
-                                    { scriptCheck && <DropDown onValueChange={setScriptFilter} items={scripts} label="Script" ></DropDown> }
+                                    <FormControlLabel control={<Switch aria-label="script-switch" checked={scriptCheck} onChange={(event) => { setScriptFilter(null); setScriptCheck(event.target.checked)}} />} label="Script" sx={{ mt: 2.5 }} />
+                                    { scriptCheck && <DropDown aria-label="script-dropdown" onValueChange={setScriptFilter} items={scripts} label="Script" ></DropDown> }
                                 </FormGroup>
                                 <FormGroup >
-                                    <FormControlLabel control={<Switch checked={textCheck} onChange={(event) => { setTextFilter(null); setTextCheck(event.target.checked)}} />} label="Text" sx={{ mt: 2.5 }} />
-                                    { textCheck && <DropDown onValueChange={setTextFilter} items={texts} label="Text" ></DropDown> }
+                                    <FormControlLabel control={<Switch aria-label="text-switch" checked={textCheck} onChange={(event) => { setTextFilter(null); setTextCheck(event.target.checked)}} />} label="Text" sx={{ mt: 2.5 }} />
+                                    { textCheck && <DropDown aria-label="text-dropdown" onValueChange={setTextFilter} items={texts} label="Text" ></DropDown> }
                                 </FormGroup>
                                 <FormGroup >
-                                    <FormControlLabel control={<Switch checked={firstWordCheck} onChange={(event) => { setFirstWordFilter(null); setFirstWordCheck(event.target.checked)}} />} label="First word" sx={{ mt: 2.5 }} />
-                                    { firstWordCheck && <DropDown onValueChange={setFirstWordFilter} items={firstWords} label="First word" ></DropDown> }
+                                    <FormControlLabel control={<Switch aria-label="first-word-switch" checked={firstWordCheck} onChange={(event) => { setFirstWordFilter(null); setFirstWordCheck(event.target.checked)}} />} label="First word" sx={{ mt: 2.5 }} />
+                                    { firstWordCheck && <DropDown aria-label="first-word-dropdown" onValueChange={setFirstWordFilter} items={firstWords} label="First word" ></DropDown> }
                                 </FormGroup>
                             </Grid2>
                             <Grid2 justifyContent="flex-end">
                                 <FormGroup >
-                                    <FormControlLabel control={<Switch checked={placeCheck} onChange={(event) => { setPlaceFilter(null); setPlaceCheck(event.target.checked)}} />} label="Place" sx={{ mt: 2.5 }} />
-                                    { placeCheck && <DropDown onValueChange={setPlaceFilter} items={places} label="Place" ></DropDown> }
+                                    <FormControlLabel control={<Switch aria-label="place-switch" checked={placeCheck} onChange={(event) => { setPlaceFilter(null); setPlaceCheck(event.target.checked)}} />} label="Place" sx={{ mt: 2.5 }} />
+                                    { placeCheck && <DropDown aria-label="place-dropdown" onValueChange={setPlaceFilter} items={places} label="Place" ></DropDown> }
                                 </FormGroup>
                                 <FormGroup >
-                                    <FormControlLabel control={<Switch checked={locationCheck} onChange={(event) => { setLocationFilter(null); setLocationCheck(event.target.checked)}} />} label="Location" sx={{ mt: 2.5 }} />
-                                    { locationCheck && <DropDown onValueChange={setLocationFilter} items={locs} label="Location" ></DropDown> /* something wrong when selecting long text? */}
+                                    <FormControlLabel control={<Switch aria-label="location-switch" checked={locationCheck} onChange={(event) => { setLocationFilter(null); setLocationCheck(event.target.checked)}} />} label="Location" sx={{ mt: 2.5 }} />
+                                    { locationCheck && <DropDown aria-label="location-dropdown" onValueChange={setLocationFilter} items={locs} label="Location" ></DropDown> /* something wrong when selecting long text? */}
                                 </FormGroup>
                             </Grid2>
                         </Grid2>
@@ -192,14 +192,13 @@ export default function FilterSection() {
                 >
                     <Typography> Timeline Filters </Typography>
                     <FormGroup sx={{display: "inline-block" }}>
-                        <FormControlLabel control={<Switch checked={yearTypeCheck} onChange={(event) => { setYearTypeCheck(event.target.checked) }} />} label="Year type" sx={{ mt: 2.5 }} />
-                        { yearTypeCheck && <DropDown onValueChange={setYearType} items={yearTypeOptions} label="Year type" ></DropDown> }
+                        <FormControlLabel control={<Switch aria-label="year-type-switch" checked={yearTypeCheck} onChange={(event) => { setYearTypeCheck(event.target.checked) }} />} label="Year type" sx={{ mt: 2.5 }} />
+                        { yearTypeCheck && <DropDown aria-label="year-type-dropdown" onValueChange={setYearType} items={yearTypeOptions} label="Year type" ></DropDown> }
                     </FormGroup>
                     <FormGroup sx={{display: "inline-block" }}>
-                        <FormControlLabel control={<Switch checked={yearRangeCheck} onChange={(event) => { setYearRangeCheck(event.target.checked) }} />} label="Year range" sx={{ mt: 2.5 }} />
-                        { yearRangeCheck && <RangeField onValueChangeStart={setTimelineStart} onValueChangeEnd={setTimelineEnd} valueStart={timelineStart} valueEnd={timelineEnd}  ></RangeField> }
+                        <FormControlLabel control={<Switch aria-label="year-range-switch" checked={yearRangeCheck} onChange={(event) => { setYearRangeCheck(event.target.checked) }} />} label="Year range" sx={{ mt: 2.5 }} />
+                        { yearRangeCheck && <RangeField aria-label="year-range-field" onValueChangeStart={setTimelineStart} onValueChangeEnd={setTimelineEnd} valueStart={timelineStart} valueEnd={timelineEnd}  ></RangeField> }
                     </FormGroup>
-                    
                 </Grid2>
             </Grid2>
             <Button variant='outlined' onClick={clearAllFilters} > Clear All </Button>
