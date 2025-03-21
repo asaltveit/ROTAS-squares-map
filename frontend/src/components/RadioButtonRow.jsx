@@ -6,7 +6,8 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { formTypes } from '../constants/FormConstants';
 
-export default function FormTypeRadioButtonRow({ onValueChange }) {
+
+function FormTypeRadioButtonRow({ onValueChange }) {
     const [value, setValue] = useState(formTypes.add)
     const handleChange = (event) => {
         setValue(event.target.value);
@@ -15,7 +16,7 @@ export default function FormTypeRadioButtonRow({ onValueChange }) {
 
     return (
         <FormControl>
-            <FormLabel id="radio-button-row-label">Form type:</FormLabel>
+            <FormLabel sx={{ color: "black", "&.Mui-focused": { color: "black" }} } id="radio-button-row-label">Form type:</FormLabel>
             <RadioGroup
                 row
                 aria-labelledby="radio-button-row-label"
@@ -30,3 +31,5 @@ export default function FormTypeRadioButtonRow({ onValueChange }) {
         </FormControl>
     );
 }
+
+export default FormTypeRadioButtonRow;
