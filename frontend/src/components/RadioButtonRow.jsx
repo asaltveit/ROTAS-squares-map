@@ -24,9 +24,9 @@ function FormTypeRadioButtonRow({ onValueChange }) {
                 onChange={handleChange}
                 value={value}
             >
-            <FormControlLabel value={formTypes.add} control={<Radio />} label="Add" />
-            <FormControlLabel value={formTypes.update} control={<Radio />} label="Update" />
-            <FormControlLabel value={formTypes.delete} control={<Radio />} label="Delete" />
+            <FormControlLabel value={formTypes.add} control={<Radio aria-labelledby='Add'/>} label="Add" />
+            <FormControlLabel value={formTypes.update} control={<Radio aria-labelledby='Update'/>} label="Update" />
+            <FormControlLabel value={formTypes.delete} control={<Radio aria-labelledby='Delete'/>} label="Delete" />
             </RadioGroup>
         </FormControl>
     );

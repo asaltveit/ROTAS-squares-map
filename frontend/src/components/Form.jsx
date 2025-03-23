@@ -54,6 +54,9 @@ function cleanValues(values) {
 /*
 If someone clicks submit multiple times, it'll create multiple?
 
+fields expand if more than 3 chars, except for Type
+labels move down if helper text appears
+error messages reference the variable instead of viewable name
 */
 
 const Form = () => {
@@ -108,6 +111,12 @@ const Form = () => {
         <Box >
           <FormTypeRadioButtonRow onValueChange={setFormType} />
           <Container>
+            {formType === formTypes.update && 
+              <Box sx={{ color: "black"}}> Coming soon! </Box>
+            }
+            {formType === formTypes.delete && 
+              <Box sx={{ color: "black"}}> Coming soon! </Box>
+            }
             {formType === formTypes.add && 
               <form onSubmit={formik.handleSubmit}>
                 <Grid2 
@@ -126,8 +135,9 @@ const Form = () => {
                             alignSelf: 'center',
                             marginRight: '15px'
                           }}
+                          htmlFor="createdYearStart"
                         >
-                          Years created
+                          Years created*
                       </InputLabel>
                       <TextField
                         size="small"
@@ -152,12 +162,15 @@ const Form = () => {
                       }}
                       container
                     >
-                      <InputLabel sx={{
-                            display: "flex",
-                            alignSelf: 'center',
-                            marginRight: '15px',
-                            marginLeft: '15px'
-                          }}>
+                      <InputLabel 
+                        sx={{
+                        display: "flex",
+                        alignSelf: 'center',
+                        marginRight: '15px',
+                        marginLeft: '15px'
+                       }}
+                       htmlFor="createdYearEnd"
+                      >
                         to
                       </InputLabel>
                       <TextField
@@ -176,18 +189,20 @@ const Form = () => {
                     </Grid2>
                   </Grid2>
                   <Stack direction="row" spacing={10} justifyContent="center" >
-                    <Stack spacing={2} alignItems="flex-end" >
+                    <Stack spacing={3} alignItems="flex-end" >
                       <Stack
                           direction="row"
                           justifyContent="right"
-                          rowSpacing={2}
+                          //rowSpacing={2}
                       >
                         <InputLabel sx={{
                               display: "flex",
                               alignSelf: 'center',
                               marginRight: '15px'
-                            }}>
-                          Type
+                            }}
+                            htmlFor="type"
+                        >
+                          Type*
                         </InputLabel>
                         <TextField
                           size="small"
@@ -213,8 +228,9 @@ const Form = () => {
                             alignSelf: 'center',
                             marginRight: '15px'
                           }}
+                          htmlFor="latitude"
                         >
-                          Latitude
+                          Latitude*
                         </InputLabel>
                         <TextField
                           size="small"
@@ -239,7 +255,9 @@ const Form = () => {
                               display: "flex",
                               alignSelf: 'center',
                               marginRight: '15px'
-                            }}>
+                            }}
+                            htmlFor="location"
+                        >
                           Location
                         </InputLabel>
                         <TextField
@@ -264,7 +282,9 @@ const Form = () => {
                               display: "flex",
                               alignSelf: 'center',
                               marginRight: '15px'
-                            }}>
+                            }}
+                            htmlFor="text"
+                        >
                           Text
                         </InputLabel>
                         <TextField
@@ -289,7 +309,9 @@ const Form = () => {
                               display: "flex",
                               alignSelf: 'center',
                               marginRight: '15px'
-                            }}>
+                            }}
+                            htmlFor="firstWord"
+                        >
                           First word
                         </InputLabel>
                         <TextField
@@ -307,7 +329,7 @@ const Form = () => {
                         />
                       </Stack>
                 </Stack>
-                <Stack spacing={2} >
+                <Stack spacing={3} >
                 <Stack
                         direction="row"
                         justifyContent="right"
@@ -316,7 +338,9 @@ const Form = () => {
                               display: "flex",
                               alignSelf: 'center',
                               marginRight: '15px'
-                            }}>
+                            }}
+                            htmlFor="discoveredYear"
+                        >
                           Discovered Year
                         </InputLabel>
                         <TextField
@@ -344,8 +368,9 @@ const Form = () => {
                               alignSelf: 'center',
                               marginRight: '15px'
                             }}
+                            htmlFor="longitude"
                           >
-                            Longitude
+                            Longitude*
                         </InputLabel>
                         <TextField
                           size="small"
@@ -370,7 +395,9 @@ const Form = () => {
                               display: "flex",
                               alignSelf: 'center',
                               marginRight: '15px'
-                            }}>
+                            }}
+                            htmlFor="place"
+                        >
                           Place
                         </InputLabel>
                         <TextField
@@ -396,7 +423,9 @@ const Form = () => {
                               display: "flex",
                               alignSelf: 'center',
                               marginRight: '15px'
-                            }}>
+                            }}
+                            htmlFor="script"
+                        >
                           Script
                         </InputLabel>
                         <TextField
@@ -421,7 +450,9 @@ const Form = () => {
                               display: "flex",
                               alignSelf: 'center',
                               marginRight: '15px'
-                            }}>
+                            }}
+                            htmlFor="shelfmark"
+                        >
                           Shelfmark
                         </InputLabel>
                         <TextField
