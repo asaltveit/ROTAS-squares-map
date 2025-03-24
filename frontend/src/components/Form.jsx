@@ -30,10 +30,11 @@ let location = {
     firstWord: '',
 }
 
-function cleanValues(values) {
+function cleanValues(values, latitudes, longitudes) {
+  // TODO: fix this
   let data = {}
-  // Number fields shouldn't be strings
-  if (!values.createdYearEnd || typeof values.createdYearEnd == "string") {
+  // Number fields shouldn't be strings ?
+  /*if (!values.createdYearEnd || typeof values.createdYearEnd == "string") {
     data.created_year_end = 2100;
   } else {
     data.created_year_end = values.createdYearEnd
@@ -42,11 +43,11 @@ function cleanValues(values) {
     data.discovered_year = 2000;
   } else {
     data.discovered_year = values.discoveredYear
-  }
+  }*/
   data.type = values.type
   data.created_year_start = values.createdYearStart;
-  data.longitude = values.longitude
-  data.latitude = values.latitude
+  data.longitude = findNewFloat(longitudes, values.longitude)
+  data.latitude = findNewFloat(latitudes, values.latitude)
   data.text = values.text
   data.place = values.place
   data.location = values.location
@@ -68,12 +69,26 @@ const Form = () => {
     const [waiting, setWaiting] = useState(false);
     const [success, setSuccess] = useState(false);
     const [formType, setFormType] = useState(formTypes.add);
+    const [latitudes, setLatitudes] = useState([]);
+    const [longitudes, setLongitudes] = useState([]);
 
     const { updateformSubmitted } = useMapStore(
       useShallow((state) => ({ 
         updateformSubmitted: state.updateformSubmitted,
       })),
     );
+
+    useEffect(() => {
+      axios.get('http://localhost:3000/locations/latitudes').then((data) => {
+        setLatitudes(data.data);
+      })
+  }, [success]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/locations/longitudes').then((data) => {
+      setLongitudes(data.data);
+    })
+}, [success]);
     
     const formik = useFormik({
       initialValues: {
@@ -95,7 +110,7 @@ const Form = () => {
         console.log("cleanValues(values): ", cleanValues(values))
         setWaiting(true)
         try {
-          const response = await axios.post('https://api.example.com/data', {data: cleanValues(values)});
+          const response = await axios.post('https://api.example.com/data', {data: cleanValues(values, latitudes, longitudes)});
           console.log(response.data);
           setWaiting(false)
           setSuccess(true)
