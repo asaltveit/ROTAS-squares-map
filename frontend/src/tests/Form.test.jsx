@@ -159,28 +159,89 @@ describe('Form', () => {
                 expect(helperText).not.toBeInTheDocument();
             })
         })
-       /* describe('Saving', () => {
-            it('is successful', () => {
+        describe('Saving', () => {
+            beforeEach(() => {
+                vi.mock('axios');
+            });
+            it('is waiting', async() => {
+                axios.post.mockImplementation(() => new Promise(() => {}));
                 render(<Form />);
-                const locationTypeSwitch = screen.getByLabelText('location-type-switch');
+                const user = userEvent.setup()
+                const startYear = screen.getByLabelText('Years created*');
+                const typeField = screen.getByLabelText('Type*');
+                const latitudeField = screen.getByLabelText('Latitude*');
+                const longitudeField = screen.getByLabelText('Longitude*');
+                const saveButton = screen.getByText('Save');
+
+                await user.type(startYear, '5')
+                await user.type(typeField, 'book')
+                await user.type(latitudeField, '9.8')
+                await user.type(longitudeField, '-42')
+
                 act(() => {
-                    /* fire events that update state 
-                    fireEvent.click(locationTypeSwitch)
+                    /* fire events that update state */
+                    fireEvent.click(saveButton)
                 });
-                const select = screen.getByLabelText('dropdown-select');
-                //expect(select).toBeInTheDocument();
+                await new Promise((r) => setTimeout(r, 1000));
+                expect(axios.post).toBeCalled()
+                const saving = screen.getByText('Saving...');
+                expect(saving).toBeInTheDocument();
             })
-            it('is unsuccessful', () => {
+            it('is successful', async () => {
+                const mockedResponse = {
+                    status: 200,
+                };
+
+                axios.post.mockResolvedValue(mockedResponse);
                 render(<Form />);
-                const locationTypeSwitch = screen.getByLabelText('location-type-switch');
+                const user = userEvent.setup()
+                const startYear = screen.getByLabelText('Years created*');
+                const typeField = screen.getByLabelText('Type*');
+                const latitudeField = screen.getByLabelText('Latitude*');
+                const longitudeField = screen.getByLabelText('Longitude*');
+                const saveButton = screen.getByText('Save');
+
+                await user.type(startYear, '5')
+                await user.type(typeField, 'book')
+                await user.type(latitudeField, '9.8')
+                await user.type(longitudeField, '-42')
+
                 act(() => {
-                    /* fire events that update state 
-                    fireEvent.click(locationTypeSwitch)
+                    /* fire events that update state */
+                    fireEvent.click(saveButton)
                 });
-                const select = screen.getByLabelText('dropdown-select');
-                //expect(select).toBeInTheDocument();
+                await new Promise((r) => setTimeout(r, 1000));
+                expect(axios.post).toBeCalled()
+                const checkmark = screen.getByLabelText('success-checkmark');
+                expect(checkmark).toBeInTheDocument();
             })
-        })*/
+            it('is unsuccessful', async () => {
+                const mockedResponse = {
+                    status: 404,
+                };
+
+                axios.post.mockResolvedValue(mockedResponse);
+                render(<Form />);
+                const user = userEvent.setup()
+                const startYear = screen.getByLabelText('Years created*');
+                const typeField = screen.getByLabelText('Type*');
+                const latitudeField = screen.getByLabelText('Latitude*');
+                const longitudeField = screen.getByLabelText('Longitude*');
+                const saveButton = screen.getByText('Save');
+
+                await user.type(startYear, '5')
+                await user.type(typeField, 'book')
+                await user.type(latitudeField, '9.8')
+                await user.type(longitudeField, '-42')
+
+                act(() => {
+                    /* fire events that update state */
+                    fireEvent.click(saveButton)
+                });
+                await new Promise((r) => setTimeout(r, 1000));
+                expect(axios.post).toBeCalled()
+            })
+        })
     })
     describe('Update type', () => {
         it('renders correctly', () => {
