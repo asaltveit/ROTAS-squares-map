@@ -72,6 +72,27 @@ exports.getAllTextValues = async (req, res) => {
     }
 };
 
+// TODO: move lat/lng changes to backend?
+exports.getAllLatitudeValues = async (req, res) => {
+    try {
+        const result = await Location.findAll({attributes: ['latitude'], group: ['latitude'], logging: console.log})
+        const textList = result.map((r) => r.text)
+        res.json(textList);
+    } catch (error) {
+        res.status(500).json({error}); // : 'Internal Server Error'
+    }
+};
+
+exports.getAllLongitudeValues = async (req, res) => {
+    try {
+        const result = await Location.findAll({attributes: ['longitude'], group: ['longitude'], logging: console.log})
+        const textList = result.map((r) => r.text)
+        res.json(textList);
+    } catch (error) {
+        res.status(500).json({error}); // : 'Internal Server Error'
+    }
+};
+
 // Controller method to create a new location
 exports.createLocation = async (req, res) => {
     const { 

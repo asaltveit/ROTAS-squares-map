@@ -34,7 +34,19 @@ const Location = db.define('locations', {
         max: 180,
         allowNull: false,
     },
+    fixed_longitude: {
+        type: DataTypes.REAL,
+        min: -180,
+        max: 180,
+        allowNull: false,
+    },
     latitude: {
+        type: DataTypes.REAL,
+        min: -90,
+        max: 90,
+        allowNull: false,
+    },
+    fixed_latitude: {
         type: DataTypes.REAL,
         min: -90,
         max: 90,

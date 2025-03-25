@@ -20,6 +20,12 @@ router.get('/places', locationController.getAllPlaceValues);
 // Route to get all possible text values
 router.get('/texts', locationController.getAllTextValues);
 
+// TODO: move lat/lng changes to backend?
+// Route to get all possible latitude values
+router.get('/latitudes', locationController.getAllLatitudeValues);
+// Route to get all possible longitude values
+router.get('/longitudes', locationController.getAllLongitudeValues);
+
 // TODO: Make sure the below work
 // Route to get a location by ID
 router.get('/:id', locationController.getLocationById);
