@@ -85,37 +85,37 @@ export default function FilterSection() {
 
     useEffect(() => {
         axios.get('http://localhost:3000/locations/types').then((data) => {
-            setOptionTypes(convertStringsToOptions(data.data));
+            setOptionTypes(convertStringsToOptions(data.data.filter((s) => s != null)));
         })
     }, [formSubmitted]);
 
     useEffect(() => {
         axios.get('http://localhost:3000/locations/scripts').then((data) => {
-            setScripts(convertStringsToOptions(data.data))
+            setScripts(convertStringsToOptions(data.data.filter((s) => s != null)))
         })
     }, [formSubmitted]);
 
     useEffect(() => {
         axios.get('http://localhost:3000/locations/texts').then((data) => {
-            setTexts(convertStringsToOptions(data.data))
+            setTexts(convertStringsToOptions(data.data.filter((s) => s != null)))
         })
     }, [formSubmitted]);
 
     useEffect(() => {
         axios.get('http://localhost:3000/locations/words').then((data) => {
-            setFirstWords(convertStringsToOptions(data.data));
+            setFirstWords(convertStringsToOptions(data.data.filter((s) => s != null)));
         })
     }, [formSubmitted]);
 
     useEffect(() => {
         axios.get('http://localhost:3000/locations/places').then((data) => {
-            setPlaces(convertStringsToOptions(data.data));
+            setPlaces(convertStringsToOptions(data.data.filter((s) => s != null)));
         })
     }, [formSubmitted]);
 
     useEffect(() => {
         axios.get('http://localhost:3000/locations/locations').then((data) => {
-            setLocs(convertStringsToOptions(data.data));
+            setLocs(convertStringsToOptions(data.data.filter((s) => s != null)));
         })
     }, [formSubmitted]);
 

@@ -9,6 +9,7 @@ db.authenticate()
  .catch((err) => console.error('Error connecting to database:', err));
 // Middleware to parse JSON requests
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }))
 // CORS Middleware
 app.use(cors());
 // Routes

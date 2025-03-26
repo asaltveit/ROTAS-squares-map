@@ -4,8 +4,12 @@ const locationController = require('../controllers/locationController');
 
 // REMEMBER!! Order matters!
 
+// get / worked here up top
+// Route to create a new location
+router.post('/', locationController.createLocation);
 // Route to get all locations
 router.get('/', locationController.getAllLocations);
+
 
 // Route to get all possible type values
 router.get('/types', locationController.getAllTypeValues);
@@ -29,8 +33,6 @@ router.get('/longitudes', locationController.getAllLongitudeValues);
 // TODO: Make sure the below work
 // Route to get a location by ID
 router.get('/:id', locationController.getLocationById);
-// Route to create a new location
-router.post('/', locationController.createLocation);
 // Route to update a location by ID
 router.put('/:id', locationController.updateLocation);
 // Route to delete a location by ID

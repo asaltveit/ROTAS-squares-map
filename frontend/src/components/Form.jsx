@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import { locationSchema } from '../utilities/AddLocationSchema.js';
 import axios from 'axios';
@@ -11,6 +11,7 @@ import FormTypeRadioButtonRow from './RadioButtonRow';
 import { formTypes } from '../constants/FormConstants';
 import { useMapStore } from '../utilities/MapStore.jsx'
 import { useShallow } from 'zustand/react/shallow'
+import { findNewFloat } from '../utilities/UtilityFunctions.js';
 import '../css/Form.css';
 
 // TODO - Add options for update location and delete location
@@ -31,29 +32,19 @@ let location = {
 }
 
 function cleanValues(values, latitudes, longitudes) {
-  // TODO: fix this
   let data = {}
-  // Number fields shouldn't be strings ?
-  /*if (!values.createdYearEnd || typeof values.createdYearEnd == "string") {
-    data.created_year_end = 2100;
-  } else {
-    data.created_year_end = values.createdYearEnd
-  }
-  if (!values.discoveredYear || typeof values.discoveredYear == "string") {
-    data.discovered_year = 2000;
-  } else {
-    data.discovered_year = values.discoveredYear
-  }*/
   data.type = values.type
   data.created_year_start = values.createdYearStart;
-  data.longitude = findNewFloat(longitudes, values.longitude)
-  data.latitude = findNewFloat(latitudes, values.latitude)
-  data.text = values.text
-  data.place = values.place
-  data.location = values.location
-  data.script = values.script
-  data.shelfmark = values.shelfmark
-  data.first_word = values.firstWord
+  data.longitude = values.longitude
+  data.fixed_longitude = findNewFloat(longitudes, values.longitude)
+  data.latitude = values.latitude
+  data.fixed_latitude = findNewFloat(latitudes, values.latitude)
+  data.text = values.text || null
+  data.place = values.place || null
+  data.location = values.location || null
+  data.script = values.script || null
+  data.shelfmark = values.shelfmark || null
+  data.first_word = values.firstWord || null
   return data;
 
 }
@@ -82,13 +73,13 @@ const Form = () => {
       axios.get('http://localhost:3000/locations/latitudes').then((data) => {
         setLatitudes(data.data);
       })
-  }, [success]);
+    }, [success]);
 
-  useEffect(() => {
-    axios.get('http://localhost:3000/locations/longitudes').then((data) => {
-      setLongitudes(data.data);
-    })
-}, [success]);
+    useEffect(() => {
+      axios.get('http://localhost:3000/locations/longitudes').then((data) => {
+        setLongitudes(data.data);
+      })
+    }, [success]);
     
     const formik = useFormik({
       initialValues: {
@@ -107,16 +98,16 @@ const Form = () => {
       },
       validationSchema: locationSchema,
       onSubmit: async (values) => {
-        console.log("cleanValues(values): ", cleanValues(values))
         setWaiting(true)
         try {
-          const response = await axios.post('https://api.example.com/data', {data: cleanValues(values, latitudes, longitudes)});
-          console.log(response.data);
+          const data = cleanValues(values, latitudes, longitudes)
+          const response = await axios.post('http://localhost:3000/locations/', {data: data});
+          console.log("response: ", response)
           setWaiting(false)
           setSuccess(true)
           updateformSubmitted()
         } catch (error) {
-          console.error(error);
+          console.error("Form submit error: ", error);
           setWaiting(false)
         }
       },
@@ -503,6 +494,7 @@ const Form = () => {
                   > { /* order, various messages+symbols */ }
                     {!waiting ? 'Save' : 'Saving...'}
                     { waiting ? <CircularProgress /> : '' /* a loading symbol */ }
+                    { /* TODO remove success symbol when form changed */ }
                     { !waiting && success ? <CheckBoxIcon aria-label="success-checkmark" /> : '' }
                   </Button>
                 </Grid2>

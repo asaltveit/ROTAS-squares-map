@@ -75,8 +75,8 @@ exports.getAllTextValues = async (req, res) => {
 // TODO: move lat/lng changes to backend?
 exports.getAllLatitudeValues = async (req, res) => {
     try {
-        const result = await Location.findAll({attributes: ['latitude'], group: ['latitude'], logging: console.log})
-        const textList = result.map((r) => r.text)
+        const result = await Location.findAll({attributes: ['fixed_latitude'], group: ['fixed_latitude'], logging: console.log})
+        const textList = result.map((r) => r.fixed_latitude)
         res.json(textList);
     } catch (error) {
         res.status(500).json({error}); // : 'Internal Server Error'
@@ -85,8 +85,8 @@ exports.getAllLatitudeValues = async (req, res) => {
 
 exports.getAllLongitudeValues = async (req, res) => {
     try {
-        const result = await Location.findAll({attributes: ['longitude'], group: ['longitude'], logging: console.log})
-        const textList = result.map((r) => r.text)
+        const result = await Location.findAll({attributes: ['fixed_longitude'], group: ['fixed_longitude'], logging: console.log})
+        const textList = result.map((r) => r.fixed_longitude)
         res.json(textList);
     } catch (error) {
         res.status(500).json({error}); // : 'Internal Server Error'
@@ -95,28 +95,34 @@ exports.getAllLongitudeValues = async (req, res) => {
 
 // Controller method to create a new location
 exports.createLocation = async (req, res) => {
-    const { 
-        type, 
-        created_year_start, 
-        created_year_end, 
-        discovered_year, 
-        longitude, 
-        latitude, 
-        text, 
-        place, 
-        location, 
-        script, 
-        shelfmark, 
-        first_word
-    } = req.body;
+    console.log("req.body: ", req.body)
+    
     try {
+        const { 
+            type, 
+            created_year_start, 
+            created_year_end, 
+            discovered_year, 
+            longitude,
+            fixed_longitude,
+            latitude,
+            fixed_latitude,
+            text, 
+            place, 
+            location, 
+            script, 
+            shelfmark, 
+            first_word
+        } = req.body?.data;
         const newLocation = await Location.create({
             type, 
             created_year_start, 
             created_year_end, 
             discovered_year, 
             longitude, 
+            fixed_longitude,
             latitude, 
+            fixed_latitude,
             text, 
             place, 
             location, 

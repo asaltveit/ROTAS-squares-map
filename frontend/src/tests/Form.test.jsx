@@ -7,6 +7,11 @@ import userEvent from '@testing-library/user-event'
 
 
 describe('Form', () => {
+    beforeEach(async () => {
+        vi.mock('axios');
+        const mockData = { data: [40.75080889, 40.7501907] };
+        axios.get.mockResolvedValue(mockData);
+    })
     describe('Add type', () => {
         it('renders correctly', () => {
             render(<Form />);
