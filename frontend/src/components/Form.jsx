@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import { locationSchema } from '../utilities/AddLocationSchema.js';
-import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -69,17 +68,26 @@ const Form = () => {
       })),
     );
 
-    /*useEffect(() => {
-      axios.get('https://roslvahbgkokyokgiphb.supabase.co/locations?select=latitudes').then((data) => {
-        setLatitudes(data.data);
-      })
-    }, [success]);
+    async function getLongitudes() {
+      const { data, error } = await supabase.rpc('get_fixed_longitude');
+      if (error) {
+        console.log("getLongitudes error: ", error)
+      }
+      setLongitudes(convertStringsToOptions(data));
+    }
+    
+    async function getLatitudes() {
+      const { data, error } = await supabase.rpc('get_fixed_latitudes');
+      if (error) {
+        console.log("getLatitudes error: ", error)
+      }
+      setLatitudes(convertStringsToOptions(data));
+    }
 
     useEffect(() => {
-      axios.get('https://roslvahbgkokyokgiphb.supabase.co/locations?select=longitudes').then((data) => {
-        setLongitudes(data.data);
-      })
-    }, [success]);*/
+      getLongitudes()
+      getLatitudes()
+    }, [success]);
     
     const formik = useFormik({
       initialValues: {
