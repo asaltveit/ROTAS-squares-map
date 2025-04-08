@@ -6,7 +6,7 @@ import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
 import { yearTypeOptions } from '../constants/FilterSection.js'
 import { useMapStore } from '../utilities/MapStore.jsx'
 import { useFilterStore } from '../utilities/FilterStore.jsx'
-import axios from 'axios';
+//import axios from 'axios';
 import RangeField from './RangeField.jsx'
 
 
@@ -21,14 +21,14 @@ export default function FilterSection() {
     const [yearTypeCheck, setYearTypeCheck] = useState(false);
     const [yearRangeCheck, setYearRangeCheck] = useState(false);
 
-    const { formSubmitted } = useMapStore(
+    const { formSubmitted, locationTypes } = useMapStore(
         useShallow((state) => ({ 
           formSubmitted: state.formSubmitted,
+          locationTypes: state.locationTypes,
         })),
       )
 
     const { 
-        optionTypes,
         scripts,
         texts,
         locs,
@@ -38,7 +38,6 @@ export default function FilterSection() {
         timelineEnd,
 
         setPlaces,
-        setOptionTypes,
         setFirstWords,
         setScripts,
         setTexts,
@@ -56,7 +55,6 @@ export default function FilterSection() {
         clearFilters, 
     } = useFilterStore(
         useShallow((state) => ({ 
-            optionTypes: state.optionTypes,
             scripts: state.scripts,
             texts: state.texts,
             locs: state.locs,
@@ -64,7 +62,6 @@ export default function FilterSection() {
             places: state.places,
 
             setPlaces: state.setPlaces,
-            setOptionTypes: state.setOptionTypes,
             setFirstWords: state.setFirstWords,
             setScripts: state.setScripts,
             setTexts: state.setTexts,
@@ -83,41 +80,36 @@ export default function FilterSection() {
         })),
     )
 
+/*
     useEffect(() => {
-        axios.get('http://localhost:3000/locations/types').then((data) => {
-            setOptionTypes(convertStringsToOptions(data.data.filter((s) => s != null)));
-        })
-    }, [formSubmitted]);
-
-    useEffect(() => {
-        axios.get('http://localhost:3000/locations/scripts').then((data) => {
+        axios.get('https://roslvahbgkokyokgiphb.supabase.co/locations?select=scripts').then((data) => {
             setScripts(convertStringsToOptions(data.data.filter((s) => s != null)))
         })
     }, [formSubmitted]);
 
     useEffect(() => {
-        axios.get('http://localhost:3000/locations/texts').then((data) => {
+        axios.get('https://roslvahbgkokyokgiphb.supabase.co/locations?select=texts').then((data) => {
             setTexts(convertStringsToOptions(data.data.filter((s) => s != null)))
         })
     }, [formSubmitted]);
 
     useEffect(() => {
-        axios.get('http://localhost:3000/locations/words').then((data) => {
+        axios.get('https://roslvahbgkokyokgiphb.supabase.co/locations?select=words').then((data) => {
             setFirstWords(convertStringsToOptions(data.data.filter((s) => s != null)));
         })
     }, [formSubmitted]);
 
     useEffect(() => {
-        axios.get('http://localhost:3000/locations/places').then((data) => {
+        axios.get('https://roslvahbgkokyokgiphb.supabase.co/locations?select=places').then((data) => {
             setPlaces(convertStringsToOptions(data.data.filter((s) => s != null)));
         })
     }, [formSubmitted]);
 
     useEffect(() => {
-        axios.get('http://localhost:3000/locations/locations').then((data) => {
+        axios.get('https://roslvahbgkokyokgiphb.supabase.co/locations?select=locations').then((data) => {
             setLocs(convertStringsToOptions(data.data.filter((s) => s != null)));
         })
-    }, [formSubmitted]);
+    }, [formSubmitted]);*/
 
     const clearAllFilters = () => {
         // Store
@@ -157,7 +149,7 @@ export default function FilterSection() {
                             <Grid2 justifyContent="flex-start">
                                 <FormGroup >
                                     <FormControlLabel control={<Switch aria-label="location-type-switch" checked={locationTypeCheck} onChange={(event) => { setTypeFilter(null); setLocationTypeCheck(event.target.checked)}} />} label="Type" sx={{ mt: 2.5 }} />
-                                    { locationTypeCheck && <DropDown aria-label="location-type-dropdown" onValueChange={setTypeFilter} items={optionTypes} label="Type" ></DropDown> }
+                                    { locationTypeCheck && <DropDown aria-label="location-type-dropdown" onValueChange={setTypeFilter} items={convertStringsToOptions(locationTypes)} label="Type" ></DropDown> }
                                 </FormGroup>
                                 <FormGroup >
                                     <FormControlLabel control={<Switch aria-label="script-switch" checked={scriptCheck} onChange={(event) => { setScriptFilter(null); setScriptCheck(event.target.checked)}} />} label="Script" sx={{ mt: 2.5 }} />

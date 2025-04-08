@@ -16,6 +16,7 @@ export const useFilterStore = create()(
       latitude: null,
     },
     // 6 below are fetched
+    // TODO: why are option types and location types different?
     optionTypes: ["manuscript", "amulet", "inscription", "graffito", "dipinto"],
     scripts: null,
     texts: null,

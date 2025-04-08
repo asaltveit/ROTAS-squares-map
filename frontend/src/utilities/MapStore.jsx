@@ -7,6 +7,7 @@ export const useMapStore = create()(
     locations: [],
     formSubmitted: 0,
     filtersSubmitted: 0,
+    // Does this need to be set like this?
     locationTypes: ["manuscript", "amulet", "inscription", "graffito", "dipinto"],
     
     // Set the above

@@ -69,17 +69,17 @@ const Form = () => {
       })),
     );
 
-    useEffect(() => {
-      axios.get('http://localhost:3000/locations/latitudes').then((data) => {
+    /*useEffect(() => {
+      axios.get('https://roslvahbgkokyokgiphb.supabase.co/locations?select=latitudes').then((data) => {
         setLatitudes(data.data);
       })
     }, [success]);
 
     useEffect(() => {
-      axios.get('http://localhost:3000/locations/longitudes').then((data) => {
+      axios.get('https://roslvahbgkokyokgiphb.supabase.co/locations?select=longitudes').then((data) => {
         setLongitudes(data.data);
       })
-    }, [success]);
+    }, [success]);*/
     
     const formik = useFormik({
       initialValues: {
@@ -101,7 +101,8 @@ const Form = () => {
         setWaiting(true)
         try {
           const data = cleanValues(values, latitudes, longitudes)
-          const response = await axios.post('http://localhost:3000/locations/', {data: data});
+          // check post rules
+          //const response = await axios.post('https://roslvahbgkokyokgiphb.supabase.co/locations', {data: data});
           console.log("response: ", response)
           setWaiting(false)
           setSuccess(true)

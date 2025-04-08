@@ -16,6 +16,7 @@
     "@mui/icons-material": "^6.4.1",
     "@mui/material": "^6.4.1",
     "@observablehq/plot": "^0.6.16",
+    "@supabase/supabase-js": "^2.49.4",
     "axios": "^1.7.9",
     "formik": "^2.4.6",
     "immer": "^10.1.1",

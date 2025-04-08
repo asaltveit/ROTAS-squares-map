@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow'
-import axios from 'axios';
+//import axios from 'axios';
 import * as Plot from "@observablehq/plot";
 import mapData from "./data/custom.geo.json";
 import TimelineSlider from "./components/TimelineSlider";
@@ -13,8 +13,10 @@ import { Typography, Grid2 } from '@mui/material';
 import { allSymbols } from './constants/Map';
 import { useMapStore} from './utilities/MapStore'
 import { useFilterStore } from './utilities/FilterStore';
+import { plotPointTitle } from './utilities/UtilityFunctions';
 import _ from 'lodash'
 import { yearType as yrType } from './constants/FilterSection';
+import { supabase } from './supabaseClient';
 
 
 function App() {
@@ -54,14 +56,31 @@ function App() {
       body: <Form />,
     },
   ];
-
   // TODO - all gets getting called twice
   useEffect(() => {
-
-    axios.get('http://localhost:3000/locations', { params: filters }).then((data) => {
-      setLocations(data.data);
-    })
+    getLocations();
+    // TODO: how to add filters?
   }, [formSubmitted, filters]);
+
+  useEffect(() => {
+    getTypes();
+  }, [formSubmitted]);
+
+  async function getLocations() {
+    const { data, error } = await supabase.from("locations").select();
+    if (error) {
+      console.log("getLocations error: ", error)
+    }
+    setLocations(data);
+  }
+
+  async function getTypes() {
+    const { data, error } = await supabase.rpc('get_distinct_type');
+    if (error) {
+      console.log("getTypes error: ", error)
+    }
+    setLocationTypes(data);
+  }
 
   useEffect(() => {
     if (yearType == yrType.created) {
@@ -77,12 +96,9 @@ function App() {
   }, [timelineYear, locations, yearType]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/locations/types').then((data) => {
-      setLocationTypes(data.data);
-    })
-  }, [formSubmitted]);
-
-  useEffect(() => {
+    //console.log("all locations: ", locations)
+    //console.log("all types: ", locationTypes)
+    //console.log("visibleLocations: ", visibleLocations)
     if (visibleLocations === undefined) return;
     // TODO: Move plot to separate file
     const chart = Plot.plot({
@@ -95,18 +111,18 @@ function App() {
           Plot.dot(visibleLocations, {
             x: "longitude",
             y: "latitude",
-            stroke: "type",
-            fill: "type",
+            stroke: "location_type",
+            fill: "location_type",
             fillOpacity: 0.3,
             //symbol and color need to be bound to type
             r: 7,
-            symbol: "type",
+            symbol: "location_type",
             
           }),
           Plot.tip(visibleLocations, Plot.pointer({
             x: "longitude",
             y: "latitude",
-            title: (d) => ["Created from: " + d.created_year_start + "-" + d.created_year_end, "Script: " + d.script, "Text: " + d.text, "Place: " + d.place, "Location: " + d.location, "Year Discovered: " + d.discovered_year, "Shelfmark: " + d.shelfmark].join("\n\n")
+            title: (d) => plotPointTitle(d)
           })),
         ],
         // Canvas doesn't include legend
