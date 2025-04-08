@@ -6,7 +6,7 @@ import { yearType as yrType } from '../constants/FilterSection'
 export const useFilterStore = create()(
   immer((set) => ({
     filters: {
-      type: null,
+      location_type: null,
       script: null,
       text: null,
       first_word: null,
@@ -80,7 +80,7 @@ export const useFilterStore = create()(
         }),
     setTypeFilter: (type) =>
       set((state) => {
-        state.filters.type = type
+        state.filters.location_type = type
       }),
     setScriptFilter: (script) =>
         set((state) => {
@@ -114,7 +114,7 @@ export const useFilterStore = create()(
     clearFilters: () =>
         set((state) => {
             state.filters = {
-                type: null,
+                location_type: null,
                 script: null,
                 text: null,
                 first_word: null,

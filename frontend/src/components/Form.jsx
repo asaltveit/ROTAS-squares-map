@@ -33,7 +33,7 @@ let location = {
 
 function cleanValues(values, latitudes, longitudes) {
   let data = {}
-  data.type = values.type
+  data.location_type = values.type
   data.created_year_start = values.createdYearStart;
   data.longitude = values.longitude
   data.fixed_longitude = findNewFloat(longitudes, values.longitude)

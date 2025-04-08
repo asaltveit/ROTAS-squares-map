@@ -14,7 +14,7 @@ import { allSymbols } from './constants/Map';
 import { useMapStore} from './utilities/MapStore'
 import { useFilterStore } from './utilities/FilterStore';
 import { plotPointTitle } from './utilities/UtilityFunctions';
-import _ from 'lodash'
+import { _ as lodash } from 'lodash'
 import { yearType as yrType } from './constants/FilterSection';
 import { supabase } from './supabaseClient';
 
@@ -58,6 +58,7 @@ function App() {
   ];
   // TODO - all gets getting called twice
   useEffect(() => {
+    console.log("filters: ", filters)
     getLocations();
     // TODO: how to add filters?
   }, [formSubmitted, filters]);
@@ -67,11 +68,23 @@ function App() {
   }, [formSubmitted]);
 
   async function getLocations() {
-    const { data, error } = await supabase.from("locations").select();
-    if (error) {
-      console.log("getLocations error: ", error)
+    let resultFilters = Object
+        .keys(filters)
+        .reduce((r,key) => 
+          (filters[key] && (r[key]=filters[key]), r),{})
+    if (resultFilters) {
+      const { data, error } = await supabase.from("locations").select().match(resultFilters);
+      if (error) {
+        console.log("getLocations filters error: ", error)
+      }
+      setLocations(data);
+    } else {
+      const { data, error } = await supabase.from("locations").select();
+      if (error) {
+        console.log("getLocations error: ", error)
+      }
+      setLocations(data);
     }
-    setLocations(data);
   }
 
   async function getTypes() {
