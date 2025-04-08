@@ -11,6 +11,7 @@ import { formTypes } from '../constants/FormConstants';
 import { useMapStore } from '../utilities/MapStore.jsx'
 import { useShallow } from 'zustand/react/shallow'
 import { findNewFloat } from '../utilities/UtilityFunctions.js';
+import { supabase } from '../supabaseClient';
 import '../css/Form.css';
 
 // TODO - Add options for update location and delete location
@@ -73,7 +74,7 @@ const Form = () => {
       if (error) {
         console.log("getLongitudes error: ", error)
       }
-      setLongitudes(convertStringsToOptions(data));
+      setLongitudes(data);
     }
     
     async function getLatitudes() {
@@ -81,7 +82,7 @@ const Form = () => {
       if (error) {
         console.log("getLatitudes error: ", error)
       }
-      setLatitudes(convertStringsToOptions(data));
+      setLatitudes(data);
     }
 
     useEffect(() => {
