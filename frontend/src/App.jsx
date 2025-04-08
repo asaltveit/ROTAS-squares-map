@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow'
-//import axios from 'axios';
 import * as Plot from "@observablehq/plot";
 import mapData from "./data/custom.geo.json";
 import TimelineSlider from "./components/TimelineSlider";
@@ -9,12 +8,11 @@ import Form from './components/Form';
 import FilterSection from './components/FilterSection';
 import './css/App.css';
 import Box from '@mui/material/Box';
-import { Typography, Grid2 } from '@mui/material';
+import { Typography } from '@mui/material';
 import { allSymbols } from './constants/Map';
 import { useMapStore} from './utilities/MapStore'
 import { useFilterStore } from './utilities/FilterStore';
 import { plotPointTitle } from './utilities/UtilityFunctions';
-import { _ as lodash } from 'lodash'
 import { yearType as yrType } from './constants/FilterSection';
 import { supabase } from './supabaseClient';
 
@@ -58,9 +56,7 @@ function App() {
   ];
   // TODO - all gets getting called twice
   useEffect(() => {
-    console.log("filters: ", filters)
     getLocations();
-    // TODO: how to add filters?
   }, [formSubmitted, filters]);
 
   useEffect(() => {
@@ -109,9 +105,6 @@ function App() {
   }, [timelineYear, locations, yearType]);
 
   useEffect(() => {
-    //console.log("all locations: ", locations)
-    //console.log("all types: ", locationTypes)
-    //console.log("visibleLocations: ", visibleLocations)
     if (visibleLocations === undefined) return;
     // TODO: Move plot to separate file
     const chart = Plot.plot({

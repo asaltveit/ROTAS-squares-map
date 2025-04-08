@@ -6,8 +6,8 @@ import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
 import { yearTypeOptions } from '../constants/FilterSection.js'
 import { useMapStore } from '../utilities/MapStore.jsx'
 import { useFilterStore } from '../utilities/FilterStore.jsx'
-//import axios from 'axios';
 import RangeField from './RangeField.jsx'
+import { supabase } from '../supabaseClient';
 
 
 export default function FilterSection() {
@@ -80,36 +80,53 @@ export default function FilterSection() {
         })),
     )
 
-/*
-    useEffect(() => {
-        axios.get('https://roslvahbgkokyokgiphb.supabase.co/locations?select=scripts').then((data) => {
-            setScripts(convertStringsToOptions(data.data.filter((s) => s != null)))
-        })
-    }, [formSubmitted]);
+    async function getTexts() {
+        const { data, error } = await supabase.rpc('get_distinct_text');
+        if (error) {
+          console.log("getTexts error: ", error)
+        }
+        setTexts(convertStringsToOptions(data));
+    }
+
+    async function getScripts() {
+        const { data, error } = await supabase.rpc('get_distinct_script');
+        if (error) {
+            console.log("getScripts error: ", error)
+        }
+        setScripts(convertStringsToOptions(data));
+    }
+
+    async function getLocations() {
+        const { data, error } = await supabase.rpc('get_distinct_location');
+        if (error) {
+            console.log("getLocations error: ", error)
+        }
+        setLocs(convertStringsToOptions(data));
+    }
+
+    async function getPlaces() {
+        const { data, error } = await supabase.rpc('get_distinct_place');
+        if (error) {
+            console.log("getPlaces error: ", error)
+        }
+        setPlaces(convertStringsToOptions(data));
+    }
+
+    async function getFirstWords() {
+        const { data, error } = await supabase.rpc('get_distinct_first_word');
+        if (error) {
+            console.log("getFirstWords error: ", error)
+        }
+        setFirstWords(convertStringsToOptions(data));
+    }
 
     useEffect(() => {
-        axios.get('https://roslvahbgkokyokgiphb.supabase.co/locations?select=texts').then((data) => {
-            setTexts(convertStringsToOptions(data.data.filter((s) => s != null)))
-        })
+        getScripts()
+        getLocations()
+        getTexts()
+        getPlaces()
+        getFirstWords()
     }, [formSubmitted]);
-
-    useEffect(() => {
-        axios.get('https://roslvahbgkokyokgiphb.supabase.co/locations?select=words').then((data) => {
-            setFirstWords(convertStringsToOptions(data.data.filter((s) => s != null)));
-        })
-    }, [formSubmitted]);
-
-    useEffect(() => {
-        axios.get('https://roslvahbgkokyokgiphb.supabase.co/locations?select=places').then((data) => {
-            setPlaces(convertStringsToOptions(data.data.filter((s) => s != null)));
-        })
-    }, [formSubmitted]);
-
-    useEffect(() => {
-        axios.get('https://roslvahbgkokyokgiphb.supabase.co/locations?select=locations').then((data) => {
-            setLocs(convertStringsToOptions(data.data.filter((s) => s != null)));
-        })
-    }, [formSubmitted]);*/
 
     const clearAllFilters = () => {
         // Store
