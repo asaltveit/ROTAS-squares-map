@@ -6,6 +6,7 @@ import { useFilterStore } from '../utilities/FilterStore';
 
 // TODO - Add breakpoints for smaller windows
 // TODO - Stop animation when clicked
+// TODO - turn play button into stop when playing, only have one button?
 
 export default function TimelineSlider({ onValueChange}) {
     let anim;
@@ -56,6 +57,7 @@ export default function TimelineSlider({ onValueChange}) {
     }
 
     useEffect(() => {
+        // TODO: Maximum update depth exceeded. error here?
         // TODO: Change rate of animation?
         //    - through filters?
         if (playAnimation) {
