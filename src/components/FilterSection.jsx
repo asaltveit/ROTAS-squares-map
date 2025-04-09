@@ -195,6 +195,7 @@ export default function FilterSection() {
                         
                     </Grid2>
                 </Grid2>
+                {/* remove until these filters are working
                 <Grid2 
                     sx={{justifyContent: "flex-end" }}
                     size={4}
@@ -208,7 +209,7 @@ export default function FilterSection() {
                         <FormControlLabel control={<Switch aria-label="year-range-switch" checked={yearRangeCheck} onChange={(event) => { setYearRangeCheck(event.target.checked) }} />} label="Year range" sx={{ mt: 2.5 }} />
                         { yearRangeCheck && <RangeField aria-label="year-range-field" onValueChangeStart={setTimelineStart} onValueChangeEnd={setTimelineEnd} valueStart={timelineStart} valueEnd={timelineEnd}  ></RangeField> }
                     </FormGroup>
-                </Grid2>
+                </Grid2>*/}
             </Grid2>
             <Button variant='outlined' onClick={clearAllFilters} > Clear All </Button>
         </Box>
