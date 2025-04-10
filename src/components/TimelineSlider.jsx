@@ -91,7 +91,7 @@ export default function TimelineSlider({ onValueChange}) {
                         onChange={handleChange}
                         sx={{ width: '500px'}}
                     />
-                    <Box style={{ paddingLeft: '30px'}}>
+                    <Box style={{ paddingLeft: '20px'}}>
                         Year: {year}
                     </Box>
                 </Box>

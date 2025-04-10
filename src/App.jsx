@@ -71,7 +71,7 @@ function App() {
           (filters[key] && (r[key]=filters[key]), r),{})
     if (resultFilters) {
       // TODO: year type filter on clear breaking app
-      console.log("resultFilters: ", resultFilters)
+      //console.log("resultFilters: ", resultFilters)
       const { data, error } = await supabase.from("locations").select().match(resultFilters);
       if (error) {
         console.log("getLocations filters error: ", error)
