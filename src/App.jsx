@@ -49,11 +49,11 @@ function App() {
       header: "Filters",
       body: <FilterSection />,
     },
-    /* removing until auth in place
+    // removing until auth in place
     {
       header: "Manipulate Data",
       body: <Form />,
-    },*/
+    },
   ];
   // TODO - all gets getting called twice
   useEffect(() => {
@@ -71,7 +71,6 @@ function App() {
           (filters[key] && (r[key]=filters[key]), r),{})
     if (resultFilters) {
       // TODO: year type filter on clear breaking app
-      //console.log("resultFilters: ", resultFilters)
       const { data, error } = await supabase.from("locations").select().match(resultFilters);
       if (error) {
         console.log("getLocations filters error: ", error)

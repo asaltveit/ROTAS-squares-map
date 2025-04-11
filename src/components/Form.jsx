@@ -1,17 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import { locationSchema } from '../utilities/AddLocationSchema.js';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import { Button, Grid2, Container, CircularProgress, Stack } from '@mui/material';
+import { 
+  Box, 
+  Button, 
+  InputLabel, 
+  Grid2, 
+  Container, 
+  CircularProgress, 
+  Stack, 
+  TextField, 
+  Typography,
+} from '@mui/material';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import FormTypeRadioButtonRow from './RadioButtonRow';
 import { formTypes } from '../constants/FormConstants';
 import { useMapStore } from '../utilities/MapStore.jsx'
 import { useShallow } from 'zustand/react/shallow'
-import { findNewFloat } from '../utilities/UtilityFunctions.js';
+import { findNewFloat, generateNonce } from '../utilities/UtilityFunctions.js';
 import { supabase } from '../supabaseClient';
+import { GoogleLogin } from '@react-oauth/google';
 import '../css/Form.css';
 
 // TODO - Add options for update location and delete location
@@ -62,6 +70,7 @@ const Form = () => {
     const [formType, setFormType] = useState(formTypes.add);
     const [latitudes, setLatitudes] = useState([]);
     const [longitudes, setLongitudes] = useState([]);
+    const [showForm, setShowForm] = useState(false);
 
     const { updateformSubmitted } = useMapStore(
       useShallow((state) => ({ 
@@ -127,9 +136,66 @@ const Form = () => {
       enableReinitialize: true,
     });
     // TODO Make font black?
+
+    /*async function handleSignInWithGoogle(response) {
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: 'google',
+        token: response.credential,
+      })
+    }*/
+
+    async function getNonce(){
+      return await generateNonce()
+    }
+    // from https://supabase.com/docs/guides/auth/social-login/auth-google
+    useEffect(() => {
+      window.addEventListener('load', async () => {
+        const [nonce, hashedNonce] = getNonce()
+        google.accounts.id.initialize({
+          client_id: import.meta.env.VITE_PUBLIC_GOOGLE_CLIENT_ID,
+          callback: async (response) => {
+            try {
+              // send id token returned in response.credential to supabase
+              const { data, error } = await supabase.auth.signInWithIdToken({
+                provider: 'google',
+                token: response.credential,
+                nonce: nonce,
+              })
+              if (error) throw error
+              console.log('Session data: ', data)
+              console.log('Successfully logged in with Google One Tap')
+              // redirect to protected page
+              // Show form here?
+              setShowForm(true)
+            } catch (error) {
+              console.error('Error logging in with Google One Tap', error)
+            }
+          },
+          nonce: hashedNonce,
+          // with chrome's removal of third-party cookiesm, we need to use FedCM instead (https://developers.google.com/identity/gsi/web/guides/fedcm-migration)
+          use_fedcm_for_prompt: true,
+        })
+      })
+    }, [])
+
     return (
       <>
-        <Box >
+        {!showForm && 
+          <>
+          <Typography sx={{ paddingBottom: '10px' }}> Log in to access database: </Typography>
+          <Box 
+            sx={{ 
+              alignItems: 'center', 
+              alignSelf: 'center',
+              justifyContent: 'center',
+              justifySelf: 'center',
+              width: '30%'
+            }}>
+            <GoogleLogin onError={(error) => console.log(error)}  />
+          </Box>
+          </>
+        }
+        { showForm && <Box >
           <FormTypeRadioButtonRow onValueChange={setFormType} />
           <Container>
             {formType === formTypes.update && 
@@ -512,7 +578,7 @@ const Form = () => {
               </form>
             }
           </Container>
-        </Box>
+        </Box>}
       </>
     )
   }
