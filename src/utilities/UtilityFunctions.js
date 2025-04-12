@@ -12,6 +12,7 @@ export function convertYearTypetoView(type) {
     return capitalize(type) + " year";
 }
 
+// TODO Move this to server side
 export function findNewFloat(currentFloats, f) {
     let dif = 0.2
     let i = 1

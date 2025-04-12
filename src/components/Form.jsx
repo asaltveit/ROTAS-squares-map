@@ -71,6 +71,7 @@ const Form = () => {
     const [latitudes, setLatitudes] = useState([]);
     const [longitudes, setLongitudes] = useState([]);
     const [showForm, setShowForm] = useState(false);
+    const [localNonce, setLocalNonce] = useState('');
 
     const { updateformSubmitted } = useMapStore(
       useShallow((state) => ({ 
@@ -137,12 +138,16 @@ const Form = () => {
     });
     // TODO Make font black?
 
-    /*async function handleSignInWithGoogle(response) {
+    async function handleSignInWithGoogle(response) {
+      console.log("response: ", response)
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: 'google',
         token: response.credential,
+        nonce: localNonce,
       })
-    }*/
+      if (error) throw error
+      setShowForm(true)
+    }
 
     /*async function getNonce(){
       return await generateNonce()
@@ -154,6 +159,7 @@ const Form = () => {
         console.log('Initializing Google One Tap')
         window.addEventListener('load', async () => {
           const [nonce, hashedNonce] = await generateNonce()
+          setLocalNonce(nonce)
           console.log('Nonce: ', nonce, hashedNonce)
           // check if there's already an existing session before initializing the one-tap UI
           const { data, error } = await supabase.auth.getSession()
@@ -161,14 +167,14 @@ const Form = () => {
             console.error('Error getting session', error)
           }
           if (data.session) {
-            router.push('/')
+            setShowForm(true)
             return
           }
           if (!window.google) return;
           /* global google */
           google.accounts.id.initialize({
             client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-            callback: async (response) => {
+            /*callback: async (response) => {
               try {
                 // send id token returned in response.credential to supabase
                 const { data, error } = await supabase.auth.signInWithIdToken({
@@ -184,12 +190,13 @@ const Form = () => {
               } catch (error) {
                 console.error('Error logging in with Google One Tap', error)
               }
-            },
+            },*/
             nonce: hashedNonce,
+            redirect_uri: "https://roslvahbgkokyokgiphb.supabase.co/auth/v1/callback",
             // with chrome's removal of third-party cookiesm, we need to use FedCM instead (https://developers.google.com/identity/gsi/web/guides/fedcm-migration)
             use_fedcm_for_prompt: true,
           })
-          google.accounts.id.prompt() // Display the One Tap UI
+          //google.accounts.id.prompt() // Display the One Tap UI
           /*google.accounts.id.renderButton(
             document.getElementById("google-sso-button"),
             { theme: "outline", size: "large", width: "400px" }  // customization attributes
@@ -199,37 +206,6 @@ const Form = () => {
       initializeGoogleOneTap()
       return () => window.removeEventListener('load', initializeGoogleOneTap)
     }, [])
-    
-    /*useEffect(() => {
-      window.addEventListener('load', async () => {
-        const [nonce, hashedNonce] = getNonce()
-        google.accounts.id.initialize({
-          client_id: import.meta.env.VITE_PUBLIC_GOOGLE_CLIENT_ID,
-          callback: async (response) => {
-            try {
-              // send id token returned in response.credential to supabase
-              const { data, error } = await supabase.auth.signInWithIdToken({
-                provider: 'google',
-                token: response.credential,
-                nonce: nonce,
-              })
-              if (error) throw error
-              console.log('Session data: ', data)
-              console.log('Successfully logged in with Google One Tap')
-              // redirect to protected page
-              // Show form here?
-              setShowForm(true)
-            } catch (error) {
-              console.error('Error logging in with Google One Tap', error)
-            }
-          },
-          nonce: hashedNonce,
-          // with chrome's removal of third-party cookiesm, we need to use FedCM instead (https://developers.google.com/identity/gsi/web/guides/fedcm-migration)
-          use_fedcm_for_prompt: true,
-        })
-        google.accounts.id.prompt()
-      })
-    }, [])*/
 
     return (
       <>
@@ -244,7 +220,7 @@ const Form = () => {
               justifySelf: 'center',
               width: '30%'
             }}>
-            <GoogleLogin onError={(error) => console.log(error)}  />
+            <GoogleLogin onSuccess={(response) => handleSignInWithGoogle(response)} onError={(error) => console.log(error)}  />
           </Box>
           </>
         }
@@ -333,7 +309,6 @@ const Form = () => {
                       <Stack
                           direction="row"
                           justifyContent="right"
-                          //rowSpacing={2}
                       >
                         <InputLabel sx={{
                               display: "flex",
@@ -349,7 +324,6 @@ const Form = () => {
                           required
                           id="type"
                           name="type"
-                          //sx={{ width: '6em' }}
                           value={formik.values.type}
                           onChange={formik.handleChange}
                           error={
@@ -380,7 +354,6 @@ const Form = () => {
                           name="latitude"
                           value={formik.values.latitude}
                           onChange={formik.handleChange}
-                          //sx={{ width: '6em' }}
                           error={
                             formik.touched.latitude && Boolean(formik.errors.latitude)
                           }
@@ -405,7 +378,6 @@ const Form = () => {
                           required
                           id="location"
                           name="location"
-                          //sx={{ width: '6em' }}
                           value={formik.values.location}
                           onChange={formik.handleChange}
                           error={
@@ -432,7 +404,6 @@ const Form = () => {
                           required
                           id="text"
                           name="text"
-                          //sx={{ width: '6em' }}
                           value={formik.values.text}
                           onChange={formik.handleChange}
                           error={
@@ -459,7 +430,6 @@ const Form = () => {
                           required
                           id="firstWord"
                           name="firstWord"
-                          //sx={{ width: '6em' }}
                           value={formik.values.firstWord}
                           onChange={formik.handleChange}
                           error={
@@ -488,7 +458,6 @@ const Form = () => {
                           required
                           id="discoveredYear"
                           name="discoveredYear"
-                          //sx={{ width: '6em' }}
                           value={formik.values.discoveredYear}
                           onChange={formik.handleChange}
                           error={
@@ -518,7 +487,6 @@ const Form = () => {
                           type="number"
                           id="longitude"
                           name="longitude"
-                          //sx={{ width: '6em' }}
                           value={formik.values.longitude}
                           onChange={formik.handleChange}
                           error={
@@ -545,7 +513,6 @@ const Form = () => {
                           required
                           id="place"
                           name="place"
-                          //sx={{ width: '6em' }}
                           value={formik.values.place}
                           onChange={formik.handleChange}
                           error={
