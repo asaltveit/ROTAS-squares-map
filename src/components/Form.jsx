@@ -144,11 +144,63 @@ const Form = () => {
       })
     }*/
 
-    async function getNonce(){
+    /*async function getNonce(){
       return await generateNonce()
-    }
+    }*/
+
     // from https://supabase.com/docs/guides/auth/social-login/auth-google
     useEffect(() => {
+      const initializeGoogleOneTap = () => {
+        console.log('Initializing Google One Tap')
+        window.addEventListener('load', async () => {
+          const [nonce, hashedNonce] = await generateNonce()
+          console.log('Nonce: ', nonce, hashedNonce)
+          // check if there's already an existing session before initializing the one-tap UI
+          const { data, error } = await supabase.auth.getSession()
+          if (error) {
+            console.error('Error getting session', error)
+          }
+          if (data.session) {
+            router.push('/')
+            return
+          }
+          if (!window.google) return;
+          /* global google */
+          google.accounts.id.initialize({
+            client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+            callback: async (response) => {
+              try {
+                // send id token returned in response.credential to supabase
+                const { data, error } = await supabase.auth.signInWithIdToken({
+                  provider: 'google',
+                  token: response.credential,
+                  nonce,
+                })
+                if (error) throw error
+                console.log('Session data: ', data)
+                console.log('Successfully logged in with Google One Tap')
+                // redirect to protected page
+                setShowForm(true)
+              } catch (error) {
+                console.error('Error logging in with Google One Tap', error)
+              }
+            },
+            nonce: hashedNonce,
+            // with chrome's removal of third-party cookiesm, we need to use FedCM instead (https://developers.google.com/identity/gsi/web/guides/fedcm-migration)
+            use_fedcm_for_prompt: true,
+          })
+          google.accounts.id.prompt() // Display the One Tap UI
+          /*google.accounts.id.renderButton(
+            document.getElementById("google-sso-button"),
+            { theme: "outline", size: "large", width: "400px" }  // customization attributes
+          );*/
+        })
+      }
+      initializeGoogleOneTap()
+      return () => window.removeEventListener('load', initializeGoogleOneTap)
+    }, [])
+    
+    /*useEffect(() => {
       window.addEventListener('load', async () => {
         const [nonce, hashedNonce] = getNonce()
         google.accounts.id.initialize({
@@ -175,8 +227,9 @@ const Form = () => {
           // with chrome's removal of third-party cookiesm, we need to use FedCM instead (https://developers.google.com/identity/gsi/web/guides/fedcm-migration)
           use_fedcm_for_prompt: true,
         })
+        google.accounts.id.prompt()
       })
-    }, [])
+    }, [])*/
 
     return (
       <>
