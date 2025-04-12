@@ -6,7 +6,7 @@ export const useMapStore = create()(
   immer((set) => ({
     locations: [],
     formSubmitted: 0,
-    filtersSubmitted: 0,
+    filtersSubmitted: 0, // Is this needed?
     // Does this need to be set like this?
     locationTypes: ["manuscript", "amulet", "inscription", "graffito", "dipinto"],
     
