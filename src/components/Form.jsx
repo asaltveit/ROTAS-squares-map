@@ -121,9 +121,13 @@ const Form = () => {
         try {
           const data = cleanValues(values, latitudes, longitudes)
           // check post rules
-          //const response = await axios.post('https://roslvahbgkokyokgiphb.supabase.co/locations', {data: data});
-          console.log("response: ", response)
+          const { error } = await supabase
+            .from('locations')
+            .insert(data);
+          
           setWaiting(false)
+          if (error) throw error
+
           setSuccess(true)
           updateformSubmitted()
         } catch (error) {
@@ -193,6 +197,7 @@ const Form = () => {
               justifySelf: 'center',
               width: '30%'
             }}>
+              {/* Button looks different locally and live */}
             <GoogleLogin onSuccess={(response) => handleSignInWithGoogle(response)} onError={(error) => console.log(error)}  />
           </Box>
           </>
@@ -563,7 +568,7 @@ const Form = () => {
                   > { /* order, various messages+symbols */ }
                     {!waiting ? 'Save' : 'Saving...'}
                     { waiting ? <CircularProgress /> : '' /* a loading symbol */ }
-                    { /* TODO remove success symbol when form changed */ }
+                    { /* TODO remove success symbol when form changed - switch to react-hook-form? */ }
                     { !waiting && success ? <CheckBoxIcon aria-label="success-checkmark" /> : '' }
                   </Button>
                 </Grid2>
