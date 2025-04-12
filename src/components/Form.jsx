@@ -139,7 +139,6 @@ const Form = () => {
     // TODO Make font black?
 
     async function handleSignInWithGoogle(response) {
-      console.log("response: ", response)
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: 'google',
         token: response.credential,
@@ -148,10 +147,6 @@ const Form = () => {
       if (error) throw error
       setShowForm(true)
     }
-
-    /*async function getNonce(){
-      return await generateNonce()
-    }*/
 
     // from https://supabase.com/docs/guides/auth/social-login/auth-google
     useEffect(() => {
@@ -174,33 +169,11 @@ const Form = () => {
           /* global google */
           google.accounts.id.initialize({
             client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-            /*callback: async (response) => {
-              try {
-                // send id token returned in response.credential to supabase
-                const { data, error } = await supabase.auth.signInWithIdToken({
-                  provider: 'google',
-                  token: response.credential,
-                  nonce,
-                })
-                if (error) throw error
-                console.log('Session data: ', data)
-                console.log('Successfully logged in with Google One Tap')
-                // redirect to protected page
-                setShowForm(true)
-              } catch (error) {
-                console.error('Error logging in with Google One Tap', error)
-              }
-            },*/
             nonce: hashedNonce,
             redirect_uri: "https://roslvahbgkokyokgiphb.supabase.co/auth/v1/callback",
             // with chrome's removal of third-party cookiesm, we need to use FedCM instead (https://developers.google.com/identity/gsi/web/guides/fedcm-migration)
             use_fedcm_for_prompt: true,
           })
-          //google.accounts.id.prompt() // Display the One Tap UI
-          /*google.accounts.id.renderButton(
-            document.getElementById("google-sso-button"),
-            { theme: "outline", size: "large", width: "400px" }  // customization attributes
-          );*/
         })
       }
       initializeGoogleOneTap()
