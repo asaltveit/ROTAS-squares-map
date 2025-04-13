@@ -113,7 +113,8 @@ function App() {
       style: {
         background: "white"
       },
-      projection: {type: "orthographic", inset: -450, rotate: [-10, -35]},
+      // original = projection: {type: "orthographic", inset: -450, rotate: [-10, -35]},
+      projection: {type: "orthographic", inset: -500, rotate: [-17, -35]},
         marks: [
           Plot.geo(mapData),
           Plot.dot(visibleLocations, {
@@ -134,8 +135,8 @@ function App() {
           })),
         ],
         // Canvas doesn't include legend
-        height: 600, // Canvas height
-        width: 800, // Canvas width
+        height: 700, // Canvas height // original = 600
+        width: 900, // Canvas width // original = 800
         symbol: {legend: true, domain: locationTypes, range: symbols},
         color: { domain: locationTypes, scheme: "turbo"},
     });
@@ -146,12 +147,12 @@ function App() {
   return (
     <>
       <Box sx={{ width: '85%', justifySelf: 'center' }} >
-        <Typography variant="h1" gutterBottom>ROTAS Squares Map</Typography>
-        <Box  sx={{margin: '20px'}}  >
+        <Typography variant="h1" gutterBottom> ROTAS Squares Map </Typography>
+        <Box sx={{margin: '20px'}} >
           <Box className="card">
             {/* TODO - Control size of map section */}
             <TimelineSlider onValueChange={setTimelineYear} type={yearType} />
-            <Box className="card">
+            <Box>
               <Box ref={mapRef}></Box>
             </Box>
           </Box>
