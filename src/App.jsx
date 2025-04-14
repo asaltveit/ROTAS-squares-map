@@ -1,20 +1,25 @@
+// React
 import { useState, useEffect, useRef } from 'react';
-import { useShallow } from 'zustand/react/shallow'
+import { useShallow } from 'zustand/react/shallow';
+// Map
 import * as Plot from "@observablehq/plot";
 import { feature } from "topojson-client";
 import geoData from "./data/countries-geo.json"
+// Components
 import TimelineSlider from "./components/TimelineSlider";
 import OptionsAccordion from './components/OptionsAccordion';
 import Form from './components/Form';
 import FilterSection from './components/FilterSection';
+// UI
 import './css/App.css';
-import Box from '@mui/material/Box';
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { allSymbols } from './constants/Map';
+// Utilities
 import { useMapStore} from './utilities/MapStore'
 import { useFilterStore } from './utilities/FilterStore';
 import { plotPointTitle } from './utilities/UtilityFunctions';
 import { yearType as yrType } from './constants/FilterSection';
+// DB
 import { supabase } from './supabaseClient';
 
 

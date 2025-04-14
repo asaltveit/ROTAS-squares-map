@@ -53,7 +53,7 @@ export default function TimelineSlider({ onValueChange}) {
     }
 
     const playAnim = () => {
-        setPlayAnimation(true)
+        setPlayAnimation(!playAnimation)
     }
 
     useEffect(() => {
@@ -80,9 +80,8 @@ export default function TimelineSlider({ onValueChange}) {
         <>
             <Box >
                 <Box aria-label="timeline type" sx={{ marginBottom: '5px' }}> Timeline - {convertYearTypetoView(yearType)} </Box>
-                <Box sx={{ display: 'flex', alignContent: 'center' }}>
-                    <Button aria-label="play button" variant='outlined' sx={{ marginRight: '10px' }} onClick={playAnim}> Play </Button>
-                    <Button aria-label="stop button" variant='outlined' sx={{ marginRight: '30px' }} onClick={() => setPlayAnimation(false)}> Stop </Button>
+                <Box sx={{ display: 'flex', alignContent: 'center', justifyContent: 'center' }}>
+                    <Button aria-label="play button" variant='contained' sx={{ marginRight: '30px', justifySelf: 'center' }} onClick={playAnim}> { !playAnimation ? "Play" : "Stop"} </Button>
                     <Slider
                         min={min}
                         max={max}
