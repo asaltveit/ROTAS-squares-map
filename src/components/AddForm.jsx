@@ -448,7 +448,7 @@ export const AddForm = ({ latitudes, longitudes }) => {
                 <Button
                 sx={{ mt: 3 }}
                 type="submit"
-                variant="outlined"
+                variant='contained'
                 id="saveButton"
                 name="saveButton"
                 disabled={waiting}

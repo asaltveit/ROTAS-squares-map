@@ -211,7 +211,7 @@ export default function FilterSection() {
                     </FormGroup>
                 </Grid2>*/}
             </Grid2>
-            <Button variant='outlined' onClick={clearAllFilters} > Clear All </Button>
+            <Button variant='contained' sx={{ marginTop: '30px' }} onClick={clearAllFilters} > Clear All </Button>
         </Box>
     );
 }
