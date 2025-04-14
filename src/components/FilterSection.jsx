@@ -20,6 +20,8 @@ export default function FilterSection() {
     const [locationCheck, setLocationCheck] = useState(false);
     const [yearTypeCheck, setYearTypeCheck] = useState(false);
     const [yearRangeCheck, setYearRangeCheck] = useState(false);
+    // Increment each time to clear all dropdowns' local state
+    let clear = 0;
 
     const { formSubmitted, locationTypes } = useMapStore(
         useShallow((state) => ({ 
@@ -141,6 +143,8 @@ export default function FilterSection() {
         setTextCheck(false)
         setTimelineStart(0)
         setTimelineEnd(2100)
+        // Dropdowns' Local State
+        clear += 1;
     }
 
 
@@ -163,8 +167,12 @@ export default function FilterSection() {
                         alignItems="center"
                     >
                         <Grid2 direction="row" container justifyContent="center">
-                            <Grid2 justifyContent="flex-start">
-                                <FormGroup >
+                            <Grid2 justifyContent="flex-start" direction="column">
+                                <DropDown aria-label="location-type-dropdown" onValueChange={setTypeFilter} items={convertStringsToOptions(locationTypes)} label="Type" clear={clear} ></DropDown>
+                                <DropDown aria-label="script-dropdown" onValueChange={setScriptFilter} items={scripts} label="Script" clear={clear} ></DropDown>
+                                <DropDown aria-label="text-dropdown" onValueChange={setTextFilter} items={texts} label="Text" clear={clear} ></DropDown>
+                                <DropDown aria-label="first-word-dropdown" onValueChange={setFirstWordFilter} items={firstWords} label="First word" clear={clear} ></DropDown>
+                                {/*<FormGroup >
                                     <FormControlLabel control={<Switch aria-label="location-type-switch" checked={locationTypeCheck} onChange={(event) => { setTypeFilter(null); setLocationTypeCheck(event.target.checked)}} />} label="Type" sx={{ mt: 2.5 }} />
                                     { locationTypeCheck && <DropDown aria-label="location-type-dropdown" onValueChange={setTypeFilter} items={convertStringsToOptions(locationTypes)} label="Type" ></DropDown> }
                                 </FormGroup>
@@ -179,17 +187,19 @@ export default function FilterSection() {
                                 <FormGroup >
                                     <FormControlLabel control={<Switch aria-label="first-word-switch" checked={firstWordCheck} onChange={(event) => { setFirstWordFilter(null); setFirstWordCheck(event.target.checked)}} />} label="First word" sx={{ mt: 2.5 }} />
                                     { firstWordCheck && <DropDown aria-label="first-word-dropdown" onValueChange={setFirstWordFilter} items={firstWords} label="First word" ></DropDown> }
-                                </FormGroup>
+                                </FormGroup>*/}
                             </Grid2>
-                            <Grid2 justifyContent="flex-end">
-                                <FormGroup >
+                            <Grid2 justifyContent="flex-end" direction="column">
+                                <DropDown aria-label="place-dropdown" onValueChange={setPlaceFilter} items={places} label="Place" clear={clear} ></DropDown>
+                                <DropDown aria-label="location-dropdown" onValueChange={setLocationFilter} items={locs} label="Location" clear={clear} ></DropDown>
+                                {/*<FormGroup >
                                     <FormControlLabel control={<Switch aria-label="place-switch" checked={placeCheck} onChange={(event) => { setPlaceFilter(null); setPlaceCheck(event.target.checked)}} />} label="Place" sx={{ mt: 2.5 }} />
                                     { placeCheck && <DropDown aria-label="place-dropdown" onValueChange={setPlaceFilter} items={places} label="Place" ></DropDown> }
                                 </FormGroup>
                                 <FormGroup >
                                     <FormControlLabel control={<Switch aria-label="location-switch" checked={locationCheck} onChange={(event) => { setLocationFilter(null); setLocationCheck(event.target.checked)}} />} label="Location" sx={{ mt: 2.5 }} />
-                                    { locationCheck && <DropDown aria-label="location-dropdown" onValueChange={setLocationFilter} items={locs} label="Location" ></DropDown> /* something wrong when selecting long text? */}
-                                </FormGroup>
+                                    { locationCheck && <DropDown aria-label="location-dropdown" onValueChange={setLocationFilter} items={locs} label="Location" ></DropDown> /* something wrong when selecting long text? }
+                                </FormGroup>*/}
                             </Grid2>
                         </Grid2>
                         

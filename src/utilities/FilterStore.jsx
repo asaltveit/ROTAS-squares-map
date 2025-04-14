@@ -18,11 +18,11 @@ export const useFilterStore = create()(
     // 6 below are fetched
     // TODO: why are option types and location types different?
     optionTypes: ["manuscript", "amulet", "inscription", "graffito", "dipinto"],
-    scripts: null,
-    texts: null,
-    locs: null,
-    firstWords: null,
-    places: null,
+    scripts: [],
+    texts: [],
+    locs: [],
+    firstWords: [],
+    places: [],
     // Timeline years
     yearType: yrType.created, // "created" vs "discovered"
     timelineYear: 0,
