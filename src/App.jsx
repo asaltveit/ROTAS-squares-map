@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow'
 import * as Plot from "@observablehq/plot";
-import mapData from "./data/custom.geo.json";
+import { feature } from "topojson-client";
+import geoData from "./data/countries-geo.json"
 import TimelineSlider from "./components/TimelineSlider";
 import OptionsAccordion from './components/OptionsAccordion';
 import Form from './components/Form';
@@ -20,6 +21,7 @@ import { supabase } from './supabaseClient';
 function App() {
   const mapRef = useRef();
   const [visibleLocations, setVisibleLocations] = useState([]);
+  const [mapData, setMapData] = useState([]);
 
   const { locations, setLocations, formSubmitted, locationTypes, setLocationTypes } = useMapStore(
     useShallow((state) => ({ 
@@ -49,13 +51,12 @@ function App() {
       header: "Filters",
       body: <FilterSection />,
     },
-    // removing until auth in place
     {
       header: "Manipulate Data",
       body: <Form />,
     },
   ];
-  // TODO - all gets getting called twice
+  // TODO - all gets getting called twice?
   useEffect(() => {
     getLocations();
   }, [formSubmitted, filters]);
@@ -106,17 +107,30 @@ function App() {
 
   }, [timelineYear, locations, yearType]);
 
+  async function getMapData() {
+    const geojson = feature(geoData, geoData.objects.land);
+    return geojson;
+  }
+
+  useEffect(() => {
+    async function fetchData() {
+        const data = await getMapData();
+        setMapData(data);
+    }
+    fetchData();
+  }, []);
+
   useEffect(() => {
     if (visibleLocations === undefined) return;
-    // TODO: Move plot to separate file
+    if (!mapData) return <div>Loading...</div>;
+    // TODO: Move plot to separate file?
     const chart = Plot.plot({
       style: {
-        background: "white"
+        background: "lightBlue"
       },
-      // original = projection: {type: "orthographic", inset: -450, rotate: [-10, -35]},
-      projection: {type: "orthographic", inset: -500, rotate: [-17, -35]},
+      projection: {type: "orthographic", inset: -800, rotate: [-15, -43]},
         marks: [
-          Plot.geo(mapData),
+          Plot.geo(mapData, {fill: "#638a5c "}),
           Plot.dot(visibleLocations, {
             x: "longitude",
             y: "latitude",
@@ -135,11 +149,12 @@ function App() {
           })),
         ],
         // Canvas doesn't include legend
-        height: 700, // Canvas height // original = 600
-        width: 900, // Canvas width // original = 800
+        height: 600, // Canvas height
+        width: 850, // Canvas width
         symbol: {legend: true, domain: locationTypes, range: symbols},
         color: { domain: locationTypes, scheme: "turbo"},
     });
+    
     mapRef.current.append(chart);
     return () => chart.remove();
   }, [visibleLocations]);
@@ -148,7 +163,7 @@ function App() {
     <>
       <Box sx={{ width: '85%', justifySelf: 'center' }} >
         <Typography variant="h1" gutterBottom> ROTAS Squares Map </Typography>
-        <Box sx={{margin: '20px'}} >
+        <Box sx={{margin: '10px'}} >
           <Box className="card">
             {/* TODO - Control size of map section */}
             <TimelineSlider onValueChange={setTimelineYear} type={yearType} />
