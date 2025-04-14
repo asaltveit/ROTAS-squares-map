@@ -6,7 +6,6 @@ import { useFilterStore } from '../utilities/FilterStore';
 
 // TODO - Add breakpoints for smaller windows
 // TODO - Stop animation when clicked
-// TODO - turn play button into stop when playing, only have one button?
 
 export default function TimelineSlider({ onValueChange}) {
     let anim;

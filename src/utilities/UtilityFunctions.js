@@ -39,27 +39,25 @@ export function findNewFloat(currentFloats, f) {
 export function plotPointTitle(point) {
     let title = "Created from: " + point.created_year_start
     if (point.created_year_end) {
-        title += "-" + point.created_year_end + "\n\n"
-    } else {
-        title += "\n\n"
+        title += "-" + point.created_year_end
     }
     if (point.script) {
-        title += "Script: " + point.script + "\n\n"
+        title += "\n\n Script: " + point.script
     }
     if (point.text) {
-        title += "Text: " + point.text + "\n\n"
+        title += "\n\n Text: " + point.text
     }
     if (point.place) {
-        title += "Place: " + point.place + "\n\n"
+        title += "\n\n Place: " + point.place
     }
     if (point.location) {
-        title += "Location: " + point.location + "\n\n"
+        title += "\n\n Location: " + point.location
     }
     if (point.discovered_year) {
-        title += "Year Discovered: " + point.discovered_year + "\n\n"
+        title += "\n\n Year Discovered: " + point.discovered_year
     }
     if (point.shelfmark) {
-        title += "Shelfmark: " + point.shelfmark + "\n\n"
+        title += "\n\n Shelfmark: " + point.shelfmark
     }
     return title
 }
