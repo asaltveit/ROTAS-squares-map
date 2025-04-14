@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -14,21 +13,14 @@ Assumes:
     ],
     onValueChange = () => {}, // sets value in parent
     label = string,
-    clear = int, // when incremented/changed, clear local state
-
+    value = string, 
 */
 
-export default function DropDown({ onValueChange, items, label, clear }) {
-  const [value, setValue] = useState('');
+export default function DropDown({ onValueChange, items, label, value, empty=false }) {
 
   const handleChange = (event) => {
-    setValue(event.target.value);
     onValueChange(event.target.value);
   };
-
-  useEffect(() => {
-    setValue('')
-  }, [clear])
 
   return (
     <FormControl variant="standard" sx={{ minWidth: 120 }} size="small">
@@ -41,7 +33,7 @@ export default function DropDown({ onValueChange, items, label, clear }) {
         label={label}
         onChange={handleChange}
       >
-        <MenuItem aria-label={`menu item blank`} value={""} key={"blank"} >  </MenuItem>
+        { empty && <MenuItem aria-label={`menu item blank`} value={""} key={"blank"} >  </MenuItem> }
         {items.map((item) => {
               return (
                 <MenuItem aria-label={`menu item ${item?.title}`} value={item?.value} key={item?.value} > { item?.title } </MenuItem>

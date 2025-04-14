@@ -6,14 +6,14 @@ import { yearType as yrType } from '../constants/FilterSection'
 export const useFilterStore = create()(
   immer((set) => ({
     filters: {
-      location_type: null,
-      script: null,
-      text: null,
-      first_word: null,
-      place: null,
-      location: null,
-      longitude: null,
-      latitude: null,
+      location_type: '',
+      script: '',
+      text: '',
+      first_word: '',
+      place: '',
+      location: '',
+      longitude: '',
+      latitude: '',
     },
     // 6 below are fetched
     // TODO: why are option types and location types different?
@@ -114,15 +114,16 @@ export const useFilterStore = create()(
     clearFilters: () =>
         set((state) => {
             state.filters = {
-                location_type: null,
-                script: null,
-                text: null,
-                first_word: null,
-                place: null,
-                location: null,
-                longitude: null,
-                latitude: null,
+                location_type: '',
+                script: '',
+                text: '',
+                first_word: '',
+                place: '',
+                location: '',
+                longitude: '',
+                latitude: '',
             }
+            state.yearType = yrType.created
         }),
                                                                                                         
   })),
