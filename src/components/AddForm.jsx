@@ -10,6 +10,7 @@ import {
   TextField, 
 } from '@mui/material';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import NumberTextField from './NumberTextField.jsx'
 import { useMapStore } from '../utilities/MapStore.jsx'
 import { useShallow } from 'zustand/react/shallow'
 import { findNewFloat } from '../utilities/UtilityFunctions.js';
@@ -121,26 +122,22 @@ export const AddForm = ({ latitudes, longitudes }) => {
                     >
                         Years created*
                     </InputLabel>
-                    <TextField
-                    size="small"
-                    required
-                    type="number"
-                    id="createdYearStart"
-                    name="createdYearStart"
-                    sx={{ width: '6em' }}
-                    value={formik.values.createdYearStart}
-                    onChange={formik.handleChange}
-                    error={
-                        formik.touched.createdYearStart && Boolean(formik.errors.createdYearStart)
-                    }
-                    helperText={formik.touched.createdYearStart && formik.errors.createdYearStart}
+                    <NumberTextField
+                        required
+                        short
+                        name="createdYearStart"
+                        value={formik.values.createdYearStart}
+                        onChange={formik.handleChange}
+                        error={
+                            formik.touched.createdYearStart && Boolean(formik.errors.createdYearStart)
+                        }
+                        helperText={formik.touched.createdYearStart && formik.errors.createdYearStart}
                     />
                 </Grid2>
                 <Grid2 
                     sx={{
                     display: "flex",
                     alignSelf: 'center',
-                    
                     }}
                     container
                 >
@@ -155,12 +152,10 @@ export const AddForm = ({ latitudes, longitudes }) => {
                     >
                     to
                     </InputLabel>
-                    <TextField
-                    size="small"
+                    <NumberTextField
                     required
-                    id="createdYearEnd"
+                    short
                     name="createdYearEnd"
-                    sx={{ width: '6em' }}
                     value={formik.values.createdYearEnd}
                     onChange={formik.handleChange}
                     error={
@@ -212,11 +207,8 @@ export const AddForm = ({ latitudes, longitudes }) => {
                     >
                         Latitude*
                     </InputLabel>
-                    <TextField
-                        size="small"
+                    <NumberTextField
                         required
-                        type="number"
-                        id="latitude"
                         name="latitude"
                         value={formik.values.latitude}
                         onChange={formik.handleChange}
@@ -319,10 +311,8 @@ export const AddForm = ({ latitudes, longitudes }) => {
                     >
                         Discovered Year
                     </InputLabel>
-                    <TextField
-                        size="small"
+                    <NumberTextField
                         required
-                        id="discoveredYear"
                         name="discoveredYear"
                         value={formik.values.discoveredYear}
                         onChange={formik.handleChange}
@@ -347,11 +337,8 @@ export const AddForm = ({ latitudes, longitudes }) => {
                         >
                         Longitude*
                     </InputLabel>
-                    <TextField
-                        size="small"
+                    <NumberTextField
                         required
-                        type="number"
-                        id="longitude"
                         name="longitude"
                         value={formik.values.longitude}
                         onChange={formik.handleChange}
@@ -446,18 +433,18 @@ export const AddForm = ({ latitudes, longitudes }) => {
                 </Stack>
                 </Stack>
                 <Button
-                sx={{ mt: 3 }}
-                type="submit"
-                variant='contained'
-                id="saveButton"
-                name="saveButton"
-                disabled={waiting}
-                onClick={formik.handleSubmit}
-                > { /* order, various messages+symbols */ }
-                {!waiting ? 'Save' : 'Saving...'}
-                { waiting ? <CircularProgress /> : '' /* a loading symbol */ }
-                { /* TODO remove success symbol when form changed - switch to react-hook-form? */ }
-                { !waiting && success ? <CheckBoxIcon aria-label="success-checkmark" /> : '' }
+                    sx={{ mt: 3 }}
+                    type="submit"
+                    variant='contained'
+                    id="saveButton"
+                    name="saveButton"
+                    disabled={waiting}
+                    onClick={formik.handleSubmit}
+                    > { /* order, various messages+symbols */ }
+                    {!waiting ? 'Save' : 'Saving...'}
+                    { waiting ? <CircularProgress /> : '' /* a loading symbol */ }
+                    { /* TODO remove success symbol when form changed - switch to react-hook-form? */ }
+                    { !waiting && success ? <CheckBoxIcon aria-label="success-checkmark" /> : '' }
                 </Button>
             </Grid2>
         </form>
