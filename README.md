@@ -5,7 +5,7 @@ Per the request of someone doing historical research.
 
 ## Current Version
 
-<img width="1373" alt="Screenshot 2025-03-17 at 5 06 14 PM" src="https://github.com/user-attachments/assets/7fb72b07-13c8-4ddc-b915-201db71e240d" />
+<img width="1463" alt="Screenshot 2025-04-16 at 4 58 01 PM" src="https://github.com/user-attachments/assets/f95eb911-5bcc-46c1-915f-c68447a90fdf" />
 
 ## Why I built it this way
 - I wanted to work with d3, and found that Observable Plot (which is built off of d3) had the functionality I needed to create the map.
