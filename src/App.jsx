@@ -38,12 +38,14 @@ function App() {
     })),
   )
 
-  const { filters, yearType, timelineYear, setTimelineYear } = useFilterStore(
+  const { filters, yearType, timelineYear, setTimelineYear, timelineStart, timelineEnd } = useFilterStore(
     useShallow((state) => ({ 
       filters: state.filters, 
       yearType: state.yearType, 
       timelineYear: state.timelineYear,
       setTimelineYear: state.setTimelineYear,
+      timelineStart: state.timelineStart,
+      timelineEnd: state.timelineEnd,
     })),
   )
 
@@ -64,7 +66,7 @@ function App() {
   // TODO - all gets getting called twice?
   useEffect(() => {
     getLocations();
-  }, [formSubmitted, filters]);
+  }, [formSubmitted, filters, timelineStart, timelineEnd]);
 
   useEffect(() => {
     getTypes();
@@ -75,17 +77,23 @@ function App() {
         .keys(filters)
         .reduce((r,key) => 
           (filters[key] && (r[key]=filters[key]), r),{})
+
     if (resultFilters) {
-      // TODO: year type filter on clear breaking app
-      const { data, error } = await supabase.from("locations").select().match(resultFilters);
+      const { data, error } = await supabase.from("locations")
+      .select().match(resultFilters)
+      .gte('created_year_start', timelineStart)
+      .or(`created_year_end.is.null,created_year_end.lte.${timelineEnd}`);
       if (error) {
         console.log("getLocations filters error: ", error)
       }
       setLocations(data);
     } else {
-      const { data, error } = await supabase.from("locations").select();
+      const { data, error } = await supabase.from("locations")
+      .select()
+      .gte('created_year_start', timelineStart)
+      .or(`created_year_end.is.null,created_year_end.lte.${timelineEnd}`);
       if (error) {
-        console.log("getLocations error: ", error)
+        console.log("getLocations without filters error: ", error)
       }
       setLocations(data);
     }

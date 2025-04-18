@@ -62,6 +62,7 @@ export default function TimelineSlider({ onValueChange}) {
         if (playAnimation) {
             let i = year; // start wherever it is
             anim = setInterval(() => {
+                // If it hits the max, should've restarted
                 if (year == max) {
                     i = min;
                     setYear(min);

@@ -124,6 +124,8 @@ export const useFilterStore = create()(
                 latitude: '',
             }
             state.yearType = yrType.created
+            state.timelineStart = 0
+            state.timelineEnd = 2100
         }),
                                                                                                         
   })),

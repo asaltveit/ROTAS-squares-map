@@ -1,21 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow'
-import { Box, Typography, Button, Grid2 } from '@mui/material';
+import { Box, Typography, Button, Grid2, InputLabel } from '@mui/material';
 import DropDown from './DropDown';
 import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
 import { yearTypeOptions } from '../constants/FilterSection.js'
 import { useMapStore } from '../utilities/MapStore.jsx'
 import { useFilterStore } from '../utilities/FilterStore.jsx'
-//import RangeField from './RangeField.jsx'
+import RangeField from './RangeField.jsx'
 import { supabase } from '../supabaseClient';
 
 
 export default function FilterSection() {
-    // TODO: filter on year range
-    const [yearRange, setYearRange] = useState('');
-    // Increment each time to clear all dropdowns' local state
-    let clear = 0;
-
     const { formSubmitted, locationTypes } = useMapStore(
         useShallow((state) => ({ 
           formSubmitted: state.formSubmitted,
@@ -51,8 +46,6 @@ export default function FilterSection() {
         setPlaceFilter,
         setLocationFilter,
         setYearType,
-        //setTimelineStart,
-        //setTimelineEnd,
         clearFilters, 
     } = useFilterStore(
         useShallow((state) => ({ 
@@ -75,8 +68,6 @@ export default function FilterSection() {
             setPlaceFilter: state.setPlaceFilter,
             setLocationFilter: state.setLocationFilter,
             setYearType: state.setYearType,
-            setTimelineStart: state.setTimelineStart,
-            setTimelineEnd: state.setTimelineEnd,
             clearFilters: state.clearFilters,
 
             type: state.filters.location_type,
@@ -140,8 +131,6 @@ export default function FilterSection() {
     const clearAllFilters = () => {
         // Store
         clearFilters()
-        //setTimelineStart(0)
-        //setTimelineEnd(2100)
     }
 
 
@@ -187,12 +176,20 @@ export default function FilterSection() {
                     <Typography> Timeline Filters </Typography>
                     <Grid2 justifyContent="flex-end" container direction="column" rowSpacing={'10px'} marginTop={'10px'} >
                         <DropDown aria-label="year-type-dropdown" value={yearType} onValueChange={setYearType} items={yearTypeOptions} label="Year type" ></DropDown>
+                        <InputLabel 
+                            sx={{
+                            display: "flex",
+                            alignSelf: 'center',
+                            marginRight: '15px',
+                            marginTop: '10px',
+                            color: 'black',
+                            }}
+                            htmlFor="year-range-field"
+                        >
+                            Year range
+                        </InputLabel>
+                        <RangeField aria-label="year-range-field" ></RangeField>
                     </Grid2>
-                    {/* remove until these filters are working */}
-                    {/*<FormGroup sx={{display: "inline-block" }}>
-                        <FormControlLabel control={<Switch aria-label="year-range-switch" checked={yearRangeCheck} onChange={(event) => { setYearRangeCheck(event.target.checked) }} />} label="Year range" sx={{ mt: 2.5 }} />
-                        { yearRangeCheck && <RangeField aria-label="year-range-field" onValueChangeStart={setTimelineStart} onValueChangeEnd={setTimelineEnd} valueStart={timelineStart} valueEnd={timelineEnd}  ></RangeField> }
-                    </FormGroup>*/}
                 </Grid2>
             </Grid2>
             <Button variant='contained' sx={{ marginTop: '30px' }} onClick={clearAllFilters} > Clear All </Button>
