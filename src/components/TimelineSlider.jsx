@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { useShallow } from 'zustand/react/shallow'
-import { Slider, Button, Box } from '@mui/material';
+import { Slider, Button, Box, Stack, Typography, Grid2 } from '@mui/material';
 import { convertYearTypetoView } from '../utilities/UtilityFunctions'
 import { useFilterStore } from '../utilities/FilterStore';
 
@@ -79,21 +79,37 @@ export default function TimelineSlider({ onValueChange}) {
     return (
         <>
             <Box >
-                <Box aria-label="timeline type" sx={{ marginBottom: '5px' }}> Timeline - {convertYearTypetoView(yearType)} </Box>
-                <Box sx={{ display: 'flex', alignContent: 'center', justifyContent: 'center' }}>
-                    <Button aria-label="play button" variant='contained' sx={{ marginRight: '30px', justifySelf: 'center' }} onClick={playAnim}> { !playAnimation ? "Play" : "Stop"} </Button>
+                <Box 
+                    aria-label="timeline type" 
+                    sx={{ 
+                        marginBottom: '5px', 
+                    }}
+                > Timeline - {convertYearTypetoView(yearType)} </Box>
+                <Grid2 
+                    container
+                    spacing={3}
+                    sx={{ 
+                        marginLeft: '40px'
+                    }}
+                >
+                    <Button 
+                        aria-label="play button" 
+                        variant='contained'
+                        size="small"
+                        onClick={playAnim}
+                        > { !playAnimation ? "Play" : "Stop"} </Button>
                     <Slider
                         min={min}
                         max={max}
                         value={year}
                         aria-label={`timeline-${yearType} year slider`}
                         onChange={handleChange}
-                        sx={{ width: '500px'}}
+                        sx={{ width: '0.5'}}
                     />
-                    <Box style={{ paddingLeft: '20px'}}>
+                    <Box >
                         Year: {year}
                     </Box>
-                </Box>
+                </Grid2>
             </Box>
         </>
     );
