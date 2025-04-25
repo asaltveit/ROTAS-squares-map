@@ -13,6 +13,7 @@ import { supabase } from '../supabaseClient';
 import { GoogleLogin } from '@react-oauth/google';
 import '../css/Form.css';
 import { AddForm } from './AddForm.jsx';
+import { UpdateForm } from './UpdateForm.jsx';
 
 // TODO - Add options for update location and delete location
 
@@ -85,6 +86,8 @@ const Form = () => {
           if (data.session) {
             setShowForm(true)
             return
+          } else {
+            console.log("no sessions")
           }
           if (!window.google) return;
           /* global google */
@@ -123,7 +126,7 @@ const Form = () => {
           <FormTypeRadioButtonRow onValueChange={setFormType} />
           <Container>
             {formType === formTypes.update && 
-              <Box sx={{ color: "black"}}> Coming soon! </Box>
+              <UpdateForm latitudes={latitudes} longitudes={longitudes} />
             }
             {formType === formTypes.delete && 
               <Box sx={{ color: "black"}}> Coming soon! </Box>

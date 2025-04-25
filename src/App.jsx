@@ -28,13 +28,14 @@ function App() {
   const [visibleLocations, setVisibleLocations] = useState([]);
   const [mapData, setMapData] = useState([]);
 
-  const { locations, setLocations, formSubmitted, locationTypes, setLocationTypes } = useMapStore(
+  const { locations, setLocations, formSubmitted, locationTypes, setLocationTypes, setSelectedPoint } = useMapStore(
     useShallow((state) => ({ 
       formSubmitted: state.formSubmitted, 
       setLocations: state.setLocations, 
       locations: state.locations,
       locationTypes: state.locationTypes,
       setLocationTypes: state.setLocationTypes,
+      setSelectedPoint: state.setSelectedPoint,
     })),
   )
 
@@ -83,6 +84,7 @@ function App() {
       .select().match(resultFilters)
       .gte('created_year_start', timelineStart)
       .or(`created_year_end.is.null,created_year_end.lte.${timelineEnd}`);
+      
       if (error) {
         console.log("getLocations filters error: ", error)
       }
@@ -92,6 +94,7 @@ function App() {
       .select()
       .gte('created_year_start', timelineStart)
       .or(`created_year_end.is.null,created_year_end.lte.${timelineEnd}`);
+      
       if (error) {
         console.log("getLocations without filters error: ", error)
       }
@@ -133,6 +136,20 @@ function App() {
     fetchData();
   }, []);
 
+  const addClick = (index, scales, values, dimensions, context, next) => {
+    const el = next(index, scales, values, dimensions, context);
+    // Works if every mark is a circle
+    // Do a selector for each symbol type?
+    const circles = el.querySelectorAll("circle");
+    for (let i = 0; i < circles.length; i++) {
+      circles[i].addEventListener("click", () => {
+        // This won't work with other symbols, filter for 'id' instead
+        setSelectedPoint(locations[i]) 
+      });
+    } 
+    return el;
+  }
+
   useEffect(() => {
     if (visibleLocations === undefined) return;
     if (!mapData) return <div>Loading...</div>;
@@ -152,8 +169,8 @@ function App() {
             fillOpacity: 0.3,
             //symbol and color need to be bound to type
             r: 7,
-            symbol: "location_type",
-            
+            //symbol: "//"location_type",
+            render: addClick,
           }),
           Plot.tip(visibleLocations, Plot.pointer({
             x: "longitude",

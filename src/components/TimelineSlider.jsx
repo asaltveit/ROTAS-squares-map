@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { useShallow } from 'zustand/react/shallow'
-import { Slider, Button, Box, Stack, Typography, Grid2 } from '@mui/material';
+import { Slider, Button, Box, Grid2 } from '@mui/material';
 import { convertYearTypetoView } from '../utilities/UtilityFunctions'
 import { useFilterStore } from '../utilities/FilterStore';
 
