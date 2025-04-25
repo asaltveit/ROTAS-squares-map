@@ -34,6 +34,7 @@ let location = {
 }
 
 function cleanValues(values, latitudes, longitudes) {
+    console.log("values: ", values)
   let data = {}
   data.location_type = values.type
   data.created_year_start = values.createdYearStart;
@@ -68,33 +69,46 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
     }, [selectedPoint])
 
     const formik = useFormik({
-      initialValues: {
-        type: location.type,
-        createdYearStart: location.createdYearStart,
-        createdYearEnd: location.createdYearEnd,
-        discoveredYear: location.discoveredYear,
-        longitude: location.longitude,
-        latitude: location.latitude,
-        text: location.text,
-        place: location.place,
-        location: location.location,
-        script: location.script,
-        shelfmark: location.shelfmark,
-        firstWord: location.firstWord,
-      },
+        initialValues: selectedPoint ? {
+            type: selectedPoint.location_type,
+            createdYearStart: selectedPoint.created_year_start,
+            createdYearEnd: selectedPoint.created_year_end || location.createdYearEnd,
+            discoveredYear: selectedPoint.discovered_year || location.discoveredYear,
+            longitude: selectedPoint.longitude,
+            latitude: selectedPoint.latitude,
+            text: selectedPoint.text || location.text,
+            place: selectedPoint.place || location.place,
+            location: selectedPoint.location || location.location,
+            script: selectedPoint.script || location.script,
+            shelfmark: selectedPoint.shelfmark || location.shelfmark,
+            firstWord: selectedPoint.first_word || location.firstWord,
+        } : {
+            type: location.type,
+            createdYearStart: location.createdYearStart,
+            createdYearEnd: location.createdYearEnd,
+            discoveredYear: location.discoveredYear,
+            longitude: location.longitude,
+            latitude: location.latitude,
+            text: location.text,
+            place: location.place,
+            location: location.location,
+            script: location.script,
+            shelfmark: location.shelfmark,
+            firstWord: location.firstWord,
+        },
       validationSchema: locationSchema,
       onSubmit: async (values) => {
         setWaiting(true)
         try {
           const data = cleanValues(values, latitudes, longitudes)
-
-          const { error } = await supabase
+            console.log("data: ", data)
+          /*const { error } = await supabase
             .from('locations')
             .update(data)
-            .eq('id', selectedPoint.id);
+            .eq('id', selectedPoint.id);*/
           
           setWaiting(false)
-          if (error) throw error
+          //if (error) throw error
 
           setSuccess(true)
           updateformSubmitted()
@@ -103,7 +117,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
           setWaiting(false)
         }
       },
-      onChange: () => {
+      onChange: () => { // Does this work?
         setSuccess(false)
       },
       enableReinitialize: true,

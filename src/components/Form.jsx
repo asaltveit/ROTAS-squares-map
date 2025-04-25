@@ -86,8 +86,6 @@ const Form = () => {
           if (data.session) {
             setShowForm(true)
             return
-          } else {
-            console.log("no sessions")
           }
           if (!window.google) return;
           /* global google */
@@ -125,14 +123,14 @@ const Form = () => {
         { showForm && <Box >
           <FormTypeRadioButtonRow onValueChange={setFormType} />
           <Container>
+            {formType === formTypes.add && 
+              <AddForm latitudes={latitudes} longitudes={longitudes} />
+            }
             {formType === formTypes.update && 
               <UpdateForm latitudes={latitudes} longitudes={longitudes} />
             }
             {formType === formTypes.delete && 
               <Box sx={{ color: "black"}}> Coming soon! </Box>
-            }
-            {formType === formTypes.add && 
-              <AddForm latitudes={latitudes} longitudes={longitudes} />
             }
           </Container>
         </Box>}
