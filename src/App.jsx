@@ -22,6 +22,7 @@ import { yearType as yrType } from './constants/FilterSection';
 // DB
 import { supabase } from './supabaseClient';
 
+// TODO: Endpoints getting called in groups of threes?
 
 function App() {
   const mapRef = useRef();
@@ -181,8 +182,8 @@ function App() {
         // Canvas doesn't include legend
         height: 600, // Canvas height
         width: 850, // Canvas width
-        symbol: {legend: true, domain: locationTypes, range: symbols},
-        color: { domain: locationTypes, scheme: "turbo"},
+        //symbol: {legend: true, domain: locationTypes, range: symbols},
+        color: { legend: true, domain: locationTypes, scheme: "turbo"},
     });
     
     mapRef.current.append(chart);

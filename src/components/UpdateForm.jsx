@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useFormik } from 'formik';
-import { locationSchema } from '../utilities/AddLocationSchema.js';
+import { locationSchema } from '../utilities/UpdateLocationSchema.js';
 import { 
   Button, 
   InputLabel, 
@@ -11,51 +10,38 @@ import {
   Typography,
 } from '@mui/material';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import NumberTextField from './NumberTextField.jsx'
 import { useMapStore } from '../utilities/MapStore.jsx'
 import { useShallow } from 'zustand/react/shallow'
-import { findNewFloat } from '../utilities/UtilityFunctions.js';
+import { findNewFloat, mergeObjects, numberTransform } from '../utilities/UtilityFunctions.js';
 import { supabase } from '../supabaseClient';
 import '../css/Form.css';
-
-let location = {
-    type: '',
-    createdYearStart: '', 
-    createdYearEnd: '', 
-    discoveredYear: '', 
-    longitude: '', 
-    latitude: '',
-    text: '',
-    place: '',
-    location: '',
-    script: '',
-    shelfmark: '',
-    firstWord: '',
-}
+import { useForm, Controller } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
 
 function cleanValues(values, latitudes, longitudes) {
-    console.log("values: ", values)
+  // Should longitude, latitude  be included if their fields change?
   let data = {}
-  data.location_type = values.type
-  data.created_year_start = values.createdYearStart;
-  data.longitude = values.longitude
-  data.fixed_longitude = findNewFloat(longitudes, values.longitude)
-  data.latitude = values.latitude
-  data.fixed_latitude = findNewFloat(latitudes, values.latitude)
+  data.location_type = values.location_type
+  data.created_year_start = values.created_year_start;
+  data.created_year_end = values.created_year_end || null;
+  data.discovered_year = values.discovered_year || null;
+  //data.longitude = values.longitude 
+  data.fixed_longitude = findNewFloat(longitudes, values.fixed_longitude)
+  //data.latitude = values.latitude
+  data.fixed_latitude = findNewFloat(latitudes, values.fixed_latitude)
   data.text = values.text || null
   data.place = values.place || null
   data.location = values.location || null
   data.script = values.script || null
   data.shelfmark = values.shelfmark || null
-  data.first_word = values.firstWord || null
+  data.first_word = values.first_word || null
   return data;
 }
 
 export const UpdateForm = ({ latitudes, longitudes }) => {
     const [waiting, setWaiting] = useState(false);
     const [success, setSuccess] = useState(false);
-
-    // TODO: set default values / initial values from selected point
+    const [location, setLocation] = useState('');
 
     const { updateformSubmitted, selectedPoint } = useMapStore(
         useShallow((state) => ({ 
@@ -64,72 +50,52 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
         })),
     );
 
-    useEffect(() => {
-        console.log("selectedPoint: ", selectedPoint)
-    }, [selectedPoint])
+    const {
+        handleSubmit,
+        formState: { errors },
+        control,
+    } = useForm({
+        resolver: yupResolver(locationSchema),
+        values: location,
+    })
 
-    const formik = useFormik({
-        initialValues: selectedPoint ? {
-            type: selectedPoint.location_type,
-            createdYearStart: selectedPoint.created_year_start,
-            createdYearEnd: selectedPoint.created_year_end || location.createdYearEnd,
-            discoveredYear: selectedPoint.discovered_year || location.discoveredYear,
-            longitude: selectedPoint.longitude,
-            latitude: selectedPoint.latitude,
-            text: selectedPoint.text || location.text,
-            place: selectedPoint.place || location.place,
-            location: selectedPoint.location || location.location,
-            script: selectedPoint.script || location.script,
-            shelfmark: selectedPoint.shelfmark || location.shelfmark,
-            firstWord: selectedPoint.first_word || location.firstWord,
-        } : {
-            type: location.type,
-            createdYearStart: location.createdYearStart,
-            createdYearEnd: location.createdYearEnd,
-            discoveredYear: location.discoveredYear,
-            longitude: location.longitude,
-            latitude: location.latitude,
-            text: location.text,
-            place: location.place,
-            location: location.location,
-            script: location.script,
-            shelfmark: location.shelfmark,
-            firstWord: location.firstWord,
-        },
-      validationSchema: locationSchema,
-      onSubmit: async (values) => {
+    useEffect(() => {
+        setLocation(mergeObjects(selectedPoint))
+    }, [selectedPoint])
+    
+    const onSubmit = async (values) => {
         setWaiting(true)
         try {
-          const data = cleanValues(values, latitudes, longitudes)
-            console.log("data: ", data)
-          /*const { error } = await supabase
-            .from('locations')
-            .update(data)
-            .eq('id', selectedPoint.id);*/
-          
-          setWaiting(false)
-          //if (error) throw error
+            let otherLats = latitudes.filter((lat) => lat == values.latitude)
+            let otherLngs = longitudes.filter((lng) => lng == values.longitude)
+            const data = cleanValues(values, otherLats, otherLngs)
 
-          setSuccess(true)
-          updateformSubmitted()
+            // TODO: Add RLS policy for update
+            const { error } = await supabase 
+                .from('locations')
+                .update(data)
+                .eq('id', selectedPoint.id); 
+            
+            setWaiting(false)
+            if (error) throw error
+
+            setSuccess(true)
+            updateformSubmitted()
         } catch (error) {
-          console.error("Form submit error: ", error);
-          setWaiting(false)
+            console.error("Form submit error: ", error);
+            setWaiting(false)
         }
-      },
-      onChange: () => { // Does this work?
-        setSuccess(false)
-      },
-      enableReinitialize: true,
-    });
+    }
+    // TODO: Are the fields protected from attack? - https://www.reddit.com/r/reactjs/comments/11kiy7k/alternatives_to_dangerouslysetinnerhtml/
+    // TODO: Add password account instead of google auth?
 
     return (
         <>
-            { !selectedPoint && <Typography sx={{ paddingBottom: '10px' }}> Click on a point on the map to update it. </Typography> }
-            { selectedPoint &&
-                <form onSubmit={formik.handleSubmit}>
+            { typeof selectedPoint == "string" && <Typography sx={{ paddingBottom: '10px' }}> Click on a point on the map to update it. </Typography> }
+            { typeof selectedPoint == "object" &&
+                <form onSubmit={handleSubmit((data) => onSubmit(data))}>
                     <Grid2 
-                        // add sizing per screen size
+                        // TODO: add sizing per screen size
                     >
                         <Grid2 container sx={{marginBottom: '25px'}} justifyContent="center" >
                         <Grid2 
@@ -140,24 +106,34 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                         >
                             <InputLabel
                                 sx={{
-                                display: "flex",
-                                alignSelf: 'center',
-                                marginRight: '15px'
+                                    display: "flex",
+                                    alignSelf: 'center',
+                                    marginRight: '15px'
                                 }}
-                                htmlFor="createdYearStart"
+                                htmlFor="created_year_start"
                             >
                                 Years created*
                             </InputLabel>
-                            <NumberTextField
-                                required
-                                short
-                                name="createdYearStart"
-                                value={formik.values.createdYearStart}
-                                onChange={formik.handleChange}
-                                error={
-                                    formik.touched.createdYearStart && Boolean(formik.errors.createdYearStart)
+                            <Controller
+                                render={({ field: { onChange, onBlur, value } }) => 
+                                    <TextField 
+                                        required
+                                        size="small"
+                                        sx={{
+                                            width: '6em'
+                                        }}
+                                        name="created_year_start"
+                                        onChange={onChange}
+                                        onBlur={onBlur}
+                                        value={value}
+                                        error={
+                                            errors?.created_year_start?.message
+                                        }
+                                        helperText={errors?.created_year_start?.message}
+                                    />
                                 }
-                                helperText={formik.touched.createdYearStart && formik.errors.createdYearStart}
+                                name="created_year_start"
+                                control={control}
                             />
                         </Grid2>
                         <Grid2 
@@ -169,26 +145,36 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                         >
                             <InputLabel 
                             sx={{
-                            display: "flex",
-                            alignSelf: 'center',
-                            marginRight: '15px',
-                            marginLeft: '15px'
+                                display: "flex",
+                                alignSelf: 'center',
+                                marginRight: '15px',
+                                marginLeft: '15px'
                             }}
-                            htmlFor="createdYearEnd"
+                            htmlFor="created_year_end"
                             >
                             to
                             </InputLabel>
-                            <NumberTextField
-                            required
-                            short
-                            name="createdYearEnd"
-                            value={formik.values.createdYearEnd}
-                            onChange={formik.handleChange}
-                            error={
-                                formik.touched.createdYearEnd && Boolean(formik.errors.createdYearEnd)
-                            }
-                            helperText={formik.touched.createdYearEnd && formik.errors.createdYearEnd}
+                            <Controller
+                                render={({ field: { onChange, onBlur, value } }) => 
+                                    <TextField
+                                        size="small"
+                                        sx={{
+                                            width: '6em'
+                                        }}
+                                        name="created_year_end"
+                                        onChange={onChange}
+                                        onBlur={onBlur}
+                                        value={numberTransform(value)}
+                                        error={
+                                            errors?.created_year_end?.message
+                                        }
+                                        helperText={errors?.created_year_end?.message}
+                                    />
+                                }
+                                name="created_year_end"
+                                control={control}
                             />
+                            
                         </Grid2>
                         </Grid2>
                         <Stack direction="row" spacing={10} justifyContent="center" >
@@ -202,21 +188,26 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                     alignSelf: 'center',
                                     marginRight: '15px'
                                 }}
-                                htmlFor="type"
+                                htmlFor="location_type"
                             >
                                 Type*
                             </InputLabel>
-                            <TextField
-                                size="small"
-                                required
-                                id="type"
-                                name="type"
-                                value={formik.values.type}
-                                onChange={formik.handleChange}
-                                error={
-                                formik.touched.type && Boolean(formik.errors.type)
+                            <Controller
+                                render={({ field: { onChange, onBlur, value } }) => 
+                                    <TextField
+                                        size="small"
+                                        required
+                                        id="location_type"
+                                        name="location_type"
+                                        onChange={onChange}
+                                        onBlur={onBlur}
+                                        value={value}
+                                        error={ errors?.location_type?.message }
+                                        helperText={errors?.location_type?.message}
+                                    />
                                 }
-                                helperText={formik.touched.type && formik.errors.type}
+                                name="location_type"
+                                control={control}
                             />
                             </Stack>
                             <Stack
@@ -229,19 +220,27 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                 alignSelf: 'center',
                                 marginRight: '15px'
                                 }}
-                                htmlFor="latitude"
+                                htmlFor="fixed_latitude"
                             >
                                 Latitude*
                             </InputLabel>
-                            <NumberTextField
-                                required
-                                name="latitude"
-                                value={formik.values.latitude}
-                                onChange={formik.handleChange}
-                                error={
-                                formik.touched.latitude && Boolean(formik.errors.latitude)
+                            <Controller
+                                render={({ field: { onChange, onBlur, value } }) => 
+                                    <TextField
+                                        required
+                                        size="small"
+                                        name="fixed_latitude"
+                                        onChange={onChange}
+                                        onBlur={onBlur}
+                                        value={value}
+                                        error={
+                                            errors?.fixed_latitude?.message
+                                        }
+                                        helperText={errors?.fixed_latitude?.message}
+                                    />
                                 }
-                                helperText={formik.touched.latitude && formik.errors.latitude}
+                                name="fixed_latitude"
+                                control={control}
                             />
                         </Stack>
                         <Stack
@@ -257,17 +256,23 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                             >
                                 Location
                             </InputLabel>
-                            <TextField
-                                size="small"
-                                required
-                                id="location"
-                                name="location"
-                                value={formik.values.location}
-                                onChange={formik.handleChange}
-                                error={
-                                formik.touched.location && Boolean(formik.errors.location)
+                            <Controller
+                                render={({ field: { onChange, onBlur, value } }) => 
+                                    <TextField
+                                        size="small"
+                                        id="location"
+                                        name="location"
+                                        onChange={onChange}
+                                        onBlur={onBlur}
+                                        value={value}
+                                        error={
+                                            errors?.location?.message
+                                        }
+                                        helperText={errors?.location?.message}
+                                    />
                                 }
-                                helperText={formik.touched.location && formik.errors.location}
+                                name="location"
+                                control={control}
                             />
                         </Stack>
                         <Stack
@@ -283,17 +288,23 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                             >
                                 Text
                             </InputLabel>
-                            <TextField
-                                size="small"
-                                required
-                                id="text"
-                                name="text"
-                                value={formik.values.text}
-                                onChange={formik.handleChange}
-                                error={
-                                formik.touched.text && Boolean(formik.errors.text)
+                            <Controller
+                                render={({ field: { onChange, onBlur, value } }) => 
+                                    <TextField
+                                        size="small"
+                                        id="text"
+                                        name="text"
+                                        onChange={onChange}
+                                        onBlur={onBlur}
+                                        value={value}
+                                        error={
+                                            errors?.text?.message
+                                        }
+                                        helperText={errors?.text?.message}
+                                    />
                                 }
-                                helperText={formik.touched.text && formik.errors.text}
+                                name="text"
+                                control={control}
                             />
                         </Stack>
                         <Stack
@@ -305,21 +316,27 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                     alignSelf: 'center',
                                     marginRight: '15px'
                                 }}
-                                htmlFor="firstWord"
+                                htmlFor="first_word"
                             >
                                 First word
                             </InputLabel>
-                            <TextField
-                                size="small"
-                                required
-                                id="firstWord"
-                                name="firstWord"
-                                value={formik.values.firstWord}
-                                onChange={formik.handleChange}
-                                error={
-                                formik.touched.firstWord && Boolean(formik.errors.firstWord)
+                            <Controller
+                                render={({ field: { onChange, onBlur, value } }) => 
+                                    <TextField
+                                        size="small"
+                                        id="first_word"
+                                        name="first_word"
+                                        onChange={onChange}
+                                        onBlur={onBlur}
+                                        value={value}
+                                        error={
+                                            errors?.first_word?.message
+                                        }
+                                        helperText={errors?.first_word?.message}
+                                    />
                                 }
-                                helperText={formik.touched.firstWord && formik.errors.firstWord}
+                                name="first_word"
+                                control={control}
                             />
                             </Stack>
                     </Stack>
@@ -333,19 +350,26 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                     alignSelf: 'center',
                                     marginRight: '15px'
                                 }}
-                                htmlFor="discoveredYear"
+                                htmlFor="discovered_year"
                             >
                                 Discovered Year
                             </InputLabel>
-                            <NumberTextField
-                                required
-                                name="discoveredYear"
-                                value={formik.values.discoveredYear}
-                                onChange={formik.handleChange}
-                                error={
-                                formik.touched.discoveredYear && Boolean(formik.errors.discoveredYear)
+                            <Controller
+                                render={({ field: { onChange, onBlur, value } }) => 
+                                    <TextField
+                                        size="small"
+                                        name="discovered_year"
+                                        onChange={onChange}
+                                        onBlur={onBlur}
+                                        value={numberTransform(value)}
+                                        error={
+                                            errors?.discovered_year?.message
+                                        }
+                                        helperText={errors?.discovered_year?.message}
+                                    />
                                 }
-                                helperText={formik.touched.discoveredYear && formik.errors.discoveredYear}
+                                name="discovered_year"
+                                control={control}
                             />
                         </Stack>
                         
@@ -363,15 +387,23 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                 >
                                 Longitude*
                             </InputLabel>
-                            <NumberTextField
-                                required
-                                name="longitude"
-                                value={formik.values.longitude}
-                                onChange={formik.handleChange}
-                                error={
-                                formik.touched.longitude && Boolean(formik.errors.longitude)
+                            <Controller
+                                render={({ field: { onChange, onBlur, value } }) => 
+                                    <TextField
+                                        required
+                                        size="small"
+                                        name="fixed_longitude"
+                                        onChange={onChange}
+                                        onBlur={onBlur}
+                                        value={value}
+                                        error={
+                                            errors?.fixed_longitude?.message
+                                        }
+                                        helperText={errors?.fixed_longitude?.message}
+                                    />
                                 }
-                                helperText={formik.touched.longitude && formik.errors.longitude}
+                                name="fixed_longitude"
+                                control={control}
                             />
                         </Stack>
                         <Stack
@@ -387,17 +419,23 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                             >
                                 Place
                             </InputLabel>
-                            <TextField
-                                size="small"
-                                required
-                                id="place"
-                                name="place"
-                                value={formik.values.place}
-                                onChange={formik.handleChange}
-                                error={
-                                formik.touched.place && Boolean(formik.errors.place)
+                            <Controller
+                                render={({ field: { onChange, onBlur, value } }) => 
+                                    <TextField
+                                        size="small"
+                                        id="place"
+                                        name="place"
+                                        onChange={onChange}
+                                        onBlur={onBlur}
+                                        value={value}
+                                        error={
+                                            errors?.place?.message
+                                        }
+                                        helperText={errors?.place?.message}
+                                    />
                                 }
-                                helperText={formik.touched.place && formik.errors.place}
+                                name="place"
+                                control={control}
                             />
                         </Stack>
                         
@@ -414,18 +452,23 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                             >
                                 Script
                             </InputLabel>
-                            <TextField
-                                size="small"
-                                required
-                                id="script"
-                                name="script"
-                                //sx={{ width: '6em' }}
-                                value={formik.values.script}
-                                onChange={formik.handleChange}
-                                error={
-                                formik.touched.script && Boolean(formik.errors.script)
+                            <Controller
+                                render={({ field: { onChange, onBlur, value } }) => 
+                                    <TextField
+                                        size="small"
+                                        id="script"
+                                        name="script"
+                                        onChange={onChange}
+                                        onBlur={onBlur}
+                                        value={value}
+                                        error={
+                                            errors?.script?.message
+                                        }
+                                        helperText={errors?.script?.message}
+                                    />
                                 }
-                                helperText={formik.touched.script && formik.errors.script}
+                                name="script"
+                                control={control}
                             />
                         </Stack>
                         <Stack
@@ -441,23 +484,27 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                             >
                                 Shelfmark
                             </InputLabel>
-                            <TextField
-                                size="small"
-                                required
-                                id="shelfmark"
-                                name="shelfmark"
-                                //sx={{ width: '6em' }}
-                                value={formik.values.shelfmark}
-                                onChange={formik.handleChange}
-                                error={
-                                formik.touched.shelfmark && Boolean(formik.errors.shelfmark)
+                            <Controller
+                                render={({ field: { onChange, onBlur, value } }) => 
+                                    <TextField
+                                        size="small"
+                                        id="shelfmark"
+                                        name="shelfmark"
+                                        onChange={onChange}
+                                        onBlur={onBlur}
+                                        value={value}
+                                        error={
+                                            errors?.shelfmark?.message
+                                        }
+                                        helperText={errors?.shelfmark?.message}
+                                    />
                                 }
-                                helperText={formik.touched.shelfmark && formik.errors.shelfmark}
+                                name="shelfmark"
+                                control={control}
                             />
                         </Stack>
-                        
-                        </Stack>
-                        </Stack>
+                    </Stack>
+                    </Stack>
                         <Button
                             sx={{ mt: 3 }}
                             type="submit"
@@ -465,9 +512,9 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                             id="updateButton"
                             name="updateButton"
                             disabled={waiting}
-                            onClick={formik.handleSubmit}
+                            //onClick={handleSubmit((data) => onSubmit(data))}
                             > { /* order, various messages+symbols */ }
-                            {!waiting ? 'Update' : 'Update...'}
+                            {!waiting ? (success ? 'Updated' : 'Update') : 'Updating...'}
                             { waiting ? <CircularProgress /> : '' /* a loading symbol */ }
                             { /* TODO remove success symbol when form changed - switch to react-hook-form? */ }
                             { !waiting && success ? <CheckBoxIcon aria-label="success-checkmark" /> : '' }

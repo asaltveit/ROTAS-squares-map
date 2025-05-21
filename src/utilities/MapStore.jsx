@@ -7,7 +7,7 @@ export const useMapStore = create()(
     locations: [],
     formSubmitted: 0,
     filtersSubmitted: 0, // Is this needed?
-    selectedPoint: null, // Select by clicking on map
+    selectedPoint: '', // Select by clicking on map
     // Does this need to be set like this?
     locationTypes: ["manuscript", "amulet", "inscription", "graffito", "dipinto"],
     

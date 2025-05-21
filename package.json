@@ -13,6 +13,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@hookform/resolvers": "^5.0.1",
     "@mui/icons-material": "^6.4.1",
     "@mui/material": "^6.4.1",
     "@observablehq/plot": "^0.6.16",
@@ -23,6 +24,7 @@
     "immer": "^10.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.56.1",
     "react-scrubber": "^2.1.0",
     "topojson-client": "^3.1.0",
     "yup": "^1.6.1",

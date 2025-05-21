@@ -16,7 +16,8 @@ export function convertYearTypetoView(type) {
     return capitalize(type) + " year";
 }
 
-// TODO Move this to server side
+// TODO Move this to server side?
+// TODO - not working
 export function findNewFloat(currentFloats, f) {
     let dif = 0.2
     let i = 1
@@ -30,10 +31,34 @@ export function findNewFloat(currentFloats, f) {
             sign = -1
             }
         i += 1
-        newFloat = sign*i*dif 
+        newFloat += sign*i*dif
         // What if it gets real negative?
     }
     return newFloat
+}
+
+// TODO: Rename?
+export function mergeObjects(source) {
+    const out = {};
+  
+    for (const key in source) {
+        if (source[key] !== null && source[key] !== undefined) {
+            out[key] = source[key]
+        } else if (key == "discovered_year" || key == "created_year_end") {
+            out[key] = null
+        } else {
+            out[key] = ""
+        }
+    }
+    return out;
+}
+
+export function numberTransform(value) {
+    if (Number(value)) {
+        return Number(value)
+    } else {
+        return ''
+    }
 }
 
 export function plotPointTitle(point) {
