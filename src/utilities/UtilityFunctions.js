@@ -54,10 +54,11 @@ export function mergeObjects(source) {
 }
 
 export function numberTransform(value) {
-    if (Number(value)) {
+    // TODO: Not working?
+    if (value && Number(value)) {
         return Number(value)
     } else {
-        return ''
+        return null
     }
 }
 

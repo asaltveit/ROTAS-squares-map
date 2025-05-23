@@ -52,7 +52,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
 
     const {
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isDirty },
         control,
     } = useForm({
         resolver: yupResolver(locationSchema),
@@ -62,6 +62,10 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
     useEffect(() => {
         setLocation(mergeObjects(selectedPoint))
     }, [selectedPoint])
+
+    useEffect(() => {
+        setSuccess(false)
+    }, [isDirty])
     
     const onSubmit = async (values) => {
         setWaiting(true)
@@ -512,11 +516,9 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                             id="updateButton"
                             name="updateButton"
                             disabled={waiting}
-                            //onClick={handleSubmit((data) => onSubmit(data))}
                             > { /* order, various messages+symbols */ }
                             {!waiting ? (success ? 'Updated' : 'Update') : 'Updating...'}
                             { waiting ? <CircularProgress /> : '' /* a loading symbol */ }
-                            { /* TODO remove success symbol when form changed - switch to react-hook-form? */ }
                             { !waiting && success ? <CheckBoxIcon aria-label="success-checkmark" /> : '' }
                         </Button>
                     </Grid2>
