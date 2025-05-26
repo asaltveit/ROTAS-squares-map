@@ -55,6 +55,7 @@ function App() {
   let numTypes = locationTypes.length;
   let symbols = allSymbols.slice(0, numTypes);
 
+  // TODO: use suspense on children?
   const accordionChildren = [
     {
       header: "Filters",
@@ -190,6 +191,7 @@ function App() {
     return () => chart.remove();
   }, [visibleLocations]);
 
+  // TODO: Map changes causing re-rendering of all of App?
   return (
     <>
       <Box sx={{ width: '85%', justifySelf: 'center' }} >

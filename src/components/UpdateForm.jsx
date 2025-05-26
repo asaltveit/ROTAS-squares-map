@@ -92,6 +92,8 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
     }
     // TODO: Are the fields protected from attack? - https://www.reddit.com/r/reactjs/comments/11kiy7k/alternatives_to_dangerouslysetinnerhtml/
     // TODO: Add password account instead of google auth?
+    // TODO: Labels are no longer centered horizontally
+    // TODO: fixed vs not fixed lat/lng for error messages
 
     return (
         <>
@@ -124,7 +126,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                         required
                                         size="small"
                                         sx={{
-                                            width: '6em'
+                                            //width: '6em'
                                         }}
                                         name="created_year_start"
                                         onChange={onChange}
@@ -133,7 +135,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                         error={
                                             errors?.created_year_start?.message
                                         }
-                                        helperText={errors?.created_year_start?.message}
+                                        helperText={errors?.created_year_start ? errors?.created_year_start?.message.split(',')[0] : " "}
                                     />
                                 }
                                 name="created_year_start"
@@ -163,7 +165,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                     <TextField
                                         size="small"
                                         sx={{
-                                            width: '6em'
+                                            //width: '6em'
                                         }}
                                         name="created_year_end"
                                         onChange={onChange}
@@ -172,7 +174,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                         error={
                                             errors?.created_year_end?.message
                                         }
-                                        helperText={errors?.created_year_end?.message}
+                                        helperText={errors?.created_year_end ? errors?.created_year_end?.message.split(',')[0] : " "}
                                     />
                                 }
                                 name="created_year_end"
@@ -207,7 +209,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                         onBlur={onBlur}
                                         value={value}
                                         error={ errors?.location_type?.message }
-                                        helperText={errors?.location_type?.message}
+                                        helperText={errors?.location_type ? errors?.location_type?.message.split(',')[0] : " "}
                                     />
                                 }
                                 name="location_type"
@@ -240,7 +242,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                         error={
                                             errors?.fixed_latitude?.message
                                         }
-                                        helperText={errors?.fixed_latitude?.message}
+                                        helperText={errors?.fixed_latitude ? errors?.fixed_latitude?.message.split(',')[0] : " "}
                                     />
                                 }
                                 name="fixed_latitude"
@@ -272,7 +274,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                         error={
                                             errors?.location?.message
                                         }
-                                        helperText={errors?.location?.message}
+                                        helperText={errors?.location ? errors?.location?.message : " "}
                                     />
                                 }
                                 name="location"
@@ -304,7 +306,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                         error={
                                             errors?.text?.message
                                         }
-                                        helperText={errors?.text?.message}
+                                        helperText={errors?.text ? errors?.text?.message : " "}
                                     />
                                 }
                                 name="text"
@@ -336,7 +338,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                         error={
                                             errors?.first_word?.message
                                         }
-                                        helperText={errors?.first_word?.message}
+                                        helperText={errors?.first_word ? errors?.first_word?.message : " "}
                                     />
                                 }
                                 name="first_word"
@@ -369,7 +371,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                         error={
                                             errors?.discovered_year?.message
                                         }
-                                        helperText={errors?.discovered_year?.message}
+                                        helperText={errors?.discovered_year ? errors?.discovered_year?.message.split(',')[0] : " "}
                                     />
                                 }
                                 name="discovered_year"
@@ -403,7 +405,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                         error={
                                             errors?.fixed_longitude?.message
                                         }
-                                        helperText={errors?.fixed_longitude?.message}
+                                        helperText={errors?.fixed_longitude ? errors?.fixed_longitude?.message.split(',')[0] : " "}
                                     />
                                 }
                                 name="fixed_longitude"
@@ -435,7 +437,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                         error={
                                             errors?.place?.message
                                         }
-                                        helperText={errors?.place?.message}
+                                        helperText={errors?.place ? errors?.place?.message : " "}
                                     />
                                 }
                                 name="place"
@@ -468,7 +470,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                         error={
                                             errors?.script?.message
                                         }
-                                        helperText={errors?.script?.message}
+                                        helperText={errors?.script ? errors?.script?.message : " "}
                                     />
                                 }
                                 name="script"
@@ -500,7 +502,7 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
                                         error={
                                             errors?.shelfmark?.message
                                         }
-                                        helperText={errors?.shelfmark?.message}
+                                        helperText={errors?.shelfmark ? errors?.shelfmark?.message : " "}
                                     />
                                 }
                                 name="shelfmark"
