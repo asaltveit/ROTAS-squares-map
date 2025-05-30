@@ -16,6 +16,7 @@ import { AddForm } from './AddForm.jsx';
 import { UpdateForm } from './UpdateForm.jsx';
 
 // TODO - Add options for update location and delete location
+// TODO: Handle failed auth
 
 /*
 If someone clicks submit multiple times, it'll create multiple?

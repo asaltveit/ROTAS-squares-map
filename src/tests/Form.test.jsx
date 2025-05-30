@@ -1,276 +1,191 @@
 import Form from '../components/Form'
 import React from 'react';
-import { expect, describe, it, beforeEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react'
-//import axios from 'axios'
-//import userEvent from '@testing-library/user-event'
+import { expect, describe, it, beforeEach, vi, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 
-// TODO mock supabase
+// Mock constants
+const formTypes = {
+    add: 'add',
+    update: 'update',
+    delete: 'delete',
+};
 
-describe('Form', () => {
-    /*beforeEach(async () => {
-        vi.mock('axios');
-        const mockData = { data: [40.75080889, 40.7501907] };
-        axios.get.mockResolvedValue(mockData);
-    })*/
-    describe('Add type', () => {
-        it('renders correctly', () => {
+const signInWithIdTokenMock = vi.fn();
+const getSessionMock = vi.fn();
+const rpcMock = vi.fn();
+  
+vi.mock('../constants/formTypes', () => ({
+    formTypes,
+}));
+
+// Mock supabase
+
+vi.mock('../supabaseClient', () => ({
+    supabase: {
+        auth: {
+            signInWithIdToken: signInWithIdTokenMock,
+            getSession: getSessionMock,
+        },
+        rpc: rpcMock,
+    },
+}));
+
+// Mock generateNonce
+vi.mock('../utilities/UtilityFunctions.js', () => ({
+    generateNonce: () => Promise.resolve(['nonce123', 'hashedNonce123']),
+}));
+  
+  // Mock form components
+  vi.mock('./AddForm', () => () => <div>AddForm</div>);
+  vi.mock('./UpdateForm', () => () => <div>UpdateForm</div>);
+  vi.mock('./FormTypeRadioButtonRow', () => ({ onValueChange }) => (
+    <div>
+      <button onClick={() => onValueChange('add')}>Add</button>
+      <button onClick={() => onValueChange('update')}>Update</button>
+      <button onClick={() => onValueChange('delete')}>Delete</button>
+    </div>
+  ));
+  
+  // Mock useMapStore
+  vi.mock('../store/useMapStore', () => ({
+    useMapStore: (sel) => sel({ formSubmitted: false }),
+  }));
+  
+  // Mock GoogleLogin
+  vi.mock('@react-oauth/google', () => ({
+    GoogleLogin: ({ onSuccess }) => (
+      <button onClick={() => onSuccess({ credential: 'fake-credential' })}>Mock Google Login</button>
+    ),
+  }));
+  
+describe('Form component', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+        vi.useFakeTimers();
+        signInWithIdTokenMock.mockResolvedValue({ data: {}, error: null });
+        getSessionMock.mockResolvedValue({ data: { session: null }, error: null });
+        rpcMock.mockImplementation((fn) => {
+            if (fn === 'get_fixed_latitudes') return Promise.resolve({ data: ['lat1'], error: null });
+            if (fn === 'get_fixed_longitude') return Promise.resolve({ data: ['lon1'], error: null });
+            return Promise.resolve({ data: null, error: null });
+        });
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    it('renders Google login prompt when not authenticated', async () => {
+        render(<Form />);
+    
+        expect(screen.getByText(/Log in to access database/i)).toBeInTheDocument();
+        expect(screen.getByText(/Mock Google Login/i)).toBeInTheDocument();
+    });
+
+    it('renders AddForm by default and switches to UpdateForm and Delete', async () => {
+        render(<Form />);
+    
+        fireEvent.click(screen.getByText(/Mock Google Login/i));
+    
+        // Add form shown initially
+        await waitFor(() => { // why no i?
+          expect(screen.getByText(/AddForm/i)).toBeInTheDocument();
+        });
+    
+        // Switch to update
+        fireEvent.click(screen.getByText(/Update/i));
+        expect(screen.getByText(/UpdateForm/)).toBeInTheDocument();
+    
+        // Switch to delete
+        fireEvent.click(screen.getByText(/Delete/i));
+        expect(screen.getByText(/Coming soon!/i)).toBeInTheDocument();
+    });
+    
+    describe('Google Login', () => {
+        it('shows form after Google login', async () => {
             render(<Form />);
-            
-            // Years created range
-            const startYear = screen.getByLabelText('Years created*');
-            expect(startYear).toBeInTheDocument();
     
-            const endYear = screen.getByLabelText('to');
-            expect(endYear).toBeInTheDocument();
+            fireEvent.click(screen.getByText(/Mock Google Login/i));
     
-            // Columns
-            const yearRange = screen.getByLabelText('Shelfmark');
-            expect(yearRange).toBeInTheDocument();
-    
-            const place = screen.getByLabelText('Place');
-            expect(place).toBeInTheDocument();
-            
-            const type = screen.getByLabelText('Type*');
-            expect(type).toBeInTheDocument();
-    
-            const script = screen.getByLabelText('Script');
-            expect(script).toBeInTheDocument();
-    
-            const text = screen.getByLabelText('Text');
-            expect(text).toBeInTheDocument();
-    
-            const firstWord = screen.getByLabelText('First word');
-            expect(firstWord).toBeInTheDocument();
-    
-            const location = screen.getByLabelText('Location');
-            expect(location).toBeInTheDocument();
-    
-            const latitude = screen.getByLabelText('Latitude*');
-            expect(latitude).toBeInTheDocument();
-
-            const longitude = screen.getByLabelText('Longitude*');
-            expect(longitude).toBeInTheDocument();
-
-            const saveButton = screen.getByText('Save');
-            expect(saveButton).toBeInTheDocument();
-        }) 
-        /*describe('Field error messages', () => {
-            it('Start year created', async () => {
-                render(<Form />);
-                const user = userEvent.setup()
-                const startYear = screen.getByLabelText('Years created*');
-                const saveButton = screen.getByText('Save');
-            
-                act(() => {
-                    /* fire events that update state 
-                    fireEvent.click(saveButton)
-                });
-                await new Promise((r) => setTimeout(r, 1000));
-                const helperText = screen.queryByText('createdYearStart is a required field');
-                expect(helperText).toBeInTheDocument();
-
-                await user.type(startYear, '9')
-                expect(helperText).not.toBeInTheDocument();
-            })
-            it('End year created', async () => {
-                render(<Form />);
-                const user = userEvent.setup()
-                const endYear = screen.getByLabelText('to');
-                const saveButton = screen.getByText('Save');
-            
-                await user.type(endYear, 'a')
-
-                act(() => {
-                    /* fire events that update state 
-                    fireEvent.click(saveButton)
-                });
-
-                await new Promise((r) => setTimeout(r, 1000));
-                const helperText = screen.queryByText('createdYearEnd must be a `number` type, but the final value was: `NaN` (cast from the value `"a"`).');
-                expect(helperText).toBeInTheDocument();
-
-                await user.clear(endYear)
-                expect(helperText).not.toBeInTheDocument();
-            })
-            it('Type', async () => {
-                render(<Form />);
-                const user = userEvent.setup()
-                const typeField = screen.getByLabelText('Type*');
-                const saveButton = screen.getByText('Save');
-            
-                act(() => {
-                    /* fire events that update state 
-                    fireEvent.click(saveButton)
-                });
-                await new Promise((r) => setTimeout(r, 1000));
-                const helperText = screen.queryByText('type is a required field');
-                expect(helperText).toBeInTheDocument();
-
-                await user.type(typeField, 'a')
-                expect(helperText).not.toBeInTheDocument();
-            })
-            it('Latitude', async () => {
-                render(<Form />);
-                const user = userEvent.setup()
-                const latitudeField = screen.getByLabelText('Latitude*');
-                const saveButton = screen.getByText('Save');
-            
-                act(() => {
-                    /* fire events that update state 
-                    fireEvent.click(saveButton)
-                });
-                await new Promise((r) => setTimeout(r, 1000));
-                const helperText = screen.queryByText('latitude is a required field');
-                expect(helperText).toBeInTheDocument();
-
-                await user.type(latitudeField, '9')
-                expect(helperText).not.toBeInTheDocument();
-            })
-            it('Longitude', async () => {
-                render(<Form />);
-                const user = userEvent.setup()
-                const longitudeField = screen.getByLabelText('Longitude*');
-                const saveButton = screen.getByText('Save');
-            
-                act(() => {
-                    /* fire events that update state 
-                    fireEvent.click(saveButton)
-                });
-                await new Promise((r) => setTimeout(r, 1000));
-                const helperText = screen.queryByText('longitude is a required field');
-                expect(helperText).toBeInTheDocument();
-
-                await user.type(longitudeField, '9')
-                expect(helperText).not.toBeInTheDocument();
-            })
-            it('Discovered year', async () => {
-                render(<Form />);
-                const user = userEvent.setup()
-                const discoveredYearField = screen.getByLabelText('Discovered Year');
-                const saveButton = screen.getByText('Save');
-            
-                await user.type(discoveredYearField, 'k')
-
-                act(() => {
-                    /* fire events that update state 
-                    fireEvent.click(saveButton)
-                });
-                await new Promise((r) => setTimeout(r, 1000));
-                
-                const helperText = screen.queryByText('discoveredYear must be a `number` type, but the final value was: `NaN` (cast from the value `"k"`).');
-                expect(helperText).toBeInTheDocument();
-
-                await user.clear(discoveredYearField)
-                expect(helperText).not.toBeInTheDocument();
-            })*/
-        })
-        /*describe('Saving', () => {
-            beforeEach(() => {
-                vi.mock('axios');
+            await waitFor(() => {
+                expect(screen.getByText(/AddForm/)).toBeInTheDocument();
             });
-            it('is waiting', async() => {
-                axios.post.mockImplementation(() => new Promise(() => {}));
-                render(<Form />);
-                const user = userEvent.setup()
-                const startYear = screen.getByLabelText('Years created*');
-                const typeField = screen.getByLabelText('Type*');
-                const latitudeField = screen.getByLabelText('Latitude*');
-                const longitudeField = screen.getByLabelText('Longitude*');
-                const saveButton = screen.getByText('Save');
-
-                await user.type(startYear, '5')
-                await user.type(typeField, 'book')
-                await user.type(latitudeField, '9.8')
-                await user.type(longitudeField, '-42')
-
-                act(() => {
-                    /* fire events that update state 
-                    fireEvent.click(saveButton)
-                });
-                await new Promise((r) => setTimeout(r, 1000));
-                expect(axios.post).toBeCalled()
-                const saving = screen.getByText('Saving...');
-                expect(saving).toBeInTheDocument();
-            })
-            it('is successful', async () => {
-                const mockedResponse = {
-                    status: 200,
-                };
-
-                axios.post.mockResolvedValue(mockedResponse);
-                render(<Form />);
-                const user = userEvent.setup()
-                const startYear = screen.getByLabelText('Years created*');
-                const typeField = screen.getByLabelText('Type*');
-                const latitudeField = screen.getByLabelText('Latitude*');
-                const longitudeField = screen.getByLabelText('Longitude*');
-                const saveButton = screen.getByText('Save');
-
-                await user.type(startYear, '5')
-                await user.type(typeField, 'book')
-                await user.type(latitudeField, '9.8')
-                await user.type(longitudeField, '-42')
-
-                act(() => {
-                    /* fire events that update state 
-                    fireEvent.click(saveButton)
-                });
-                await new Promise((r) => setTimeout(r, 1000));
-                expect(axios.post).toBeCalled()
-                const checkmark = screen.getByLabelText('success-checkmark');
-                expect(checkmark).toBeInTheDocument();
-            })
-            it('is unsuccessful', async () => {
-                const mockedResponse = {
-                    status: 404,
-                };
-
-                axios.post.mockResolvedValue(mockedResponse);
-                render(<Form />);
-                const user = userEvent.setup()
-                const startYear = screen.getByLabelText('Years created*');
-                const typeField = screen.getByLabelText('Type*');
-                const latitudeField = screen.getByLabelText('Latitude*');
-                const longitudeField = screen.getByLabelText('Longitude*');
-                const saveButton = screen.getByText('Save');
-
-                await user.type(startYear, '5')
-                await user.type(typeField, 'book')
-                await user.type(latitudeField, '9.8')
-                await user.type(longitudeField, '-42')
-
-                act(() => {
-                    /* fire events that update state 
-                    fireEvent.click(saveButton)
-                });
-                await new Promise((r) => setTimeout(r, 1000));
-                expect(axios.post).toBeCalled()
-            })
-        })
-    })*/
-    describe('Update type', () => {
-        it('renders correctly', () => {
+    
+            expect(signInWithIdTokenMock).toHaveBeenCalledWith({
+                provider: 'google',
+                token: 'fake-credential',
+                nonce: 'nonce123',
+            });
+        });
+    
+        it('handles failed Google sign-in gracefully', async () => {
+            // Mock a sign-in error
+            signInWithIdTokenMock.mockResolvedValueOnce({
+              data: null,
+              error: new Error('Sign-in failed'),
+            });
+          
             render(<Form />);
-            const updateRadio = screen.getByLabelText('Update');
-            act(() => {
-                /* fire events that update state */
-                fireEvent.click(updateRadio)
+          
+            // Click mock Google Login
+            fireEvent.click(screen.getByText(/Mock Google Login/i));
+          
+            // Expect the form NOT to appear
+            await waitFor(() => {
+              expect(screen.queryByText(/AddForm/)).not.toBeInTheDocument();
             });
-            const message = screen.getByText('Coming soon!');
-            expect(message).toBeInTheDocument();
-        })
+        });
     })
-    describe('Delete type', () => {
-        it('renders correctly', () => {
+    
+    describe('Longitudes and Latitudes', () => {
+        it('loads longitudes and latitudes on mount', async () => {
             render(<Form />);
-            const deleteRadio = screen.getByLabelText('Delete');
-            act(() => {
-                /* fire events that update state */
-                fireEvent.click(deleteRadio)
+        
+            fireEvent.click(screen.getByText(/Mock Google Login/i));
+        
+            await waitFor(() => {
+                expect(rpcMock).toHaveBeenCalledWith('get_fixed_longitude');
+                expect(rpcMock).toHaveBeenCalledWith('get_fixed_latitudes');
             });
-            const message = screen.getByText('Coming soon!');
-            expect(message).toBeInTheDocument();
-        })
+        });
+    
+        // TODO: customize the errors
+        it('logs error on failed getLatitudes RPC', async () => {
+            const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+            rpcMock.mockImplementation((fn) => {
+              if (fn === 'get_fixed_latitudes') {
+                return Promise.resolve({ data: null, error: new Error('Lat RPC failed') });
+              }
+              return Promise.resolve({ data: ['lon1'], error: null });
+            });
+          
+            render(<Form />);
+            fireEvent.click(screen.getByText(/Mock Google Login/i));
+          
+            await waitFor(() => {
+              expect(consoleSpy).toHaveBeenCalledWith('getLatitudes error: ', expect.any(Error));
+            });
+          
+            consoleSpy.mockRestore();
+        });
+    
+        it('logs error on failed getLongitudes RPC', async () => {
+            const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+            rpcMock.mockImplementation((fn) => {
+              if (fn === 'get_fixed_longitudes') {
+                return Promise.resolve({ data: null, error: new Error('Lng RPC failed') });
+              }
+              return Promise.resolve({ data: ['lon1'], error: null });
+            });
+          
+            render(<Form />);
+            fireEvent.click(screen.getByText(/Mock Google Login/i));
+          
+            await waitFor(() => {
+              expect(consoleSpy).toHaveBeenCalledWith('getLongitudes error: ', expect.any(Error));
+            });
+          
+            consoleSpy.mockRestore();
+        });
     })
 })
