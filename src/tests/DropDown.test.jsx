@@ -4,50 +4,54 @@ import { expect, describe, it, } from 'vitest';
 import { render, screen, act, fireEvent } from '@testing-library/react'
 
 const options = [
-    {
-        title: "1",
-        value: 1,
-    },
-    {
-        title: "2",
-        value: 2,
-    },
+    { title: 'Option 1', value: '1' },
+    { title: 'Option 2', value: '2' },
 
 ]
 
 describe('DropDown', () => {
-    it('renders correctly with other option', () => {
-        const {getByRole} = render(<DropDown onValueChange={() => {}} items={options} label="test" other={true} />);
-        const label = screen.getByLabelText('dropdown-select-label');
-        expect(label).toBeInTheDocument();
-        const select = screen.getByLabelText('dropdown-select');
-        expect(select).toBeInTheDocument();
+    it('renders the label correctly', () => {
+        render(
+          <DropDown
+            label="Test Label"
+            value=""
+            onValueChange={() => {}}
+            items={options}
+          />
+        );
+        expect(screen.getByLabelText('dropdown-select-label')).toHaveTextContent('Test Label');
+      });
+    it('renders all items including empty item when "empty" is true', () => {
+        const {getByRole} = render(<DropDown onValueChange={() => {}} items={options} label="test" empty={true} value="" />);
+        act(() => {
+            /* fire events that update state */
+            fireEvent.mouseDown(getByRole('combobox'));
+        });
+
+        expect(screen.getByLabelText('menu item blank')).toBeInTheDocument();
+        expect(screen.getByLabelText('menu item Option 1')).toBeInTheDocument();
+        expect(screen.getByLabelText('menu item Option 2')).toBeInTheDocument();
+    })
+    it('does not render empty item when "empty" is false', () => {
+        const {getByRole} = render(<DropDown onValueChange={() => {}} items={options} label="test" value="" />);
         act(() => {
             /* fire events that update state */
             fireEvent.mouseDown(getByRole('combobox'))
         });
-        const firstItem = screen.getByLabelText('menu item 1')
-        expect(firstItem).toBeInTheDocument();
-        const secondItem = screen.getByLabelText('menu item 2');
-        expect(secondItem).toBeInTheDocument();
-        const otherItem = screen.getByLabelText('menu item other');
-        expect(otherItem).toBeInTheDocument();
+        expect(screen.queryByLabelText('menu item blank')).not.toBeInTheDocument();
     })
-    it('renders correctly without other option', () => {
-        const {getByRole} = render(<DropDown onValueChange={() => {}} items={options} label="test" />);
-        const label = screen.getByLabelText('dropdown-select-label');
-        expect(label).toBeInTheDocument();
-        const select = screen.getByLabelText('dropdown-select');
-        expect(select).toBeInTheDocument();
-        act(() => {
-            /* fire events that update state */
-            fireEvent.mouseDown(getByRole('combobox'))
-        });
-        const firstItem = screen.getByLabelText('menu item 1')
-        expect(firstItem).toBeInTheDocument();
-        const secondItem = screen.getByLabelText('menu item 2');
-        expect(secondItem).toBeInTheDocument();
-        const otherItem = screen.queryByLabelText('menu item other');
-        expect(otherItem).not.toBeInTheDocument();
-    })
+
+    it('selects the correct value', () => {
+        render(
+          <DropDown
+            label="Value Test"
+            value="2"
+            onValueChange={() => {}}
+            items={options}
+          />
+        );
+    
+        const select = screen.getByRole('combobox');
+        expect(select).toHaveTextContent('Option 2');
+      });
 })

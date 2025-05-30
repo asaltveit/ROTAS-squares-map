@@ -33,7 +33,7 @@ export default function DropDown({ onValueChange, items, label, value, empty=fal
         label={label}
         onChange={handleChange}
       >
-        { empty && <MenuItem aria-label={`menu item blank`} value={""} key={"blank"} >  </MenuItem> }
+        { empty && <MenuItem aria-label={`menu item blank`} value={""} key={"blank"} > &nbsp; </MenuItem> }
         {items.map((item) => {
               return (
                 <MenuItem aria-label={`menu item ${item?.title}`} value={item?.value} key={item?.value} > { item?.title } </MenuItem>
