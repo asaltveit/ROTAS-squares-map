@@ -5,7 +5,7 @@ import { convertYearTypetoView } from '../utilities/UtilityFunctions'
 import { useFilterStore } from '../utilities/FilterStore';
 
 // TODO - Add breakpoints for smaller windows
-// TODO - Stop animation when clicked
+// TODO - Stop animation when slider clicked
 
 export default function TimelineSlider({ onValueChange}) {
     let anim;
@@ -56,7 +56,6 @@ export default function TimelineSlider({ onValueChange}) {
     }
 
     useEffect(() => {
-        // TODO: Maximum update depth exceeded. error here?
         // TODO: Change rate of animation?
         //    - through filters?
         if (playAnimation) {
@@ -93,11 +92,11 @@ export default function TimelineSlider({ onValueChange}) {
                     }}
                 >
                     <Button 
-                        aria-label="play button" 
+                        aria-label="play/stop button" 
                         variant='contained'
                         size="small"
                         onClick={playAnim}
-                        > { !playAnimation ? "Play" : "Stop"} </Button>
+                    > { !playAnimation ? "Play" : "Stop"} </Button>
                     <Slider
                         min={min}
                         max={max}

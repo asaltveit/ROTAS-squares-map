@@ -12,41 +12,35 @@ describe('TimelineSlider', () => {
         expect(title).toBeInTheDocument();
         const playButton = screen.getByText('Play');
         expect(playButton).toBeInTheDocument();
-        const stopButton = screen.getByText('Stop');
-        expect(stopButton).toBeInTheDocument();
         const slider = screen.getByLabelText('timeline-created year slider');
         expect(slider).toBeInTheDocument();
-        const label = screen.getByText('Year: 0'); // needs the number included to be found
-        expect(label).toBeInTheDocument();
+        expect(screen.getByText(/Year:/)).toHaveTextContent('Year: 0');
     })
     describe('Buttons', () => {
         it('starts animation', async () => {
             const onChange = () => {}
             render(<TimelineSlider onValueChange={onChange} />);
             const playButton = screen.getByText('Play');
+            expect(screen.getByRole('button')).toHaveTextContent('Play');
             act(() => {
-                /* fire events that update state */
                 fireEvent.click(playButton)
             });
-            await new Promise((r) => setTimeout(r, 1500));
-            expect(screen.getByText('Year: 10')).toBeInTheDocument();
+            expect(screen.getByRole('button')).toHaveTextContent('Stop');
+            await new Promise((r) => setTimeout(r, 1400));
+            expect(screen.getByText(/Year:/)).toHaveTextContent('Year: 10');
         })
         it('stops animation', async () => {
             const onChange = () => {}
             render(<TimelineSlider onValueChange={onChange} />);
-            const playButton = screen.getByText('Play');
             act(() => {
-                /* fire events that update state */
-                fireEvent.click(playButton)
+                fireEvent.click(screen.getByRole('button'))
             });
-            await new Promise((r) => setTimeout(r, 1500));
-            const stopButton = screen.getByText('Stop');
+            await new Promise((r) => setTimeout(r, 1400));
             act(() => {
-                /* fire events that update state */
-                fireEvent.click(stopButton)
+                fireEvent.click(screen.getByRole('button'))
             });
             await new Promise((r) => setTimeout(r, 1000));
-            expect(screen.getByText('Year: 10')).toBeInTheDocument();
+            expect(screen.getByText(/Year:/)).toHaveTextContent('Year: 10');
         })
     })
     describe('Slider', () => {
@@ -55,29 +49,25 @@ describe('TimelineSlider', () => {
             render(<TimelineSlider onValueChange={onChange} />);
             const slider = screen.getByLabelText('timeline-created year slider');
             act(() => {
-                /* fire events that update state */
                 fireEvent.change(slider, { target: { value: 20 } });
             });
-            expect(screen.getByText('Year: 20')).toBeInTheDocument();
+            expect(screen.getByText(/Year:/)).toHaveTextContent('Year: 20');
         })
         it.skip('changes position when clicked and animation is playing', async () => {
-            // TODO: Isn't working for real slider
+            // TODO: Isn't working for real slider (?)
             const onChange = () => {}
             render(<TimelineSlider onValueChange={onChange} />);
             const slider = screen.getByLabelText('timeline-created year slider');
             const playButton = screen.getByText('Play');
             act(() => {
-                /* fire events that update state */
                 fireEvent.click(playButton)
             });
             await new Promise((r) => setTimeout(r, 1500));
             act(() => {
-                /* fire events that update state */
                 fireEvent.change(slider, { target: { value: 50 } });
             });
             await new Promise((r) => setTimeout(r, 1500));
-            expect(screen.getByText('Year: 50')).toBeInTheDocument();
-            
+            expect(screen.getByText(/Year:/)).toHaveTextContent('Year: 50');
         })
     })
 })
