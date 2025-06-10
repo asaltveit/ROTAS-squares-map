@@ -16,10 +16,10 @@ Per the request of someone doing historical research.
 - I used Material UI because styling was not a focus for this project and it had an accordion component that I wanted.
 
 ## Current Work
-3. Timeline filters
-4. A section to add, update, and delete locations.
+- Update locations
 
 ## Future Work
+- Delete locations
 - Functionality to add a file of data points
 - Screen recording / image functionality
 - Additional timeline filters - speed/step of slider
