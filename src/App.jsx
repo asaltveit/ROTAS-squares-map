@@ -1,5 +1,5 @@
 // React
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 // Map
 import * as Plot from "@observablehq/plot";
@@ -8,12 +8,9 @@ import geoData from "./data/countries-geo.json"
 // Components
 import TimelineSlider from "./components/TimelineSlider";
 import OptionsAccordion from './components/OptionsAccordion';
-import Form from './components/Form';
-import FilterSection from './components/FilterSection';
 // UI
 import './css/App.css';
 import { Box, Typography } from '@mui/material';
-import { allSymbols } from './constants/Map';
 // Utilities
 import { useMapStore} from './utilities/MapStore'
 import { useFilterStore } from './utilities/FilterStore';
@@ -22,8 +19,11 @@ import { yearType as yrType } from './constants/FilterSection';
 // DB
 import { supabase } from './supabaseClient';
 
-// TODO: Endpoints getting called in groups of threes?
+// Lazy Import
+const FilterSection = lazy(() => import('./components/FilterSection'));
+const Form = lazy(() => import('./components/Form'));
 
+// TODO: Endpoints getting called in groups of threes?
 function App() {
   const mapRef = useRef();
   const [visibleLocations, setVisibleLocations] = useState([]);
@@ -51,11 +51,6 @@ function App() {
     })),
   )
 
-  // TODO: Add an effect to set symbols and types?
-  let numTypes = locationTypes.length;
-  let symbols = allSymbols.slice(0, numTypes);
-
-  // TODO: use suspense on children?
   const accordionChildren = [
     {
       header: "Filters",
@@ -66,6 +61,7 @@ function App() {
       body: <Form />,
     },
   ];
+
   // TODO - all gets getting called twice?
   useEffect(() => {
     getLocations();

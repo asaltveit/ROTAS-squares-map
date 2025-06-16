@@ -80,6 +80,8 @@ export default function FilterSection() {
         })),
     )
 
+    // TODO: Relation 'locations' not found - 
+    // fixing errors on the functions caused this
     async function getTexts() {
         const { data, error } = await supabase.rpc('get_distinct_text');
         if (error) {
