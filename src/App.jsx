@@ -85,8 +85,9 @@ function App() {
       
       if (error) {
         console.log("getLocations filters error: ", error)
+      } else {
+        setLocations(data);
       }
-      setLocations(data);
     } else {
       const { data, error } = await supabase.from("locations")
       .select()
@@ -95,8 +96,9 @@ function App() {
       
       if (error) {
         console.log("getLocations without filters error: ", error)
+      } else {
+        setLocations(data);
       }
-      setLocations(data);
     }
   }
 
@@ -104,8 +106,9 @@ function App() {
     const { data, error } = await supabase.rpc('get_distinct_type');
     if (error) {
       console.log("getTypes error: ", error)
+    } else {
+      setLocationTypes(data);
     }
-    setLocationTypes(data);
   }
 
   useEffect(() => {

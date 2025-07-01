@@ -80,46 +80,49 @@ export default function FilterSection() {
         })),
     )
 
-    // TODO: Relation 'locations' not found - 
-    // fixing errors on the functions caused this
     async function getTexts() {
         const { data, error } = await supabase.rpc('get_distinct_text');
         if (error) {
           console.log("getTexts error: ", error)
+        } else {
+            setTexts(convertStringsToOptions(data));
         }
-        setTexts(convertStringsToOptions(data));
     }
 
     async function getScripts() {
         const { data, error } = await supabase.rpc('get_distinct_script');
         if (error) {
             console.log("getScripts error: ", error)
+        } else {
+            setScripts(convertStringsToOptions(data));
         }
-        setScripts(convertStringsToOptions(data));
     }
 
     async function getLocations() {
         const { data, error } = await supabase.rpc('get_distinct_location');
         if (error) {
             console.log("getLocations error: ", error)
+        } else {
+            setLocs(convertStringsToOptions(data));
         }
-        setLocs(convertStringsToOptions(data));
     }
 
     async function getPlaces() {
         const { data, error } = await supabase.rpc('get_distinct_place');
         if (error) {
             console.log("getPlaces error: ", error)
+        } else {
+            setPlaces(convertStringsToOptions(data));
         }
-        setPlaces(convertStringsToOptions(data));
     }
 
     async function getFirstWords() {
         const { data, error } = await supabase.rpc('get_distinct_first_word');
         if (error) {
             console.log("getFirstWords error: ", error)
+        } else {
+            setFirstWords(convertStringsToOptions(data));
         }
-        setFirstWords(convertStringsToOptions(data));
     }
 
     useEffect(() => {
@@ -134,7 +137,6 @@ export default function FilterSection() {
         // Store
         clearFilters()
     }
-
 
     return (
         <Box>
