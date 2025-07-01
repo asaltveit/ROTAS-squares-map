@@ -91,7 +91,6 @@ export const UpdateForm = ({ latitudes, longitudes }) => {
         }
     }
     // TODO: Are the fields protected from attack? - https://www.reddit.com/r/reactjs/comments/11kiy7k/alternatives_to_dangerouslysetinnerhtml/
-    // TODO: Add password account instead of google auth?
     // TODO: Labels are no longer centered horizontally
     // TODO: fixed vs not fixed lat/lng for error messages
 

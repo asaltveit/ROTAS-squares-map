@@ -14,6 +14,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import '../css/Form.css';
 import { AddForm } from './AddForm.jsx';
 import { UpdateForm } from './UpdateForm.jsx';
+import LoginForm from './LoginForm'
 
 // TODO - Add options for update location and delete location
 // TODO: Handle failed auth
@@ -32,6 +33,8 @@ const Form = () => {
     const [longitudes, setLongitudes] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [localNonce, setLocalNonce] = useState('');
+
+    const isGoogle = false;
 
     const { formSubmitted } = useMapStore(
       useShallow((state) => ({ 
@@ -62,6 +65,18 @@ const Form = () => {
     
     // TODO Make font black?
 
+    async function handleSignInWithEmail({email, password}) {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      })
+      if (error) throw error
+      console.log("handleSignInWithEmail data: ", data)
+      setShowForm(true)
+    }
+
+
+
     async function handleSignInWithGoogle(response) {
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: 'google',
@@ -72,6 +87,7 @@ const Form = () => {
       setShowForm(true)
     }
 
+  if (isGoogle) {
     // from https://supabase.com/docs/guides/auth/social-login/auth-google
     useEffect(() => {
       const initializeGoogleOneTap = () => {
@@ -94,7 +110,7 @@ const Form = () => {
             client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
             nonce: hashedNonce,
             redirect_uri: "https://roslvahbgkokyokgiphb.supabase.co/auth/v1/callback",
-            // with chrome's removal of third-party cookiesm, we need to use FedCM instead (https://developers.google.com/identity/gsi/web/guides/fedcm-migration)
+            // with chrome's removal of third-party cookies, we need to use FedCM instead (https://developers.google.com/identity/gsi/web/guides/fedcm-migration)
             use_fedcm_for_prompt: true,
           })
         })
@@ -102,23 +118,27 @@ const Form = () => {
       initializeGoogleOneTap()
       return () => window.removeEventListener('load', initializeGoogleOneTap)
     }, [])
+  }
+    
 
     return (
       <>
         {!showForm && 
           <>
-          <Typography sx={{ paddingBottom: '10px' }}> Log in to access database: </Typography>
-          <Box 
-            sx={{ 
-              alignItems: 'center', 
-              alignSelf: 'center',
-              justifyContent: 'center',
-              justifySelf: 'center',
-              width: '30%'
-            }}>
+            <Typography sx={{ paddingBottom: '10px' }}> Log in to access database: </Typography>
+            <Box 
+              sx={{ 
+                alignItems: 'center', 
+                alignSelf: 'center',
+                justifyContent: 'center',
+                justifySelf: 'center',
+                width: '30%'
+              }}
+            >
               {/* Button looks different locally and live */}
-            <GoogleLogin onSuccess={(response) => handleSignInWithGoogle(response)} onError={(error) => console.log(error)}  />
-          </Box>
+              {isGoogle && <GoogleLogin onSuccess={(response) => handleSignInWithGoogle(response)} onError={(error) => console.log(error)}  />}
+              {!isGoogle && <LoginForm onSuccess={handleSignInWithEmail} />}
+            </Box>
           </>
         }
         { showForm && <Box >
