@@ -122,6 +122,7 @@ export const useFilterStore = create()(
                 location: '',
                 longitude: '',
                 latitude: '',
+// check that the correct fixed_ vs not is getting searched and returned
             }
             state.yearType = yrType.created
             state.timelineStart = 0

@@ -18,6 +18,8 @@ import { plotPointTitle } from './utilities/UtilityFunctions';
 import { yearType as yrType } from './constants/FilterSection';
 // DB
 import { supabase } from './supabaseClient';
+//Fingerprint
+import FingerprintJS from '@sparkstone/fingerprintjs';
 
 // Lazy Import
 const FilterSection = lazy(() => import('./components/FilterSection'));
@@ -28,6 +30,7 @@ function App() {
   const mapRef = useRef();
   const [visibleLocations, setVisibleLocations] = useState([]);
   const [mapData, setMapData] = useState([]);
+  const [FPResults, setFPResults] = useState({});
 
   const { locations, setLocations, formSubmitted, locationTypes, setLocationTypes, setSelectedPoint } = useMapStore(
     useShallow((state) => ({ 
@@ -62,14 +65,56 @@ function App() {
     },
   ];
 
+   useEffect(() => {
+    getVisitorInfo();
+  }, [FPResults]);
+
   // TODO - all gets getting called twice?
+  // indiviudal calls for each filter change
   useEffect(() => {
     getLocations();
+    setSearchResults();
   }, [formSubmitted, filters, timelineStart, timelineEnd]);
 
   useEffect(() => {
     getTypes();
   }, [formSubmitted]);
+
+  async function getVisitorInfo() {
+    // Initialize fingerprint agent
+    const fp = await FingerprintJS.load();
+    const results = await fp.get()
+    setFPResults(results);
+  }
+
+  // Save filter events
+  async function setSearchResults() {
+    // FPResults is empty on initialization
+    if (FPResults && FPResults.components) {
+      const resultFilters = Object
+        .keys(filters)
+        .reduce((r,key) => 
+          (filters[key] && (r[key]=filters[key]), r),{})
+    const notNullResultFilters = Object.keys(resultFilters);
+    
+    let filter = null;
+    if (notNullResultFilters.length) {
+      filter = notNullResultFilters[0];
+    }
+    const data = {
+      timezone: FPResults.components.timezone.value,
+      visitorId: FPResults.visitorId,
+      platform: FPResults.components.platform.value,
+      filter_type: filter,
+      // languages should be an array?
+      language: FPResults.components.languages.value[0][0],
+      filter_value: resultFilters[filter]
+    }
+    await supabase
+      .from('search_results')
+      .insert(data)
+    }
+  }
 
   async function getLocations() {
     let resultFilters = Object

@@ -79,7 +79,7 @@ export const AddForm = ({ latitudes, longitudes }) => {
         setWaiting(true)
         try {
           const data = cleanValues(values, latitudes, longitudes)
-          // check post rules
+          // TODO: clean data before insert
           const { error } = await supabase
             .from('locations')
             .insert(data);
