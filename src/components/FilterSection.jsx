@@ -192,7 +192,7 @@ export default function FilterSection() {
                         >
                             Year range
                         </InputLabel>
-                        <RangeField aria-label="year-range-field" ></RangeField>
+                        <RangeField ariaLabel="year-range-field" ></RangeField>
                     </Grid2>
                 </Grid2>
             </Grid2>

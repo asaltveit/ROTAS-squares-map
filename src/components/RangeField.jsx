@@ -6,7 +6,7 @@ import '../css/RangeField.css';
 
 // TODO height, lineHeight are a bit hacky for centering dash
 
-export default function RangeField() {
+export default function RangeField({ ariaLabel }) {
 
     const [start, setStart] = useState(0);
     const [end, setEnd] = useState(2100);
@@ -69,9 +69,9 @@ export default function RangeField() {
 
     return (
         <Stack direction="row" >
-            <TextField variant="outlined" size="small" sx={{width: '5em', marginRight: '1em'}} label="Start" value={start} onBlur={handleBlurStart} onChange={handleChangeStart} />
+            <TextField aria-labelledby={ariaLabel} variant="outlined" size="small" sx={{width: '5em', marginRight: '1em'}} label="Start" value={start} onBlur={handleBlurStart} onChange={handleChangeStart} />
             <span style={{ height: '2.5em', lineHeight: '2.5em', alignText: 'center', justifyContent: 'center', alignItems: 'center'}}> - </span>
-            <TextField sx={{width: '5em', marginRight: '1em', marginLeft: '1em'}} size="small" label="End" variant="outlined" value={end} onBlur={handleBlurEnd} onChange={handleChangeEnd} />
+            <TextField aria-labelledby={ariaLabel} sx={{width: '5em', marginRight: '1em', marginLeft: '1em'}} size="small" label="End" variant="outlined" value={end} onBlur={handleBlurEnd} onChange={handleChangeEnd} />
         </Stack>
     );
 }
