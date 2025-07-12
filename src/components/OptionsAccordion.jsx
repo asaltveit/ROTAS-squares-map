@@ -4,7 +4,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Box, Typography } from '@mui/material';
-import { bodyOrange, headerOrange } from '../constants/OptionsAccordion';
+import { bodyOrange, headerOrange } from '../constants';
 
 /*
 Assumes:

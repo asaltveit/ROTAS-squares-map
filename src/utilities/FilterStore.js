@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
-import { yearType as yrType } from '../constants/FilterSection'
+import { yearType as yrType } from '../constants'
 
 
 export const useFilterStore = create()(

@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { Box, Typography, Button, Grid2, InputLabel } from '@mui/material';
 import DropDown from './DropDown';
 import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
-import { yearTypeOptions } from '../constants/FilterSection.js'
+import { yearTypeOptions } from '../constants.js'
 import { useMapStore } from '../utilities/MapStore.js'
 import { useFilterStore } from '../utilities/FilterStore.js'
 import RangeField from './RangeField.jsx'

@@ -15,8 +15,8 @@ import { Box, Typography } from '@mui/material';
 import { useMapStore} from './utilities/MapStore'
 import { useFilterStore } from './utilities/FilterStore';
 import { plotPointTitle } from './utilities/UtilityFunctions';
-import { yearType as yrType } from './constants/FilterSection';
-import { allSymbols } from './constants/Map';
+import { yearType as yrType } from './constants';
+import { allSymbols } from './constants';
 // DB
 import { supabase } from './supabaseClient';
 //Fingerprint
@@ -224,7 +224,7 @@ function App() {
         height: 600, // Canvas height
         width: 850, // Canvas width
         symbol: {legend: true, domain: locationTypes, range: allSymbols},
-        color: { legend: true, domain: locationTypes, scheme: "turbo"},
+        color: {domain: locationTypes, scheme: "turbo"},
     });
     
     mapRef.current.append(chart);
