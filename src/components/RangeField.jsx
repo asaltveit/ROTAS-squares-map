@@ -1,6 +1,6 @@
 import { TextField, Stack } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { useFilterStore } from '../utilities/FilterStore.jsx'
+import { useFilterStore } from '../utilities/FilterStore.js'
 import { useShallow } from 'zustand/react/shallow'
 import '../css/RangeField.css';
 

@@ -16,6 +16,7 @@ import { useMapStore} from './utilities/MapStore'
 import { useFilterStore } from './utilities/FilterStore';
 import { plotPointTitle } from './utilities/UtilityFunctions';
 import { yearType as yrType } from './constants/FilterSection';
+import { allSymbols } from './constants/Map';
 // DB
 import { supabase } from './supabaseClient';
 //Fingerprint
@@ -23,7 +24,6 @@ import FingerprintJS from '@sparkstone/fingerprintjs';
 
 // Lazy Import
 const FilterSection = lazy(() => import('./components/FilterSection'));
-const Form = lazy(() => import('./components/Form'));
 
 // TODO: Endpoints getting called in groups of threes?
 function App() {
@@ -32,14 +32,12 @@ function App() {
   const [mapData, setMapData] = useState([]);
   const [FPResults, setFPResults] = useState({});
 
-  const { locations, setLocations, formSubmitted, locationTypes, setLocationTypes, setSelectedPoint } = useMapStore(
+  const { locations, setLocations, locationTypes, setLocationTypes } = useMapStore(
     useShallow((state) => ({ 
-      formSubmitted: state.formSubmitted, 
       setLocations: state.setLocations, 
       locations: state.locations,
       locationTypes: state.locationTypes,
       setLocationTypes: state.setLocationTypes,
-      setSelectedPoint: state.setSelectedPoint,
     })),
   )
 
@@ -59,26 +57,22 @@ function App() {
       header: "Filters",
       body: <FilterSection />,
     },
-    {
-      header: "Manipulate Data",
-      body: <Form />,
-    },
   ];
 
    useEffect(() => {
     getVisitorInfo();
-  }, [FPResults]);
+  }, [FPResults]); // collecting stats
 
   // TODO - all gets getting called twice?
   // indiviudal calls for each filter change
   useEffect(() => {
     getLocations();
     setSearchResults();
-  }, [formSubmitted, filters, timelineStart, timelineEnd]);
+  }, [filters, timelineStart, timelineEnd]);
 
   useEffect(() => {
     getTypes();
-  }, [formSubmitted]);
+  }, []);
 
   async function getVisitorInfo() {
     // Initialize fingerprint agent
@@ -182,6 +176,8 @@ function App() {
     fetchData();
   }, []);
 
+  /* 
+  How to add click event to map locations - requires all same mark type
   const addClick = (index, scales, values, dimensions, context, next) => {
     const el = next(index, scales, values, dimensions, context);
     // Works if every mark is a circle
@@ -189,12 +185,12 @@ function App() {
     const circles = el.querySelectorAll("circle");
     for (let i = 0; i < circles.length; i++) {
       circles[i].addEventListener("click", () => {
-        // This won't work with other symbols, filter for 'id' instead
+        // This won't work with other symbols, filter for 'id' instead?
         setSelectedPoint(locations[i]) 
       });
     } 
     return el;
-  }
+  } */
 
   useEffect(() => {
     if (visibleLocations === undefined) return;
@@ -215,8 +211,8 @@ function App() {
             fillOpacity: 0.3,
             //symbol and color need to be bound to type
             r: 7,
-            //symbol: "//"location_type",
-            render: addClick,
+            symbol: "location_type",
+            //render: addClick,
           }),
           Plot.tip(visibleLocations, Plot.pointer({
             x: "longitude",
@@ -227,7 +223,7 @@ function App() {
         // Canvas doesn't include legend
         height: 600, // Canvas height
         width: 850, // Canvas width
-        //symbol: {legend: true, domain: locationTypes, range: symbols},
+        symbol: {legend: true, domain: locationTypes, range: allSymbols},
         color: { legend: true, domain: locationTypes, scheme: "turbo"},
     });
     
@@ -248,6 +244,7 @@ function App() {
               <Box ref={mapRef}></Box>
             </Box>
           </Box>
+          {/* TODO - Move options to the side/vertical? */}
           <OptionsAccordion children={accordionChildren} />
         </Box>
       </Box>

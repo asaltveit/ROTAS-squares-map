@@ -16,6 +16,7 @@ export function convertYearTypetoView(type) {
     return capitalize(type) + " year";
 }
 
+/*
 // TODO Move this to server side?
 // TODO - not working
 export function findNewFloat(currentFloats, f) {
@@ -61,7 +62,7 @@ export function numberTransform(value) {
         return null
     }
 }
-
+*/
 export function plotPointTitle(point) {
     let title = "Created from: " + point.created_year_start
     if (point.created_year_end) {
@@ -88,6 +89,7 @@ export function plotPointTitle(point) {
     return title
 }
 
+// TODO: still needed?
 // generate nonce to use for google id token sign-in
 export const generateNonce = async () => { // returns a promise?
     const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32))))
