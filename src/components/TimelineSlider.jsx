@@ -3,6 +3,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { Slider, Button, Box, Grid2 } from '@mui/material';
 import { convertYearTypetoView } from '../utilities/UtilityFunctions'
 import { useFilterStore } from '../utilities/FilterStore';
+import { useMapStore} from '../utilities/MapStore'
 
 // TODO - Add breakpoints for smaller windows
 // TODO - Stop animation when slider clicked
@@ -22,6 +23,12 @@ export default function TimelineSlider({ onValueChange}) {
             timelineEnd: state.timelineEnd,
         })),
     )
+
+    const { setStorePlayAnimation } = useMapStore(
+        useShallow((state) => ({ 
+          setStorePlayAnimation: state.setStorePlayAnimation,
+        })),
+      )
     // Set min from filter change
     useEffect(() => {
         if (timelineStart == null || typeof timelineStart == 'string') {
@@ -54,6 +61,8 @@ export default function TimelineSlider({ onValueChange}) {
     const playAnim = () => {
         setPlayAnimation(!playAnimation)
     }
+
+    //setStorePlayAnimation(playAnim)
 
     useEffect(() => {
         // TODO: Change rate of animation?

@@ -24,20 +24,23 @@ import FingerprintJS from '@sparkstone/fingerprintjs';
 
 // Lazy Import
 const FilterSection = lazy(() => import('./components/FilterSection'));
+const RecordingSection = lazy(() => import('./components/recording/RecordingSection'));
 
 // TODO: Endpoints getting called in groups of threes?
 function App() {
-  const mapRef = useRef();
+  const mapRef = useRef(null);
+  const screenshotRef = useRef(null);
   const [visibleLocations, setVisibleLocations] = useState([]);
   const [mapData, setMapData] = useState([]);
   const [FPResults, setFPResults] = useState({});
 
-  const { locations, setLocations, locationTypes, setLocationTypes } = useMapStore(
+  const { locations, setLocations, locationTypes, setLocationTypes, setScrollToMap } = useMapStore(
     useShallow((state) => ({ 
       setLocations: state.setLocations, 
       locations: state.locations,
       locationTypes: state.locationTypes,
       setLocationTypes: state.setLocationTypes,
+      setScrollToMap: state.setScrollToMap,
     })),
   )
 
@@ -57,11 +60,20 @@ function App() {
       header: "Filters",
       body: <FilterSection />,
     },
+    {
+      header: "Recording",
+      body: <RecordingSection screenRef={screenshotRef} />,
+    },
   ];
 
-   useEffect(() => {
-    getVisitorInfo();
-  }, [FPResults]); // collecting stats
+  useEffect(() => {
+    getVisitorInfo(); // collecting stats
+    // Sends scroll to ScreenRecorder
+    const scrollToElement = () => { // doesn't quite scroll to where I want it
+      screenshotRef.current?.scrollIntoView({ behavior: 'smooth' }); // 'smooth' for animated scrolling
+    };
+    setScrollToMap(scrollToElement)
+  }, []);
 
   // TODO - all gets getting called twice?
   // indiviudal calls for each filter change
@@ -237,7 +249,7 @@ function App() {
       <Box sx={{ width: '85%', justifySelf: 'center' }} >
         <Typography variant="h1" gutterBottom> ROTAS Squares Map </Typography>
         <Box sx={{margin: '10px'}} >
-          <Box className="card">
+          <Box className="card" ref={screenshotRef} >
             {/* TODO - Control size of map section */}
             <TimelineSlider onValueChange={setTimelineYear} type={yearType} />
             <Box>

@@ -7,6 +7,8 @@ export const useMapStore = create()(
     locations: [],
     // Does this need to be set like this?
     locationTypes: ["manuscript", "amulet", "inscription", "graffito", "dipinto"],
+    playAnimation: () => {}, // TODO: fix - state problems
+    scrollToMap: () => {},
     
     // Set the above
     setLocations: (locations) =>
@@ -16,6 +18,14 @@ export const useMapStore = create()(
     setLocationTypes: (types) =>
       set((state) => {
         state.locationTypes = types
-      }),                                                                                           
+      }),
+    setStorePlayAnimation: (func) =>
+      set((state) => {
+        state.playAnimation = func
+      }),  
+    setScrollToMap: (func) =>
+      set((state) => {
+        state.scrollToMap = func
+      }),                                                                                       
   })),
 )

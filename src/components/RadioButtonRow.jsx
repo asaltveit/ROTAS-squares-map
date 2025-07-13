@@ -6,7 +6,7 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { formTypes } from '../constants/FormConstants';
 
-
+// TODO - remove?
 function FormTypeRadioButtonRow({ onValueChange }) {
     const [value, setValue] = useState(formTypes.add)
     const handleChange = (event) => {

@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { Box, Typography, Button, Grid2, InputLabel } from '@mui/material';
 import DropDown from './DropDown';
 import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
-import { yearTypeOptions } from '../constants.js'
+import { yearTypeOptions } from '../constants'
 import { useMapStore } from '../utilities/MapStore.js'
 import { useFilterStore } from '../utilities/FilterStore.js'
 import RangeField from './RangeField.jsx'
@@ -11,9 +11,8 @@ import { supabase } from '../supabaseClient';
 
 
 export default function FilterSection() {
-    const { formSubmitted, locationTypes } = useMapStore(
+    const { locationTypes } = useMapStore(
         useShallow((state) => ({ 
-          formSubmitted: state.formSubmitted,
           locationTypes: state.locationTypes,
         })),
       )
@@ -131,7 +130,7 @@ export default function FilterSection() {
         getTexts()
         getPlaces()
         getFirstWords()
-    }, [formSubmitted]);
+    }, []);
 
     const clearAllFilters = () => {
         // Store

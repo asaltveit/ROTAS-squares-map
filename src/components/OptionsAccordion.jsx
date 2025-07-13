@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from "react";
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -15,7 +15,7 @@ Assumes:
 */
 
 export default function OptionsAccordion({ children }) {
-    const [expanded, setExpanded] = React.useState('panel1');
+    const [expanded, setExpanded] = useState('panel1');
     const handleChange = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
     };
