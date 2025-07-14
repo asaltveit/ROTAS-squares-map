@@ -7,6 +7,7 @@ import { useMapStore} from '../utilities/MapStore'
 
 // TODO - Add breakpoints for smaller windows
 // TODO - Stop animation when slider clicked
+// TODO - make it look more like a timeline - ticks
 
 export default function TimelineSlider({ onValueChange}) {
     let anim;

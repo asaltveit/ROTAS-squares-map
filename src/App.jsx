@@ -7,10 +7,14 @@ import { feature } from "topojson-client";
 import geoData from "./data/countries-geo.json"
 // Components
 import TimelineSlider from "./components/TimelineSlider";
-import OptionsAccordion from './components/OptionsAccordion';
+import TemporaryDrawer from './components/OptionsAccordion';
+import {
+    FilterList,
+    CameraAltOutlined,
+} from '@mui/icons-material'; // direct imports are faster/smaller
 // UI
 import './css/App.css';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Stack } from '@mui/material';
 // Utilities
 import { useMapStore} from './utilities/MapStore'
 import { useFilterStore } from './utilities/FilterStore';
@@ -25,6 +29,8 @@ import FingerprintJS from '@sparkstone/fingerprintjs';
 // Lazy Import
 const FilterSection = lazy(() => import('./components/FilterSection'));
 const RecordingSection = lazy(() => import('./components/recording/RecordingSection'));
+
+// TODO: add theme/themeing
 
 // TODO: Endpoints getting called in groups of threes?
 function App() {
@@ -55,14 +61,16 @@ function App() {
     })),
   )
 
-  const accordionChildren = [
+  const children = [
     {
       header: "Filters",
       body: <FilterSection />,
+      icon: <FilterList />,
     },
     {
       header: "Recording",
       body: <RecordingSection screenRef={screenshotRef} />,
+      icon: <CameraAltOutlined />,
     },
   ];
 
@@ -244,11 +252,16 @@ function App() {
   }, [visibleLocations]);
 
   // TODO: Map changes causing re-rendering of all of App?
+  // TODO: Year above map and slider below?
+  // TODO: include tutorial? doesn't reappear on refresh
   return (
     <>
-      <Box sx={{ width: '85%', justifySelf: 'center' }} >
+      <Box sx={{ 
+        //width: '85%', 
+        justifySelf: 'center'
+      }} >
         <Typography variant="h1" gutterBottom> ROTAS Squares Map </Typography>
-        <Box sx={{margin: '10px'}} >
+        <Stack direction="row" sx={{margin: '10px'}} >
           <Box className="card" ref={screenshotRef} >
             {/* TODO - Control size of map section */}
             <TimelineSlider onValueChange={setTimelineYear} type={yearType} />
@@ -257,8 +270,9 @@ function App() {
             </Box>
           </Box>
           {/* TODO - Move options to the side/vertical? */}
-          <OptionsAccordion children={accordionChildren} />
-        </Box>
+          {/*<OptionsAccordion children={accordionChildren} />*/}
+          <TemporaryDrawer children={children} />
+        </Stack>
       </Box>
     </>
   )

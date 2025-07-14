@@ -7,9 +7,9 @@ export default function RecordingSection({ screenRef }) {
     return (
         <Box >
             <Stack>
-                <Typography> Take a screenshot </Typography>
+                <Typography variant="h6"> Take a screenshot </Typography>
                 <Screenshot screenRef={screenRef} />
-                <Typography> Take a screen recording </Typography>
+                <Typography variant="h6" > Take a screen recording </Typography>
                 <Recorder scroll={scroll} />
             </Stack>
         </Box>

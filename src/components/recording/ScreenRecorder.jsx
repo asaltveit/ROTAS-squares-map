@@ -3,9 +3,9 @@ import { useState, useRef } from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
 import { useMapStore} from '../../utilities/MapStore'
 import { useShallow } from 'zustand/react/shallow';
+import { Stack, Button, Box, Typography } from '@mui/material';
 // From - https://medium.com/@pritam-debnath/how-to-record-screen-in-a-react-app-0cd98e5d6879
 
-// todo - remove package if not used
 // TODO - add video recordings and savings to stats
 
 const Recorder = () => {
@@ -42,11 +42,13 @@ const Recorder = () => {
     }
 
   return (
-    <div>
-      <p>{status}</p>
-      <button onClick={setupRecording}>Start Recording</button>
-      <button onClick={stopRecording}>Stop Recording</button>
-    </div>
+    <Stack>
+        <Typography>
+            {status}
+        </Typography>
+        <Button onClick={setupRecording}>Start Recording</Button>
+        <Button onClick={stopRecording}>Stop Recording</Button>
+    </Stack>
   );
 }
 export default Recorder;

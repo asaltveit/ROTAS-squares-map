@@ -1,6 +1,7 @@
 import * as htmlToImage from "html-to-image";
 import { useMapStore } from '../../utilities/MapStore'
 import { useShallow } from 'zustand/react/shallow';
+import { Stack, Button, Box, Typography } from '@mui/material';
 
 // screenshot? - https://medium.com/@pro.grb.studio/how-to-screencapture-in-reactjs-step-by-step-guide-b435e8b53e11
 // specific component - https://stackoverflow.com/questions/76656140/how-to-capture-a-screenshot-of-a-specific-component-in-a-react-application-using
@@ -38,8 +39,8 @@ export default function Screenshot({ screenRef }) {
   };
 
   return (
-    <div>
-      <button onClick={handleScreenshotDownload}>Download</button>
-    </div>  
+    <Box>
+      <Button onClick={handleScreenshotDownload}>Download</Button>
+    </Box>  
   );
 }
