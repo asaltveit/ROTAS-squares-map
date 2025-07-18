@@ -1,6 +1,6 @@
 import { TextField, Stack } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { useFilterStore } from '../utilities/FilterStore.js'
+import { useFilterStore } from '../stores/FilterStore.js'
 import { useShallow } from 'zustand/react/shallow'
 import '../css/RangeField.css';
 
@@ -67,7 +67,7 @@ export default function RangeField({ ariaLabel }) {
         }
     };
 
-    return (
+    return ( // aria-labelledby={ariaLabel}
         <Stack direction="row" >
             <TextField aria-labelledby={ariaLabel} variant="outlined" size="small" sx={{width: '5em', marginRight: '1em'}} label="Start" value={start} onBlur={handleBlurStart} onChange={handleChangeStart} />
             <span style={{ height: '2.5em', lineHeight: '2.5em', alignText: 'center', justifyContent: 'center', alignItems: 'center'}}> - </span>

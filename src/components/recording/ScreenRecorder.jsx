@@ -1,7 +1,7 @@
 import { Download, PauseCircle, Trash, ChevronDown, ChevronUp, Play, PlayCircle, StopCircle, } from "lucide-react";
 import { useState, useRef } from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
-import { useMapStore} from '../../utilities/MapStore'
+import { useMapStore} from '../../stores/MapStore'
 import { useShallow } from 'zustand/react/shallow';
 import { Stack, Button, Box, Typography } from '@mui/material';
 // From - https://medium.com/@pritam-debnath/how-to-record-screen-in-a-react-app-0cd98e5d6879

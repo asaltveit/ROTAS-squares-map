@@ -16,19 +16,17 @@ Assumes:
     value = string, 
 */
 
-export default function DropDown({ onValueChange, items, label, value, empty=false }) {
-
+export default function DropDown({ onValueChange, items, label, value, empty=false, ariaLabel }) {
   const handleChange = (event) => {
     onValueChange(event.target.value);
   };
 
   return (
     <FormControl variant="standard" sx={{ minWidth: 120 }} size="small">
-      <InputLabel aria-label="dropdown-select-label" id="dropdown-select-label">{label}</InputLabel>
+      <InputLabel htmlFor={ariaLabel} aria-label={ariaLabel} id="dropdown-select-label">{label}</InputLabel>
       <Select
-        labelId="dropdown-select"
-        aria-label="dropdown-select"
-        id="demo-select-small"
+        //labelId="dropdown-select"
+        aria-labelledby={ariaLabel}
         value={value}
         label={label}
         onChange={handleChange}

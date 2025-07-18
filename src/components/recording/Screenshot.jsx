@@ -1,5 +1,5 @@
 import * as htmlToImage from "html-to-image";
-import { useMapStore } from '../../utilities/MapStore'
+import { useMapStore } from '../../stores/MapStore'
 import { useShallow } from 'zustand/react/shallow';
 import { Stack, Button, Box, Typography } from '@mui/material';
 

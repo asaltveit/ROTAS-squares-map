@@ -16,8 +16,8 @@ import {
 import './css/App.css';
 import { Box, Typography, Stack } from '@mui/material';
 // Utilities
-import { useMapStore} from './utilities/MapStore'
-import { useFilterStore } from './utilities/FilterStore';
+import { useMapStore} from './stores/MapStore'
+import { useFilterStore } from './stores/FilterStore';
 import { plotPointTitle } from './utilities/UtilityFunctions';
 import { yearType as yrType } from './constants';
 import { allSymbols } from './constants';
@@ -143,7 +143,7 @@ function App() {
       .or(`created_year_end.is.null,created_year_end.lte.${timelineEnd}`);
       
       if (error) {
-        console.log("getLocations filters error: ", error)
+        console.error("getLocations filters error: ", error)
       } else {
         setLocations(data);
       }
@@ -154,7 +154,7 @@ function App() {
       .or(`created_year_end.is.null,created_year_end.lte.${timelineEnd}`);
       
       if (error) {
-        console.log("getLocations without filters error: ", error)
+        console.error("getLocations without filters error: ", error)
       } else {
         setLocations(data);
       }
@@ -164,7 +164,7 @@ function App() {
   async function getTypes() {
     const { data, error } = await supabase.rpc('get_distinct_type');
     if (error) {
-      console.log("getTypes error: ", error)
+      console.error("getTypes error: ", error)
     } else {
       setLocationTypes(data);
     }

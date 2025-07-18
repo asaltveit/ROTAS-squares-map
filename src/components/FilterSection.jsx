@@ -4,8 +4,8 @@ import { Box, Typography, Button, Grid2, InputLabel } from '@mui/material';
 import DropDown from './DropDown';
 import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
 import { yearTypeOptions } from '../constants'
-import { useMapStore } from '../utilities/MapStore.js'
-import { useFilterStore } from '../utilities/FilterStore.js'
+import { useMapStore } from '../stores/MapStore.js'
+import { useFilterStore } from '../stores/FilterStore.js'
 import RangeField from './RangeField.jsx'
 import { supabase } from '../supabaseClient';
 
@@ -82,7 +82,7 @@ export default function FilterSection() {
     async function getTexts() {
         const { data, error } = await supabase.rpc('get_distinct_text');
         if (error) {
-          console.log("getTexts error: ", error)
+          console.error("getTexts error: ", error)
         } else {
             setTexts(convertStringsToOptions(data));
         }
@@ -91,7 +91,7 @@ export default function FilterSection() {
     async function getScripts() {
         const { data, error } = await supabase.rpc('get_distinct_script');
         if (error) {
-            console.log("getScripts error: ", error)
+            console.error("getScripts error: ", error)
         } else {
             setScripts(convertStringsToOptions(data));
         }
@@ -100,7 +100,7 @@ export default function FilterSection() {
     async function getLocations() {
         const { data, error } = await supabase.rpc('get_distinct_location');
         if (error) {
-            console.log("getLocations error: ", error)
+            console.error("getLocations error: ", error)
         } else {
             setLocs(convertStringsToOptions(data));
         }
@@ -109,7 +109,7 @@ export default function FilterSection() {
     async function getPlaces() {
         const { data, error } = await supabase.rpc('get_distinct_place');
         if (error) {
-            console.log("getPlaces error: ", error)
+            console.error("getPlaces error: ", error)
         } else {
             setPlaces(convertStringsToOptions(data));
         }
@@ -118,7 +118,7 @@ export default function FilterSection() {
     async function getFirstWords() {
         const { data, error } = await supabase.rpc('get_distinct_first_word');
         if (error) {
-            console.log("getFirstWords error: ", error)
+            console.error("getFirstWords error: ", error)
         } else {
             setFirstWords(convertStringsToOptions(data));
         }
@@ -159,14 +159,14 @@ export default function FilterSection() {
                         <Grid2 direction="row" container justifyContent="center" columnGap={'20px'} marginTop={'10px'} >
                             {/* TODO: fix - width changes with content, affects column */}
                             <Grid2 justifyContent="flex-start" container direction="column" rowSpacing={'10px'} >
-                                <DropDown aria-label="location-type-dropdown" value={type} onValueChange={setTypeFilter} items={convertStringsToOptions(locationTypes)} label="Type" empty ></DropDown>
-                                <DropDown aria-label="script-dropdown" value={script} onValueChange={setScriptFilter} items={scripts} label="Script" empty ></DropDown>
-                                <DropDown aria-label="text-dropdown" value={text} onValueChange={setTextFilter} items={texts} label="Text" empty ></DropDown>
+                                <DropDown ariaLabel="location-type-dropdown" value={type} onValueChange={setTypeFilter} items={convertStringsToOptions(locationTypes)} label="Type" empty ></DropDown>
+                                <DropDown ariaLabel="script-dropdown" value={script} onValueChange={setScriptFilter} items={scripts} label="Script" empty ></DropDown>
+                                <DropDown ariaLabel="text-dropdown" value={text} onValueChange={setTextFilter} items={texts} label="Text" empty ></DropDown>
                             </Grid2>
                             <Grid2 justifyContent="flex-end" container direction="column" rowSpacing={'10px'} >
-                            <DropDown aria-label="first-word-dropdown" value={firstWord} onValueChange={setFirstWordFilter} items={firstWords} label="First word" empty ></DropDown>
-                                <DropDown aria-label="place-dropdown" value={place} onValueChange={setPlaceFilter} items={places} label="Place" empty ></DropDown>
-                                <DropDown aria-label="location-dropdown" value={location} onValueChange={setLocationFilter} items={locs} label="Location" empty ></DropDown>
+                                <DropDown ariaLabel="first-word-dropdown" value={firstWord} onValueChange={setFirstWordFilter} items={firstWords} label="First word" empty ></DropDown>
+                                <DropDown ariaLabel="place-dropdown" value={place} onValueChange={setPlaceFilter} items={places} label="Place" empty ></DropDown>
+                                <DropDown ariaLabel="location-dropdown" value={location} onValueChange={setLocationFilter} items={locs} label="Location" empty ></DropDown>
                             </Grid2>
                         </Grid2>
                         
@@ -178,7 +178,7 @@ export default function FilterSection() {
                 >
                     <Typography> Timeline Filters </Typography>
                     <Grid2 justifyContent="flex-end" container direction="column" rowSpacing={'10px'} marginTop={'10px'} >
-                        <DropDown aria-label="year-type-dropdown" value={yearType} onValueChange={setYearType} items={yearTypeOptions} label="Year type" ></DropDown>
+                        <DropDown ariaLabel="year-type-dropdown" value={yearType} onValueChange={setYearType} items={yearTypeOptions} label="Year type" ></DropDown>
                         <InputLabel 
                             sx={{
                             display: "flex",

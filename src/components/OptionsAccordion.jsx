@@ -2,15 +2,12 @@ import { useState } from "react";
 import { 
     Box, 
     Typography, 
-    Drawer, 
-    Button,
     Accordion,
     AccordionSummary,
     AccordionDetails,
 } from '@mui/material'; // direct imports are faster/smaller
-import { bodyOrange, headerOrange, backgroundBrown } from '../constants';
+import { bodyOrange, headerOrange } from '../constants';
 import {
-    ChevronLeftOutlined,
     ArrowDropDown
 } from '@mui/icons-material'; // direct imports are faster/smaller
 
@@ -24,7 +21,7 @@ Assumes:
 */
 
 // want just button - width of heading?
-export function OptionsAccordion({ children }) {
+export default function OptionsAccordion({ children }) {
     const [expanded, setExpanded] = useState('panel1');
     const handleChange = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
@@ -52,25 +49,6 @@ export function OptionsAccordion({ children }) {
                     </Accordion>
                 );
             })}
-        </Box>
-    );
-}
-
-export default function TemporaryDrawer({ children }) {
-    const [openDrawer, setOpenDrawer] = useState(false);
-    const toggleDrawer = (newOpen) => () => {
-        setOpenDrawer(newOpen);
-    };
-
-    return (
-        <Box>
-            <Button onClick={toggleDrawer(true)}> <ChevronLeftOutlined /> Open drawer </Button>
-            <Drawer open={openDrawer} onClose={toggleDrawer(false)} anchor="right">
-                    <Box sx={{ backgroundColor: backgroundBrown}}>
-                        <OptionsAccordion children={children} />
-                    </Box>
-                    <Box sx={{ backgroundColor: backgroundBrown, height: "calc(100vh - 60px)" }}></Box>
-            </Drawer>
         </Box>
     );
 }

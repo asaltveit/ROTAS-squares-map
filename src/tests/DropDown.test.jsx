@@ -17,12 +17,13 @@ describe('DropDown', () => {
             value=""
             onValueChange={() => {}}
             items={options}
+            ariaLabel="test-dropdown-select"
           />
         );
-        expect(screen.getByLabelText('dropdown-select-label')).toHaveTextContent('Test Label');
+        expect(screen.getByLabelText('test-dropdown-select')).toHaveTextContent('Test Label');
       });
     it('renders all items including empty item when "empty" is true', () => {
-        const {getByRole} = render(<DropDown onValueChange={() => {}} items={options} label="test" empty={true} value="" />);
+        const {getByRole} = render(<DropDown onValueChange={() => {}} items={options} label="test" empty={true} value="" ariaLabel="test-dropdown-select" />);
         act(() => {
             /* fire events that update state */
             fireEvent.mouseDown(getByRole('combobox'));
@@ -33,7 +34,7 @@ describe('DropDown', () => {
         expect(screen.getByLabelText('menu item Option 2')).toBeInTheDocument();
     })
     it('does not render empty item when "empty" is false', () => {
-        const {getByRole} = render(<DropDown onValueChange={() => {}} items={options} label="test" value="" />);
+        const {getByRole} = render(<DropDown onValueChange={() => {}} items={options} label="test" value="" ariaLabel="test-dropdown-select" />);
         act(() => {
             /* fire events that update state */
             fireEvent.mouseDown(getByRole('combobox'))
@@ -48,6 +49,7 @@ describe('DropDown', () => {
             value="2"
             onValueChange={() => {}}
             items={options}
+            ariaLabel="test-dropdown-select"
           />
         );
     

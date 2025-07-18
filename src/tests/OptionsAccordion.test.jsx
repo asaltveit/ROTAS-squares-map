@@ -1,82 +1,41 @@
-import OptionsAccordion from '../components/OptionsAccordion'
-import React from 'react';
-import { expect, describe, it, } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react'
-
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import OptionsAccordion from '../components/OptionsAccordion';
 
 describe('OptionsAccordion', () => {
-    it('renders correctly', () => {
-        const options = [
-            {
-                header: "test1",
-                body: <div>test2</div>
-            }
-        ]
-        render(<OptionsAccordion children={options} />);
-        const headingElement = screen.getByLabelText('test1');
-        expect(headingElement).toBeInTheDocument();
-    })
+  const mockChildren = [
+    {
+      icon: '🔥',
+      header: 'Header 1',
+      body: 'Body content 1',
+    },
+    {
+      icon: '🌊',
+      header: 'Header 2',
+      body: 'Body content 2',
+    },
+  ];
 
-    it('opens', () => {
-        const options = [
-            {
-                header: "test1",
-                body: <div>test2</div>
-            }
-        ]
-        render(<OptionsAccordion children={options} />);
+  it('renders all headers correctly', () => {
+    render(<OptionsAccordion>{mockChildren}</OptionsAccordion>);
+    expect(screen.getByText(/Header 1/)).toBeInTheDocument();
+    expect(screen.getByText(/Header 2/)).toBeInTheDocument();
+  });
 
-        const headingElement = screen.getByLabelText('test1');
-        expect(headingElement).toBeInTheDocument();
+  it('only expands one panel at a time', async () => {
+    render(<OptionsAccordion>{mockChildren}</OptionsAccordion>);
 
-        fireEvent.click(headingElement)
+    // Open first panel
+    fireEvent.click(screen.getByText(/Header 1/));
+    await waitFor(() => {
+      expect(screen.getByText(/Body content 1/)).toBeVisible();
+    });
 
-        const bodyElement = screen.getByText('test2');
-        expect(bodyElement).toBeInTheDocument();
-    })
-    it('has multiple accordions', () => {
-        const options = [
-            {
-                header: "test1",
-                body: <div>test2</div>
-            },
-            {
-                header: "test3",
-                body: <div>test4</div>
-            },
-            {
-                header: "test5",
-                body: <div>test6</div>
-            }
-        ]
-        render(<OptionsAccordion children={options} />);
-
-        const heading1Element = screen.getByLabelText('test1');
-        expect(heading1Element).toBeInTheDocument();
-
-        fireEvent.click(heading1Element)
-
-        const body1Element = screen.getByText('test2');
-        expect(body1Element).toBeInTheDocument();
-
-        const heading2Element = screen.getByLabelText('test3');
-        expect(heading2Element).toBeInTheDocument();
-
-        fireEvent.click(heading2Element)
-
-        const body2Element = screen.getByText('test4');
-        expect(body2Element).toBeInTheDocument();
-
-        const heading3Element = screen.getByLabelText('test5');
-        expect(heading3Element).toBeInTheDocument();
-
-        fireEvent.click(heading3Element)
-
-        const body3Element = screen.getByText('test6');
-        expect(body3Element).toBeInTheDocument();
-    })
-    it('handles having no children', () => {
-        render(<OptionsAccordion />)
-        // What to do here?
-    })
-})
+    // Open second panel (should collapse first)
+    fireEvent.click(screen.getByText(/Header 2/));
+    await waitFor(() => {
+      expect(screen.getByText(/Body content 2/)).toBeVisible();
+      expect(screen.getByText(/Body content 1/)).not.toBeVisible();
+    });
+  });
+});
