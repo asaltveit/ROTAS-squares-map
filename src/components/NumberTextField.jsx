@@ -1,6 +1,4 @@
-import { 
-    TextField, 
-  } from '@mui/material';
+import TextField from '@mui/material/TextField';
 
 export default function NumberTextField({ name, value, onChange, error, helperText, required, short}) {
     let styles = {}

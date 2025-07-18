@@ -1,13 +1,9 @@
 import { useState } from "react";
 import OptionsAccordion from './OptionsAccordion';
-import { 
-    Box, 
-    Button,
-    Drawer,
-} from '@mui/material'; // direct imports are faster/smaller
-import {
-    ChevronLeftOutlined
-} from '@mui/icons-material'; // direct imports are faster/smaller
+import Box from '@mui/material/Box'; // direct imports are faster/smaller
+import Button from '@mui/material/Button';
+import Drawer from '@mui/material/Drawer';
+import ChevronLeftOutlined from '@mui/icons-material/ChevronLeftOutlined'; // direct imports are faster/smaller
 import { backgroundBrown } from '../constants';
 
 

@@ -8,13 +8,14 @@ import geoData from "./data/countries-geo.json"
 // Components
 import TimelineSlider from "./components/TimelineSlider";
 import TemporaryDrawer from './components/OptionsAccordion';
-import {
-    FilterList,
-    CameraAltOutlined,
-} from '@mui/icons-material'; // direct imports are faster/smaller
+// Icons
+import FilterList from '@mui/icons-material/FilterList';
+import CameraAltOutlined from '@mui/icons-material/CameraAltOutlined';
 // UI
 import './css/App.css';
-import { Box, Typography, Stack } from '@mui/material';
+import Box from '@mui/material/Box'; // direct imports are faster/smaller
+import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
 // Utilities
 import { useMapStore} from './stores/MapStore'
 import { useFilterStore } from './stores/FilterStore';

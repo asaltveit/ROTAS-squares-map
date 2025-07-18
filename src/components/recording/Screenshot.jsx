@@ -1,7 +1,8 @@
 import * as htmlToImage from "html-to-image";
 import { useMapStore } from '../../stores/MapStore'
 import { useShallow } from 'zustand/react/shallow';
-import { Stack, Button, Box, Typography } from '@mui/material';
+import Button from '@mui/material/Button'; // direct imports are faster/smaller
+import Box from '@mui/material/Box';
 
 // screenshot? - https://medium.com/@pro.grb.studio/how-to-screencapture-in-reactjs-step-by-step-guide-b435e8b53e11
 // specific component - https://stackoverflow.com/questions/76656140/how-to-capture-a-screenshot-of-a-specific-component-in-a-react-application-using

@@ -1,4 +1,5 @@
-import { TextField, Stack } from '@mui/material';
+import TextField from '@mui/material/TextField'; // direct imports are faster/smaller
+import Stack from '@mui/material/Stack';
 import { useState, useEffect } from 'react';
 import { useFilterStore } from '../stores/FilterStore.js'
 import { useShallow } from 'zustand/react/shallow'

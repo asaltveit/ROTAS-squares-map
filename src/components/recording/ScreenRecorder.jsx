@@ -3,7 +3,9 @@ import { useState, useRef } from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
 import { useMapStore} from '../../stores/MapStore'
 import { useShallow } from 'zustand/react/shallow';
-import { Stack, Button, Box, Typography } from '@mui/material';
+import Stack from '@mui/material/Stack'; // direct imports are faster/smaller
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 // From - https://medium.com/@pritam-debnath/how-to-record-screen-in-a-react-app-0cd98e5d6879
 
 // TODO - add video recordings and savings to stats

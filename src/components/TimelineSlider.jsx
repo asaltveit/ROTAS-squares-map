@@ -1,6 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow'
-import { Slider, Button, Box, Grid2 } from '@mui/material';
+import Box from '@mui/material/Box'; // direct imports are faster/smaller
+import Slider from '@mui/material/Slider'; 
+import Button from '@mui/material/Button'; 
+import Grid2 from '@mui/material/Grid2'; 
 import { convertYearTypetoView } from '../utilities/UtilityFunctions'
 import { useFilterStore } from '../stores/FilterStore';
 import { useMapStore} from '../stores/MapStore'

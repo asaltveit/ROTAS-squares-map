@@ -1,15 +1,11 @@
 import { useState } from "react";
-import { 
-    Box, 
-    Typography, 
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
-} from '@mui/material'; // direct imports are faster/smaller
+import Box from '@mui/material/Box'; // direct imports are faster/smaller
+import Typography from '@mui/material/Typography';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ArrowDropDown from '@mui/icons-material/ArrowDropDown';
 import { bodyOrange, headerOrange } from '../constants';
-import {
-    ArrowDropDown
-} from '@mui/icons-material'; // direct imports are faster/smaller
 
 /*
 Assumes:

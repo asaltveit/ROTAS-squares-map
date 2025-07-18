@@ -1,6 +1,10 @@
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow'
-import { Box, Typography, Button, Grid2, InputLabel } from '@mui/material';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Grid2 from '@mui/material/Grid2';
+import InputLabel from '@mui/material/InputLabel';
+import Typography from '@mui/material/Typography';
 import DropDown from './DropDown';
 import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
 import { yearTypeOptions } from '../constants'
