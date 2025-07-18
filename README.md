@@ -1,5 +1,5 @@
 # ROTAS-squares-map
-An interactive map and timeline of where ROTAS Squares were created. Developed in three iterations: as an Observable Notebook, then with a local backend in Node, Express, and PostgreSQL, and finally hosted with Vercel and Supabase. The user can add, update, and delete data points. 
+An interactive map and timeline of where ROTAS Squares were created. Developed in three iterations: as an Observable Notebook, then with a local backend in Node, Express, and PostgreSQL, and finally hosted with Vercel and Supabase. 
 
 Per the request of someone doing historical research.
 
@@ -19,9 +19,7 @@ Per the request of someone doing historical research.
 - Update locations
 
 ## Future Work
-- Delete locations
-- Functionality to add a file of data points
-- Screen recording / image functionality
+- Better screen recording / image functionality
 - Additional timeline filters - speed/step of slider
 - Better styling
 
