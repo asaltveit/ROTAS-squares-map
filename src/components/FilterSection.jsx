@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow'
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import Grid2 from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import Typography from '@mui/material/Typography';
 import DropDown from './DropDown';
@@ -143,45 +143,45 @@ export default function FilterSection() {
 
     return (
         <Box>
-            <Grid2 container direction="row" columnSpacing={3} justifyContent="center">
-                <Grid2
+            <Grid container direction="row" columnSpacing={3} justifyContent="center">
+                <Grid
                     justifyContent="center"
                     size={6}
                     alignItems="center"
                     gap={'10px'}
                 > 
-                    <Grid2>
+                    <Grid>
                         <Typography
                             justifyContent="center"
                         > 
                         Location Filters </Typography>
-                    </Grid2>
-                    <Grid2
+                    </Grid>
+                    <Grid
                         justifyContent="center"
                         alignItems="center"
                     >
-                        <Grid2 direction="row" container justifyContent="center" columnGap={'20px'} marginTop={'10px'} >
+                        <Grid direction="row" container justifyContent="center" columnGap={'20px'} marginTop={'10px'} >
                             {/* TODO: fix - width changes with content, affects column */}
-                            <Grid2 justifyContent="flex-start" container direction="column" rowSpacing={'10px'} >
+                            <Grid justifyContent="flex-start" container direction="column" rowSpacing={'10px'} >
                                 <DropDown ariaLabel="location-type-dropdown" value={type} onValueChange={setTypeFilter} items={convertStringsToOptions(locationTypes)} label="Type" empty ></DropDown>
                                 <DropDown ariaLabel="script-dropdown" value={script} onValueChange={setScriptFilter} items={scripts} label="Script" empty ></DropDown>
                                 <DropDown ariaLabel="text-dropdown" value={text} onValueChange={setTextFilter} items={texts} label="Text" empty ></DropDown>
-                            </Grid2>
-                            <Grid2 justifyContent="flex-end" container direction="column" rowSpacing={'10px'} >
+                            </Grid>
+                            <Grid justifyContent="flex-end" container direction="column" rowSpacing={'10px'} >
                                 <DropDown ariaLabel="first-word-dropdown" value={firstWord} onValueChange={setFirstWordFilter} items={firstWords} label="First word" empty ></DropDown>
                                 <DropDown ariaLabel="place-dropdown" value={place} onValueChange={setPlaceFilter} items={places} label="Place" empty ></DropDown>
                                 <DropDown ariaLabel="location-dropdown" value={location} onValueChange={setLocationFilter} items={locs} label="Location" empty ></DropDown>
-                            </Grid2>
-                        </Grid2>
+                            </Grid>
+                        </Grid>
                         
-                    </Grid2>
-                </Grid2>
-                <Grid2 
+                    </Grid>
+                </Grid>
+                <Grid 
                     sx={{justifyContent: "flex-end" }}
                     size={4}
                 >
                     <Typography> Timeline Filters </Typography>
-                    <Grid2 justifyContent="flex-end" container direction="column" rowSpacing={'10px'} marginTop={'10px'} >
+                    <Grid justifyContent="flex-end" container direction="column" rowSpacing={'10px'} marginTop={'10px'} >
                         <DropDown ariaLabel="year-type-dropdown" value={yearType} onValueChange={setYearType} items={yearTypeOptions} label="Year type" ></DropDown>
                         <InputLabel 
                             sx={{
@@ -196,9 +196,9 @@ export default function FilterSection() {
                             Year range
                         </InputLabel>
                         <RangeField ariaLabel="year-range-field" ></RangeField>
-                    </Grid2>
-                </Grid2>
-            </Grid2>
+                    </Grid>
+                </Grid>
+            </Grid>
             <Button variant='contained' sx={{ marginTop: '30px' }} onClick={clearAllFilters} > Clear All </Button>
         </Box>
     );

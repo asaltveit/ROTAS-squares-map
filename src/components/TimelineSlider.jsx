@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/react/shallow'
 import Box from '@mui/material/Box'; // direct imports are faster/smaller
 import Slider from '@mui/material/Slider'; 
 import Button from '@mui/material/Button'; 
-import Grid2 from '@mui/material/Grid2'; 
+import Grid from '@mui/material/Grid'; 
 import { convertYearTypetoView } from '../utilities/UtilityFunctions'
 import { useFilterStore } from '../stores/FilterStore';
 import { useMapStore} from '../stores/MapStore'
@@ -97,7 +97,7 @@ export default function TimelineSlider({ onValueChange}) {
                         marginBottom: '5px', 
                     }}
                 > Timeline - {convertYearTypetoView(yearType)} </Box>
-                <Grid2 
+                <Grid 
                     container
                     spacing={3}
                     sx={{ 
@@ -121,7 +121,7 @@ export default function TimelineSlider({ onValueChange}) {
                     <Box >
                         Year: {year}
                     </Box>
-                </Grid2>
+                </Grid>
             </Box>
         </>
     );
