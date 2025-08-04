@@ -28,7 +28,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.56.1",
-    "react-media-recorder": "^1.7.1",
+    "react-media-recorder": "^1.7.2",
     "react-scrubber": "^2.1.0",
     "recordrtc": "^5.5.1",
     "topojson-client": "^3.1.0",
