@@ -33,7 +33,7 @@
     "recordrtc": "^5.5.1",
     "topojson-client": "^3.1.0",
     "yup": "^1.6.1",
-    "zustand": "^5.0.3"
+    "zustand": "^5.0.7"
   },
   "overrides": {
     "vite": {
