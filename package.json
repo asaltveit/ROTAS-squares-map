@@ -20,7 +20,7 @@
     "@react-oauth/google": "^0.12.1",
     "@sparkstone/fingerprintjs": "^3.5.1",
     "@supabase/supabase-js": "^2.49.4",
-    "axios": "^1.7.9",
+    "axios": "^1.11.0",
     "formik": "^2.4.6",
     "html-to-image": "^1.11.13",
     "immer": "^10.1.1",
