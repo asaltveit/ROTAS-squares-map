@@ -19,7 +19,7 @@
     "@observablehq/plot": "^0.6.16",
     "@react-oauth/google": "^0.12.2",
     "@sparkstone/fingerprintjs": "^3.5.1",
-    "@supabase/supabase-js": "^2.75.1",
+    "@supabase/supabase-js": "^2.76.0",
     "axios": "^1.12.2",
     "formik": "^2.4.6",
     "html-to-image": "^1.11.13",
