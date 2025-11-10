@@ -21,7 +21,7 @@
     "@sparkstone/fingerprintjs": "^3.5.1",
     "@supabase/supabase-js": "^2.80.0",
     "axios": "^1.13.2",
-    "formik": "^2.4.6",
+    "formik": "^2.4.8",
     "html-to-image": "^1.11.13",
     "immer": "^10.2.0",
     "lucide-react": "^0.553.0",
