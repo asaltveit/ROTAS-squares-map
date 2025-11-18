@@ -24,7 +24,7 @@
     "formik": "^2.4.9",
     "html-to-image": "^1.11.13",
     "immer": "^10.2.0",
-    "lucide-react": "^0.553.0",
+    "lucide-react": "^0.554.0",
     "react": "^19.0.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.66.0",
