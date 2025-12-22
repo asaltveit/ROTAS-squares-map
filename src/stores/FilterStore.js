@@ -15,6 +15,7 @@ export const useFilterStore = create()(
       longitude: '',
       latitude: '',
     },
+    filtersOpen: false,
     // 6 below are fetched
     // TODO: why are option types and location types different?
     optionTypes: ["manuscript", "amulet", "inscription", "graffito", "dipinto"],
@@ -28,6 +29,10 @@ export const useFilterStore = create()(
     timelineYear: 0,
     timelineStart: 0,
     timelineEnd: 2100,
+    setFiltersOpen: (open) =>
+        set((state) => {
+            state.filtersOpen = open;
+        }),
     // Lists of values to be turned into options (for fetched fields)
     setOptionTypes: (types) =>
         set((state) => {
@@ -122,7 +127,7 @@ export const useFilterStore = create()(
                 location: '',
                 longitude: '',
                 latitude: '',
-// check that the correct fixed_ vs not is getting searched and returned
+          // check that the correct fixed_ vs not is getting searched and returned
             }
             state.yearType = yrType.created
             state.timelineStart = 0

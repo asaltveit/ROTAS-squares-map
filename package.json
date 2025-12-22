@@ -20,6 +20,7 @@
     "@react-oauth/google": "^0.12.1",
     "@sparkstone/fingerprintjs": "^3.5.1",
     "@supabase/supabase-js": "^2.49.4",
+    "@tailwindcss/vite": "^4.1.15",
     "axios": "^1.7.9",
     "formik": "^2.4.6",
     "html-to-image": "^1.11.13",
@@ -31,6 +32,7 @@
     "react-media-recorder": "^1.7.2",
     "react-scrubber": "^2.1.0",
     "recordrtc": "^5.6.2",
+    "tailwindcss": "^4.1.15",
     "topojson-client": "^3.1.0",
     "yup": "^1.6.1",
     "zustand": "^5.0.7"
