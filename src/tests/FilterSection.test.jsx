@@ -1,148 +1,26 @@
-/*import FilterSection from '../components/FilterSection'
-import React from 'react';
-import { expect, describe, it, beforeEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react'
-//import axios from 'axios'
-// TODO mock supabase
-
-describe('FilterSection', () => {
-    /*beforeEach(async () => {
-        vi.mock('axios');
-        const mockData = { data: ["latin", "not latin"] };
-        axios.get.mockResolvedValue(mockData);
-      })
-    it('renders correctly', () => {
-        render(<FilterSection />);
-
-        // Labels
-        const locationFiltersLabel = screen.getByText('Location Filters');
-        expect(locationFiltersLabel).toBeInTheDocument();
-
-        const timelineFiltersLabel = screen.getByText('Timeline Filters');
-        expect(timelineFiltersLabel).toBeInTheDocument();
-
-        // Filters
-        const yearRange = screen.getByLabelText('Year range');
-        expect(yearRange).toBeInTheDocument();
-
-        const place = screen.getByLabelText('Place');
-        expect(place).toBeInTheDocument();
-        
-        const type = screen.getByLabelText('Type');
-        expect(type).toBeInTheDocument();
-
-        const script = screen.getByLabelText('Script');
-        expect(script).toBeInTheDocument();
-
-        const text = screen.getByLabelText('Text');
-        expect(text).toBeInTheDocument();
-
-        const firstWord = screen.getByLabelText('First word');
-        expect(firstWord).toBeInTheDocument();
-
-        const location = screen.getByLabelText('Location');
-        expect(location).toBeInTheDocument();
-
-        const yearType = screen.getByLabelText('Year type');
-        expect(yearType).toBeInTheDocument();
-
-        const clearAllButton = screen.getByText('Clear All');
-        expect(clearAllButton).toBeInTheDocument();
-    })  
-    /*describe('Filters', () => {
-        it('LocationType', async () => {
-            render(<FilterSection />);
-            const locationTypeSwitch = screen.getByLabelText('location-type-switch');
-            act(() => {
-                /* fire events that update state 
-                fireEvent.click(locationTypeSwitch)
-            });
-            const select = screen.getByLabelText('dropdown-select');
-            expect(select).toBeInTheDocument();
-        })
-        it('Script', async () => {
-            render(<FilterSection />);
-            const scriptSwitch = screen.getByLabelText('script-switch');
-            act(() => {
-                /* fire events that update state 
-                fireEvent.click(scriptSwitch)
-            });
-            const select = screen.getByLabelText('dropdown-select');
-            expect(select).toBeInTheDocument();
-        })
-        it('FirstWord', async () => {
-            render(<FilterSection />);
-            const firstWordSwitch = screen.getByLabelText('first-word-switch');
-            act(() => {
-                /* fire events that update state 
-                fireEvent.click(firstWordSwitch)
-            });
-            const select = screen.getByLabelText('dropdown-select');
-            expect(select).toBeInTheDocument();
-        })
-        it('Place', async () => {
-            render(<FilterSection />);
-            const placeSwitch = screen.getByLabelText('place-switch');
-            act(() => {
-                /* fire events that update state 
-                fireEvent.click(placeSwitch)
-            });
-            const select = screen.getByLabelText('dropdown-select');
-            expect(select).toBeInTheDocument();
-        })
-        it('Location', async () => {
-            render(<FilterSection />);
-            const locationSwitch = screen.getByLabelText('location-switch');
-            act(() => {
-                /* fire events that update state 
-                fireEvent.click(locationSwitch)
-            });
-            const select = screen.getByLabelText('dropdown-select');
-            expect(select).toBeInTheDocument();
-        })
-        it('YearType', async () => {
-            render(<FilterSection />);
-            const yearTypeSwitch = screen.getByLabelText('year-type-switch');
-            act(() => {
-                /* fire events that update state 
-                fireEvent.click(yearTypeSwitch)
-            });
-            const select = screen.getByLabelText('dropdown-select');
-            expect(select).toBeInTheDocument();
-        })
-        it('Text', async () => {
-            render(<FilterSection />);
-            const textSwitch = screen.getByLabelText('text-switch');
-            act(() => {
-                /* fire events that update state 
-                fireEvent.click(textSwitch)
-            });
-            const select = screen.getByLabelText('dropdown-select');
-            expect(select).toBeInTheDocument();
-        })
-        it('Year range', async () => {
-            render(<FilterSection />);
-            const yearRangeSwitch = screen.getByLabelText('year-range-switch');
-            act(() => {
-                /* fire events that update state 
-                fireEvent.click(yearRangeSwitch)
-            });
-            const rangeFieldStart = screen.getByLabelText('Start');
-            expect(rangeFieldStart).toBeInTheDocument();
-            const rangeFieldEnd = screen.getByLabelText('End');
-            expect(rangeFieldEnd).toBeInTheDocument();
-        })
-    })
-})*/
-
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach, within } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import FilterSection from '@/components/FilterSection';
 import { useMapStore } from '@/stores/MapStore';
 import { useFilterStore } from '@/stores/FilterStore';
 import { supabase } from '@/supabaseClient';
 import '@testing-library/jest-dom';
+
+// Mock TimelineSlider component
+vi.mock('@/components/TimelineSlider', () => ({
+    default: () => <div data-testid="timeline-slider">Timeline Slider</div>,
+}));
+
+// Mock lucide-react icons
+vi.mock('lucide-react', () => ({
+    X: () => <svg data-testid="x-icon" />,
+}));
+
+// Mock zustand's useShallow
+vi.mock('zustand/react/shallow', () => ({
+    useShallow: (selector) => selector,
+}));
 
 vi.mock('@/stores/MapStore', () => ({
     useMapStore: vi.fn(),
@@ -156,6 +34,22 @@ vi.mock('@/supabaseClient', () => ({
     supabase: {
         rpc: vi.fn(),
     },
+}));
+
+vi.mock('@/utilities/UtilityFunctions', () => ({
+    convertStringsToOptions: (strings) => {
+        return strings.map((s) => ({
+            title: s.charAt(0).toUpperCase() + s.slice(1),
+            value: s,
+        }));
+    },
+}));
+
+vi.mock('@/constants', () => ({
+    yearTypeOptions: [
+        { title: 'Year created', value: 'created' },
+        { title: 'Year discovered', value: 'discovered' },
+    ],
 }));
 
 const createRpcMock = (data = []) => ({
@@ -178,10 +72,14 @@ describe('FilterSection', () => {
         setPlaceFilter: vi.fn(),
         setLocationFilter: vi.fn(),
         setYearType: vi.fn(),
+        setTimelineStart: vi.fn(),
+        setTimelineEnd: vi.fn(),
         clearFilters: vi.fn(),
     };
 
     beforeEach(() => {
+        vi.clearAllMocks();
+
         useMapStore.mockReturnValue({
             locationTypes: ['city', 'village'],
         });
@@ -195,7 +93,10 @@ describe('FilterSection', () => {
             firstWord: '',
             place: '',
             location: '',
-            yearType: '',
+            yearType: 'created',
+            timelineStart: 0,
+            timelineEnd: 2100,
+            timelineYear: 0,
 
             scripts: [],
             texts: [],
@@ -205,23 +106,75 @@ describe('FilterSection', () => {
         });
 
         supabase.rpc.mockImplementation((name) =>
-            Promise.resolve(createRpcMock(['City']))
+            Promise.resolve(createRpcMock(['City', 'Village']))
         );
     });
 
-    it('renders all dropdowns and fields', () => {
+    it('renders the Filters heading', () => {
+        render(<FilterSection />);
+        expect(screen.getByText('Filters')).toBeInTheDocument();
+    });
+
+    it('renders TimelineSlider component', () => {
+        render(<FilterSection />);
+        expect(screen.getByTestId('timeline-slider')).toBeInTheDocument();
+    });
+
+    it('renders Temporal Range section with year inputs', () => {
+        render(<FilterSection />);
+        
+        expect(screen.getByText('Temporal Range')).toBeInTheDocument();
+        expect(screen.getByLabelText('Start Year')).toBeInTheDocument();
+        expect(screen.getByLabelText('End Year')).toBeInTheDocument();
+    });
+
+    it('renders Year Type select', () => {
+        render(<FilterSection />);
+        const yearTypeSelect = screen.getByLabelText('Year Type');
+        expect(yearTypeSelect).toBeInTheDocument();
+        expect(yearTypeSelect.tagName).toBe('SELECT');
+    });
+
+    it('renders all filter selects', () => {
         render(<FilterSection />);
 
-        expect(screen.getByLabelText(/location-type-dropdown/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/script-dropdown/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/text-dropdown/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/first-word-dropdown/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/place-dropdown/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/location-dropdown/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/year-type-dropdown/i)).toBeInTheDocument();
-        // Start, End field of the Year Range
-        expect(screen.getByLabelText(/Start/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/End/i)).toBeInTheDocument();
+        expect(screen.getByLabelText('Type')).toBeInTheDocument();
+        expect(screen.getByLabelText('Script')).toBeInTheDocument();
+        expect(screen.getByLabelText('First Word')).toBeInTheDocument();
+        expect(screen.getByLabelText('Text')).toBeInTheDocument();
+        expect(screen.getByLabelText('Place')).toBeInTheDocument();
+        expect(screen.getByLabelText('Location')).toBeInTheDocument();
+    });
+
+    it('renders Clear All Filters button', () => {
+        render(<FilterSection />);
+        const clearButton = screen.getByRole('button', { name: /clear all filters/i });
+        expect(clearButton).toBeInTheDocument();
+    });
+
+    it('renders close button when onClose prop is provided', () => {
+        const mockOnClose = vi.fn();
+        render(<FilterSection onClose={mockOnClose} />);
+        
+        const closeButton = screen.getByTitle('Close filters');
+        expect(closeButton).toBeInTheDocument();
+    });
+
+    it('does not render close button when onClose prop is not provided', () => {
+        render(<FilterSection />);
+        
+        const closeButton = screen.queryByTitle('Close filters');
+        expect(closeButton).not.toBeInTheDocument();
+    });
+
+    it('calls onClose when close button is clicked', () => {
+        const mockOnClose = vi.fn();
+        render(<FilterSection onClose={mockOnClose} />);
+        
+        const closeButton = screen.getByTitle('Close filters');
+        fireEvent.click(closeButton);
+        
+        expect(mockOnClose).toHaveBeenCalledTimes(1);
     });
 
     it('calls RPC functions on mount and sets data', async () => {
@@ -245,73 +198,162 @@ describe('FilterSection', () => {
         });
     });
 
-    it('triggers filter setter when dropdown value changes', async () => {
+    it('triggers setTypeFilter when Type select value changes', async () => {
+        useFilterStore.mockReturnValue({
+            ...mockSetters,
+            type: '',
+            script: '',
+            text: '',
+            firstWord: '',
+            place: '',
+            location: '',
+            yearType: 'created',
+            timelineStart: 0,
+            timelineEnd: 2100,
+            timelineYear: 0,
+            scripts: [],
+            texts: [],
+            locs: [],
+            firstWords: [],
+            places: [],
+        });
+
         render(<FilterSection />);
-        // TODO: dropdown is not expanded
-        const dropdown = screen.getByLabelText(/location-type-dropdown/i);
-        expect(dropdown).toBeInTheDocument();
-
-        // Click on the MUI "select" (as found by the label).
-        const selectLabel = "location-type-dropdown";
-        const selectEl = await screen.findByLabelText(selectLabel);
-
-        expect(selectEl).toBeInTheDocument();
-
-        act(() => {
-            userEvent.click(selectEl);
-            //fireEvent.mouseDown(getByRole('combobox'));
-        });
-
-        // Locate the corresponding popup (`listbox`) of options.
-        const optionsPopupEl = await screen.findByRole("combobox", { // list
-            name: selectLabel
-        });
-
-        // Click an option in the popup.
-        userEvent.click(within(optionsPopupEl).getByText(/marshmallow/i));
-
-        // Confirm the outcome.
-        expect(
-            await screen.findByText(/the thing is: marshmallow/i)
-        ).toBeInTheDocument();
-       /* const {getByRole} = render(<FilterSection />);
         
-        // Open the dropdown
-        const dropdown = screen.getByLabelText(/location-type-dropdown/i);
-        expect(dropdown).toBeInTheDocument();
-        act(() => {
-            fireEvent.mouseDown(getByRole('button'), {name: /location-type-dropdown/i})
-            //fireEvent.mouseDown(dropdown); // <- Opens the MUI dropdown
-            //fireEvent.mouseDown(getByRole('combobox', {name: /location-type-dropdown/i}))
-        });
-        screen.debug()
-        const listbox = within(getByRole('combobox'));
-        act(() => {
-            
-            fireEvent.click(listbox.getByText(/menu item City/i));
-        });
-        screen.debug()
-        // Match option by partial content (handles whitespace or nested elements)
-        await waitFor(async () => {
-            const option = await screen.findByLabelText(/menu item City/i);
-            /*const option = await screen.findByText((content, element) =>
-                content.includes('menu item City')
-            );
-        });
+        const typeSelect = screen.getByLabelText('Type');
+        await userEvent.selectOptions(typeSelect, 'city');
 
-        fireEvent.click(option); // Select it
-
-        expect(mockSetters.setTypeFilter).toHaveBeenCalledWith('city');*/
+        expect(mockSetters.setTypeFilter).toHaveBeenCalledWith('city');
     });
 
-    it('calls clearFilters on "Clear All" button click', () => {
-        render(<FilterSection />);
-
-        const clearButton = screen.getByRole('button', { name: /clear all/i });
-        act(() => {
-            fireEvent.click(clearButton);
+    it('triggers setScriptFilter when Script select value changes', async () => {
+        useFilterStore.mockReturnValue({
+            ...mockSetters,
+            type: '',
+            script: '',
+            text: '',
+            firstWord: '',
+            place: '',
+            location: '',
+            yearType: 'created',
+            timelineStart: 0,
+            timelineEnd: 2100,
+            timelineYear: 0,
+            scripts: [{ title: 'Latin', value: 'latin' }],
+            texts: [],
+            locs: [],
+            firstWords: [],
+            places: [],
         });
 
+        render(<FilterSection />);
+        
+        const scriptSelect = screen.getByLabelText('Script');
+        await userEvent.selectOptions(scriptSelect, 'latin');
+
+        expect(mockSetters.setScriptFilter).toHaveBeenCalledWith('latin');
+    });
+
+    it('triggers setYearType when Year Type select value changes', async () => {
+        render(<FilterSection />);
+        
+        const yearTypeSelect = screen.getByLabelText('Year Type');
+        await userEvent.selectOptions(yearTypeSelect, 'discovered');
+
+        expect(mockSetters.setYearType).toHaveBeenCalledWith('discovered');
+    });
+
+    it('updates start year input and calls setTimelineStart on blur', async () => {
+        render(<FilterSection />);
+        
+        const startYearInput = screen.getByLabelText('Start Year');
+        
+        await userEvent.clear(startYearInput);
+        await userEvent.type(startYearInput, '100');
+        await userEvent.tab(); // Triggers blur
+
+        expect(mockSetters.setTimelineStart).toHaveBeenCalledWith(100);
+    });
+
+    it('updates end year input and calls setTimelineEnd on blur', async () => {
+        render(<FilterSection />);
+        
+        const endYearInput = screen.getByLabelText('End Year');
+        
+        await userEvent.clear(endYearInput);
+        await userEvent.type(endYearInput, '500');
+        await userEvent.tab(); // Triggers blur
+
+        expect(mockSetters.setTimelineEnd).toHaveBeenCalledWith(500);
+    });
+
+    it('calls setTimelineStart when Enter is pressed on start year input', async () => {
+        render(<FilterSection />);
+        
+        const startYearInput = screen.getByLabelText('Start Year');
+        
+        await userEvent.clear(startYearInput);
+        await userEvent.type(startYearInput, '150{Enter}');
+
+        expect(mockSetters.setTimelineStart).toHaveBeenCalledWith(150);
+    });
+
+    it('calls setTimelineEnd when Enter is pressed on end year input', async () => {
+        render(<FilterSection />);
+        
+        const endYearInput = screen.getByLabelText('End Year');
+        
+        await userEvent.clear(endYearInput);
+        await userEvent.type(endYearInput, '600{Enter}');
+
+        expect(mockSetters.setTimelineEnd).toHaveBeenCalledWith(600);
+    });
+
+    it('calls clearFilters on Clear All Filters button click', () => {
+        render(<FilterSection />);
+
+        const clearButton = screen.getByRole('button', { name: /clear all filters/i });
+        fireEvent.click(clearButton);
+
         expect(mockSetters.clearFilters).toHaveBeenCalled();
+    });
+
+    it('displays temporal range with current values', () => {
+        useFilterStore.mockReturnValue({
+            ...mockSetters,
+            type: '',
+            script: '',
+            text: '',
+            firstWord: '',
+            place: '',
+            location: '',
+            yearType: 'created',
+            timelineStart: 100,
+            timelineEnd: 500,
+            timelineYear: 0,
+            scripts: [],
+            texts: [],
+            locs: [],
+            firstWords: [],
+            places: [],
+        });
+
+        render(<FilterSection />);
+        
+        expect(screen.getByText('100 CE - 500 CE')).toBeInTheDocument();
+    });
+
+    it('shows All Types option in Type select', () => {
+        render(<FilterSection />);
+        
+        const typeSelect = screen.getByLabelText('Type');
+        expect(typeSelect.querySelector('option[value=""]')).toHaveTextContent('All Types');
+    });
+
+    it('shows All Scripts option in Script select', () => {
+        render(<FilterSection />);
+        
+        const scriptSelect = screen.getByLabelText('Script');
+        expect(scriptSelect.querySelector('option[value=""]')).toHaveTextContent('All Scripts');
     });
 });
