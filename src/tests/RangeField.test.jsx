@@ -1,4 +1,4 @@
-import RangeField from '../components/RangeField'
+import RangeField from '@/components/RangeField'
 import React from 'react';
 import { expect, describe, it, } from 'vitest';
 import { render, screen } from '@testing-library/react'

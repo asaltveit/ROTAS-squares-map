@@ -1,4 +1,4 @@
-import TimelineSlider from '../components/TimelineSlider'
+import TimelineSlider from '@/components/TimelineSlider'
 import React from 'react';
 import { expect, describe, it } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react'

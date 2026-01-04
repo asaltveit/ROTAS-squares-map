@@ -138,21 +138,21 @@ describe('FilterSection', () => {
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, within } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import FilterSection from '../components/FilterSection';
-import { useMapStore } from '../stores/MapStore';
-import { useFilterStore } from '../stores/FilterStore';
-import { supabase } from '../supabaseClient';
+import FilterSection from '@/components/FilterSection';
+import { useMapStore } from '@/stores/MapStore';
+import { useFilterStore } from '@/stores/FilterStore';
+import { supabase } from '@/supabaseClient';
 import '@testing-library/jest-dom';
 
-vi.mock('../stores/MapStore', () => ({
+vi.mock('@/stores/MapStore', () => ({
     useMapStore: vi.fn(),
 }));
 
-vi.mock('../stores/FilterStore', () => ({
+vi.mock('@/stores/FilterStore', () => ({
     useFilterStore: vi.fn(),
 }));
 
-vi.mock('../supabaseClient', () => ({
+vi.mock('@/supabaseClient', () => ({
     supabase: {
         rpc: vi.fn(),
     },

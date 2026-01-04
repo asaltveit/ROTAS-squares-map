@@ -1,25 +1,15 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { X, ChevronDown, ChevronUp } from 'lucide-react';
-import { convertStringsToOptions } from '../utilities/UtilityFunctions.js';
-import { yearTypeOptions } from '../constants'
-import { useMapStore } from '../stores/MapStore.js'
-import { useFilterStore } from '../stores/FilterStore.js'
-import { supabase } from '../supabaseClient';
-import TimelineSlider from './TimelineSlider';
+import { X } from 'lucide-react';
+import { convertStringsToOptions } from '@/utilities/UtilityFunctions.js';
+import { yearTypeOptions } from '@/constants'
+import { useMapStore } from '@/stores/MapStore.js'
+import { useFilterStore } from '@/stores/FilterStore.js'
+import { supabase } from '@/supabaseClient';
+import TimelineSlider from '@/components/TimelineSlider';
 
 export default function FilterSection({ onClose }) {
     const scrollContainerRef = useRef(null);
-    const [expandedSections, setExpandedSections] = useState({
-        type: true,
-        script: true,
-        text: true,
-        firstWord: true,
-        place: true,
-        location: true,
-        temporal: true,
-        yearType: true,
-    });
     
     // Local state for number inputs to allow multi-digit typing
     const [startYearInput, setStartYearInput] = useState('');
@@ -156,10 +146,6 @@ export default function FilterSection({ onClose }) {
         getFirstWords()
     }, []);
 
-    const toggleSection = (section) => {
-        setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
-    };
-
     const clearAllFilters = () => {
         clearFilters()
     }
@@ -244,23 +230,6 @@ export default function FilterSection({ onClose }) {
         });
     }, [timelineStart, timelineEnd, timelineYear]);
 
-    const AccordionSection = ({ title, section, children }) => (
-        <div className="mb-3 border border-amber-800/30 rounded bg-stone-50/50">
-          <button
-            onClick={() => toggleSection(section)}
-            className="w-full px-4 py-3 flex items-center justify-between hover:bg-amber-50 transition-colors"
-          >
-            <span className="font-semibold text-amber-900">{title}</span>
-            {expandedSections[section] ? <ChevronUp size={20} className="text-amber-900" /> : <ChevronDown size={20} className="text-amber-900" />}
-          </button>
-          {expandedSections[section] && (
-            <div className="px-4 pb-4 pt-2">
-              {children}
-            </div>
-          )}
-        </div>
-      );
-
     return (
         <div className="lg:col-span-3 flex flex-col h-full max-h-[calc(100vh-12rem)]">
             <div className="bg-white rounded-lg shadow-lg border-2 border-amber-200 flex flex-col h-full overflow-hidden">
@@ -279,9 +248,111 @@ export default function FilterSection({ onClose }) {
                     )}
                 </div>
 
-                <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-6 pt-4">
+                <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-6 pt-4 space-y-4">
+                <TimelineSlider />
+                {/* Temporal Range */}
+                <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-amber-900">Temporal Range</label>
+                    <div className="space-y-4">
+                        <div className="text-sm text-amber-900">
+                            {timelineStart} CE - {timelineEnd} CE
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-xs text-amber-700">Start Year</label>
+                                <input
+                                    ref={startYearInputRef}
+                                    type="number"
+                                    min="-100"
+                                    max={timelineEnd - 1}
+                                    value={startYearInput}
+                                    onFocus={() => {
+                                        isUserTyping.current = true;
+                                    }}
+                                    onChange={(e) => {
+                                        // Allow typing without immediately updating store
+                                        setStartYearInput(e.target.value);
+                                    }}
+                                    onBlur={(e) => {
+                                        isUserTyping.current = false;
+                                        // Update store only when user finishes typing
+                                        const val = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
+                                        if (!isNaN(val)) {
+                                            const newStart = Math.min(val, timelineEnd - 1);
+                                            setTimelineStart(newStart);
+                                            setStartYearInput(newStart.toString());
+                                        } else {
+                                            setStartYearInput(timelineStart?.toString() || '0');
+                                        }
+                                    }}
+                                    onKeyDown={(e) => {
+                                        // Update store on Enter key
+                                        if (e.key === 'Enter') {
+                                            isUserTyping.current = false;
+                                            e.target.blur();
+                                        }
+                                    }}
+                                    className="w-full px-3 py-2 border-2 border-amber-300 rounded focus:border-amber-600 focus:outline-none"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs text-amber-700">End Year</label>
+                                <input
+                                    ref={endYearInputRef}
+                                    type="number"
+                                    min={timelineStart + 1}
+                                    max="500"
+                                    value={endYearInput}
+                                    onFocus={() => {
+                                        isUserTyping.current = true;
+                                    }}
+                                    onChange={(e) => {
+                                        // Allow typing without immediately updating store
+                                        setEndYearInput(e.target.value);
+                                    }}
+                                    onBlur={(e) => {
+                                        isUserTyping.current = false;
+                                        // Update store only when user finishes typing
+                                        const val = e.target.value === '' ? 2100 : parseInt(e.target.value, 10);
+                                        if (!isNaN(val)) {
+                                            const newEnd = Math.max(val, timelineStart + 1);
+                                            setTimelineEnd(newEnd);
+                                            setEndYearInput(newEnd.toString());
+                                        } else {
+                                            setEndYearInput(timelineEnd?.toString() || '2100');
+                                        }
+                                    }}
+                                    onKeyDown={(e) => {
+                                        // Update store on Enter key
+                                        if (e.key === 'Enter') {
+                                            isUserTyping.current = false;
+                                            e.target.blur();
+                                        }
+                                    }}
+                                    className="w-full px-3 py-2 border-2 border-amber-300 rounded focus:border-amber-600 focus:outline-none"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Year Type */}
+                <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-amber-900">Year Type</label>
+                    <select
+                        value={normalizeSelectValue(yearType, yearTypeOptions) || "created"}
+                        onChange={(e) => setYearType(e.target.value)}
+                        className="w-full px-3 py-2 border-2 border-amber-300 rounded focus:border-amber-600 focus:outline-none"
+                    >
+                        {yearTypeOptions.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.title}</option>
+                        ))}
+                    </select>
+                </div>
+
                 {/* Type */}
-                <AccordionSection title="Type" section="type">
+                <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-amber-900">Type</label>
                     <select
                         value={normalizeSelectValue(type, typeOptions)}
                         onChange={(e) => {
@@ -295,10 +366,11 @@ export default function FilterSection({ onClose }) {
                             <option key={opt.value} value={opt.value}>{opt.title}</option>
                         ))}
                     </select>
-                </AccordionSection>
+                </div>
 
                 {/* Script */}
-                <AccordionSection title="Script" section="script">
+                <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-amber-900">Script</label>
                     <select
                         value={normalizeSelectValue(script, scripts)}
                         onChange={(e) => {
@@ -312,10 +384,11 @@ export default function FilterSection({ onClose }) {
                             <option key={opt.value} value={opt.value}>{opt.title}</option>
                         ))}
                     </select>
-                </AccordionSection>
+                </div>
 
                 {/* First Word */}
-                <AccordionSection title="First Word" section="firstWord">
+                <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-amber-900">First Word</label>
                     <select
                         value={normalizeSelectValue(firstWord, firstWords)}
                         onChange={(e) => {
@@ -329,10 +402,11 @@ export default function FilterSection({ onClose }) {
                             <option key={opt.value} value={opt.value}>{opt.title}</option>
                         ))}
                     </select>
-                </AccordionSection>
+                </div>
 
                 {/* Text */}
-                <AccordionSection title="Text" section="text">
+                <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-amber-900">Text</label>
                     <select
                         value={normalizeSelectValue(text, texts)}
                         onChange={(e) => {
@@ -346,12 +420,11 @@ export default function FilterSection({ onClose }) {
                             <option key={opt.value} value={opt.value}>{opt.title}</option>
                         ))}
                     </select>
-                </AccordionSection>
-
-                
+                </div>
 
                 {/* Place */}
-                <AccordionSection title="Place" section="place">
+                <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-amber-900">Place</label>
                     <select
                         value={normalizeSelectValue(place, places)}
                         onChange={(e) => {
@@ -365,10 +438,11 @@ export default function FilterSection({ onClose }) {
                             <option key={opt.value} value={opt.value}>{opt.title}</option>
                         ))}
                     </select>
-                </AccordionSection>
+                </div>
 
                 {/* Location */}
-                <AccordionSection title="Location" section="location">
+                <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-amber-900">Location</label>
                     <select
                         value={normalizeSelectValue(location, locs)}
                         onChange={(e) => {
@@ -382,104 +456,7 @@ export default function FilterSection({ onClose }) {
                             <option key={opt.value} value={opt.value}>{opt.title}</option>
                         ))}
                     </select>
-                </AccordionSection>
-
-                {/* Temporal Range */}
-                <AccordionSection title="Temporal Range" section="temporal">
-                    <div className="space-y-4">
-                        <div className="text-sm text-amber-900">
-                            {timelineStart} CE - {timelineEnd} CE
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-xs text-amber-700">Start Year</label>
-                            <input
-                                ref={startYearInputRef}
-                                type="number"
-                                min="-100"
-                                max={timelineEnd - 1}
-                                value={startYearInput}
-                                onFocus={() => {
-                                    isUserTyping.current = true;
-                                }}
-                                onChange={(e) => {
-                                    // Allow typing without immediately updating store
-                                    setStartYearInput(e.target.value);
-                                }}
-                                onBlur={(e) => {
-                                    isUserTyping.current = false;
-                                    // Update store only when user finishes typing
-                                    const val = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
-                                    if (!isNaN(val)) {
-                                        const newStart = Math.min(val, timelineEnd - 1);
-                                        setTimelineStart(newStart);
-                                        setStartYearInput(newStart.toString());
-                                    } else {
-                                        setStartYearInput(timelineStart?.toString() || '0');
-                                    }
-                                }}
-                                onKeyDown={(e) => {
-                                    // Update store on Enter key
-                                    if (e.key === 'Enter') {
-                                        isUserTyping.current = false;
-                                        e.target.blur();
-                                    }
-                                }}
-                                className="w-full px-3 py-2 border-2 border-amber-300 rounded focus:border-amber-600 focus:outline-none"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-xs text-amber-700">End Year</label>
-                            <input
-                                ref={endYearInputRef}
-                                type="number"
-                                min={timelineStart + 1}
-                                max="500"
-                                value={endYearInput}
-                                onFocus={() => {
-                                    isUserTyping.current = true;
-                                }}
-                                onChange={(e) => {
-                                    // Allow typing without immediately updating store
-                                    setEndYearInput(e.target.value);
-                                }}
-                                onBlur={(e) => {
-                                    isUserTyping.current = false;
-                                    // Update store only when user finishes typing
-                                    const val = e.target.value === '' ? 2100 : parseInt(e.target.value, 10);
-                                    if (!isNaN(val)) {
-                                        const newEnd = Math.max(val, timelineStart + 1);
-                                        setTimelineEnd(newEnd);
-                                        setEndYearInput(newEnd.toString());
-                                    } else {
-                                        setEndYearInput(timelineEnd?.toString() || '2100');
-                                    }
-                                }}
-                                onKeyDown={(e) => {
-                                    // Update store on Enter key
-                                    if (e.key === 'Enter') {
-                                        isUserTyping.current = false;
-                                        e.target.blur();
-                                    }
-                                }}
-                                className="w-full px-3 py-2 border-2 border-amber-300 rounded focus:border-amber-600 focus:outline-none"
-                            />
-                        </div>
-                        <TimelineSlider />
-                    </div>
-                </AccordionSection>
-
-                {/* Year Type */}
-                <AccordionSection title="Year Type" section="yearType">
-                    <select
-                        value={normalizeSelectValue(yearType, yearTypeOptions) || "created"}
-                        onChange={(e) => setYearType(e.target.value)}
-                        className="w-full px-3 py-2 border-2 border-amber-300 rounded focus:border-amber-600 focus:outline-none"
-                    >
-                        {yearTypeOptions.map(opt => (
-                            <option key={opt.value} value={opt.value}>{opt.title}</option>
-                        ))}
-                    </select>
-                </AccordionSection>
+                </div>
 
                 <button
                     onClick={clearAllFilters}

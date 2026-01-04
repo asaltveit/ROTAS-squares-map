@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
-import { yearType as yrType } from '../constants'
+import { yearType as yrType } from '@/constants'
 
 
 export const useFilterStore = create()(
@@ -127,7 +127,7 @@ export const useFilterStore = create()(
                 location: '',
                 longitude: '',
                 latitude: '',
-          // check that the correct fixed_ vs not is getting searched and returned
+          // TODO: check that the correct fixed_ vs not is getting searched and returned
             }
             state.yearType = yrType.created
             state.timelineStart = 0

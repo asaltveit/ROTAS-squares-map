@@ -1,8 +1,8 @@
 import React, { useEffect, useState, memo } from 'react';
 import { useShallow } from 'zustand/react/shallow'
-import { convertYearTypetoView } from '../utilities/UtilityFunctions'
-import { useFilterStore } from '../stores/FilterStore';
-import { useMapStore} from '../stores/MapStore'
+import { convertYearTypetoView } from '@/utilities/UtilityFunctions'
+import { useFilterStore } from '@/stores/FilterStore';
+import { useMapStore} from '@/stores/MapStore'
 
 // TODO - Add breakpoints for smaller windows
 // TODO - Stop animation when slider clicked

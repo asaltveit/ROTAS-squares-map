@@ -1,4 +1,4 @@
-import DropDown from '../components/DropDown'
+import DropDown from '@/components/DropDown'
 import React from 'react';
 import { expect, describe, it, } from 'vitest';
 import { render, screen, act, fireEvent } from '@testing-library/react'

@@ -1,5 +1,5 @@
 import * as htmlToImage from "html-to-image";
-import { useMapStore } from '../../stores/MapStore'
+import { useMapStore } from '@/stores/MapStore'
 import { useShallow } from 'zustand/react/shallow';
 import Button from '@mui/material/Button'; // direct imports are faster/smaller
 import Box from '@mui/material/Box';

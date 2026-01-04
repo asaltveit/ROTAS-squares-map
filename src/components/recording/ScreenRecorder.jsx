@@ -1,7 +1,7 @@
 import { Download, PauseCircle, Trash, ChevronDown, ChevronUp, Play, PlayCircle, StopCircle, } from "lucide-react";
 import { useState, useRef } from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
-import { useMapStore} from '../../stores/MapStore'
+import { useMapStore} from '@/stores/MapStore'
 import { useShallow } from 'zustand/react/shallow';
 import Stack from '@mui/material/Stack'; // direct imports are faster/smaller
 import Button from '@mui/material/Button';

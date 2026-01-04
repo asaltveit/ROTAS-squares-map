@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import OptionsAccordion from '../components/OptionsAccordion';
+import OptionsAccordion from '@/components/OptionsAccordion';
 
 describe('OptionsAccordion', () => {
   const mockChildren = [

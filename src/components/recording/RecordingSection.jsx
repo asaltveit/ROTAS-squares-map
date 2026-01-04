@@ -1,5 +1,5 @@
 import { useShallow } from 'zustand/react/shallow';
-import { useMapStore} from '../../stores/MapStore'
+import { useMapStore} from '@/stores/MapStore'
 import { useReactMediaRecorder } from "react-media-recorder";
 import * as htmlToImage from "html-to-image";
 

@@ -6,18 +6,18 @@ import { Filter, Download, Share, Bookmark, Save, ChevronDown, ChevronUp } from 
 // Map
 import * as Plot from "@observablehq/plot";
 import { feature } from "topojson-client";
-import geoData from "./data/countries-geo.json"
+import geoData from "@/data/countries-geo.json"
 // Utilities
-import { useMapStore} from './stores/MapStore'
-import { useFilterStore } from './stores/FilterStore';
-import { plotPointTitle } from './utilities/UtilityFunctions';
-import { yearType as yrType } from './constants';
-import { allSymbols } from './constants';
+import { useMapStore} from '@/stores/MapStore'
+import { useFilterStore } from '@/stores/FilterStore';
+import { plotPointTitle } from '@/utilities/UtilityFunctions';
+import { yearType as yrType } from '@/constants';
+import { allSymbols } from '@/constants';
 // Components
-import FilterSection from './components/FilterSection';
-import RecordingSection from './components/recording/RecordingSection';
+import FilterSection from '@/components/FilterSection';
+import RecordingSection from '@/components/recording/RecordingSection';
 // DB
-import { supabase } from './supabaseClient';
+import { supabase } from '@/supabaseClient';
 //Fingerprint
 import FingerprintJS from '@sparkstone/fingerprintjs';
 
@@ -61,8 +61,8 @@ export default function App() {
   });
   
   const [expandedSections, setExpandedSections] = useState({
-    recording: true,
-    export: true,
+    recording: false,
+    export: false,
     savedViews: true
   });
   

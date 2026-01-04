@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import TemporaryDrawer from '../components/TemporaryDrawer';
+import TemporaryDrawer from '@/components/TemporaryDrawer';
 
 describe('TemporaryDrawer', () => {
     const mockChildren = [
