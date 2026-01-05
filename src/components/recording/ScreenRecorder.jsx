@@ -45,7 +45,10 @@ const Recorder = () => {
 
   return (
     <Stack>
-        <Typography>
+        {/* ACCESSIBILITY FIX: Status should have aria-live="polite" for screen reader announcements
+            Currently the test expects aria-live attribute on the status element
+            Change: Add aria-live="polite" to the Typography component or wrap it in a div with aria-live */}
+        <Typography aria-live="polite">
             {status}
         </Typography>
         <Button onClick={setupRecording}>Start Recording</Button>

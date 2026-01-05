@@ -55,6 +55,7 @@ function Video() {
             autoPlay
             ref={refVideo}
             style={{ width: '700px', margin: '1em' }}
+            aria-label="Recorded screen capture video"
           />
         )}
       </header>

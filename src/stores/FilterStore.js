@@ -29,6 +29,7 @@ export const useFilterStore = create()(
     timelineYear: 0,
     timelineStart: 0,
     timelineEnd: 2100,
+    playAnimation: false,
     setFiltersOpen: (open) =>
         set((state) => {
             state.filtersOpen = open;
@@ -76,6 +77,11 @@ export const useFilterStore = create()(
     setTimelineEnd: (year) =>
       set((state) => {
         state.timelineEnd = year
+      }
+    ),
+    setPlayAnimation: (playing) =>
+      set((state) => {
+        state.playAnimation = playing
       }
     ),
     // Set filters to be searched

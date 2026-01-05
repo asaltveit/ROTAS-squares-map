@@ -141,9 +141,11 @@ describe('FilterSection', () => {
         expect(screen.getByLabelText('Type')).toBeInTheDocument();
         expect(screen.getByLabelText('Script')).toBeInTheDocument();
         expect(screen.getByLabelText('First Word')).toBeInTheDocument();
+        /*
+        Removing these filters for now
         expect(screen.getByLabelText('Text')).toBeInTheDocument();
         expect(screen.getByLabelText('Place')).toBeInTheDocument();
-        expect(screen.getByLabelText('Location')).toBeInTheDocument();
+        expect(screen.getByLabelText('Location')).toBeInTheDocument();*/
     });
 
     it('renders Clear All Filters button', () => {
@@ -355,5 +357,114 @@ describe('FilterSection', () => {
         
         const scriptSelect = screen.getByLabelText('Script');
         expect(scriptSelect.querySelector('option[value=""]')).toHaveTextContent('All Scripts');
+    });
+
+    // Accessibility tests
+    describe('Accessibility', () => {
+        it('has proper heading hierarchy', () => {
+            render(<FilterSection />);
+            const heading = screen.getByRole('heading', { name: /filters/i });
+            expect(heading).toBeInTheDocument();
+            expect(heading.tagName).toBe('H2');
+        });
+
+        it('has all form inputs properly labeled', () => {
+            render(<FilterSection />);
+            
+            // Check that all inputs have associated labels
+            expect(screen.getByLabelText('Start Year')).toBeInTheDocument();
+            expect(screen.getByLabelText('End Year')).toBeInTheDocument();
+            expect(screen.getByLabelText('Year Type')).toBeInTheDocument();
+            expect(screen.getByLabelText('Type')).toBeInTheDocument();
+            expect(screen.getByLabelText('Script')).toBeInTheDocument();
+            expect(screen.getByLabelText('First Word')).toBeInTheDocument();
+            /*
+             Removing these filters for now
+            expect(screen.getByLabelText('Text')).toBeInTheDocument();
+            expect(screen.getByLabelText('Place')).toBeInTheDocument();
+            expect(screen.getByLabelText('Location')).toBeInTheDocument();*/
+        });
+
+        it('has accessible close button with aria-label when onClose is provided', () => {
+            const mockOnClose = vi.fn();
+            render(<FilterSection onClose={mockOnClose} />);
+            
+            // The button should have aria-label="Close filters" for screen reader accessibility
+            const closeButton = screen.getByTitle('Close filters');
+            expect(closeButton).toBeInTheDocument();
+            expect(closeButton).toHaveAttribute('aria-label', 'Close filters');
+        });
+
+        it('has accessible Clear All Filters button', () => {
+            render(<FilterSection />);
+            const clearButton = screen.getByRole('button', { name: /clear all filters/i });
+            expect(clearButton).toBeInTheDocument();
+            expect(clearButton).toBeVisible();
+        });
+
+        it('all number inputs have proper min and max attributes', () => {
+            render(<FilterSection />);
+            
+            const startYearInput = screen.getByLabelText('Start Year');
+            const endYearInput = screen.getByLabelText('End Year');
+            
+            expect(startYearInput).toHaveAttribute('type', 'number');
+            expect(startYearInput).toHaveAttribute('min');
+            expect(startYearInput).toHaveAttribute('max');
+            
+            expect(endYearInput).toHaveAttribute('type', 'number');
+            expect(endYearInput).toHaveAttribute('min');
+            expect(endYearInput).toHaveAttribute('max');
+        });
+
+        it('all select elements are keyboard accessible', async () => {
+            render(<FilterSection />);
+            
+            const typeSelect = screen.getByLabelText('Type');
+            act(() => {
+                typeSelect.focus();
+            });
+            expect(typeSelect).toHaveFocus();
+            
+            // Can navigate with arrow keys
+            await userEvent.keyboard('{ArrowDown}');
+            expect(typeSelect).toHaveFocus();
+        });
+
+        it('has proper focus management for inputs', async () => {
+            render(<FilterSection />);
+            
+            const startYearInput = screen.getByLabelText('Start Year');
+            await userEvent.click(startYearInput);
+            expect(startYearInput).toHaveFocus();
+        });
+
+        it('has semantic HTML structure', () => {
+            render(<FilterSection />);
+            
+            // Check for proper use of labels
+            const labels = screen.getAllByText(/^(Start Year|End Year|Year Type|Type|Script|First Word|Text|Place|Location|Temporal Range)$/i);
+            expect(labels.length).toBeGreaterThan(0);
+        });
+
+        it('has accessible button text (not just icons)', () => {
+            render(<FilterSection />);
+            
+            // Clear All Filters button should have visible text
+            const clearButton = screen.getByRole('button', { name: /clear all filters/i });
+            expect(clearButton).toHaveTextContent('Clear All Filters');
+        });
+
+        it('close button is keyboard accessible when present', async () => {
+            const mockOnClose = vi.fn();
+            render(<FilterSection onClose={mockOnClose} />);
+            
+            const closeButton = screen.getByTitle('Close filters');
+            closeButton.focus();
+            expect(closeButton).toHaveFocus();
+            
+            await userEvent.keyboard('{Enter}');
+            expect(mockOnClose).toHaveBeenCalled();
+        });
     });
 });

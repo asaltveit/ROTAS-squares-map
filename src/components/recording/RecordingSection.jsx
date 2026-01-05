@@ -50,7 +50,7 @@ export default function RecordingSection({ screenRef }) {
             <div>
                 <h3 className="text-sm font-semibold text-amber-900 mb-2">Take a screen recording</h3>
                 <div className="space-y-2">
-                    <div className="text-sm text-amber-700">
+                    <div className="text-sm text-amber-700" aria-live="polite">
                         Status: {status}
                     </div>
                     <div className="flex gap-2">

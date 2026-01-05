@@ -41,7 +41,7 @@ export default function App() {
     })),
   )
 
-  const { filters, yearType, timelineYear, setTimelineYear, timelineStart, timelineEnd } = useFilterStore(
+  const { filters, yearType, timelineYear, setTimelineYear, timelineStart, timelineEnd, playAnimation } = useFilterStore(
     useShallow((state) => ({ 
       filters: state.filters, 
       yearType: state.yearType, 
@@ -49,6 +49,7 @@ export default function App() {
       setTimelineYear: state.setTimelineYear,
       timelineStart: state.timelineStart,
       timelineEnd: state.timelineEnd,
+      playAnimation: state.playAnimation,
     })),
   )
 
@@ -191,6 +192,32 @@ export default function App() {
 
   }, [timelineYear, locations, yearType]);
 
+  // Timeline animation - persists even when filters are closed
+  useEffect(() => {
+    if (!playAnimation) {
+      return; // Don't set up interval if not playing
+    }
+
+    const anim = setInterval(() => {
+      // Read current value directly from store to avoid closure issues
+      const state = useFilterStore.getState();
+      const currentYear = state.timelineYear;
+      const currentMin = state.timelineStart;
+      const currentMax = state.timelineEnd;
+      
+      if (currentYear >= currentMax) {
+        setTimelineYear(currentMin); // Update store
+      } else {
+        const nextYear = currentYear + 10;
+        setTimelineYear(nextYear); // Update store
+      }
+    }, 500);
+
+    return () => {
+      clearInterval(anim);
+    };
+  }, [playAnimation, setTimelineYear]);
+
   async function getMapData() {
     const geojson = feature(geoData, geoData.objects.land);
     return geojson;
@@ -305,16 +332,19 @@ export default function App() {
       <div className="w-full h-full p-6">
         <div className="max-w-[1600px] mx-auto">
           {/* Header */}
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-6 border-b-4 border-amber-800">
+          <header className="bg-white rounded-lg shadow-lg p-6 mb-6 border-b-4 border-amber-800" role="banner">
             <h1 className="text-4xl font-serif font-bold text-amber-900 mb-2">
               ROTAS SQUARES MAP
             </h1>
             <p className="text-lg italic text-amber-700">
               A Digital Repository of Ancient Palindromic Inscriptions
             </p>
-          </div>
+          </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* ACCESSIBILITY FIX: Main content should be wrapped in <main> element
+              Currently the test expects main content to be in a <main> element
+              Change: Wrap the main content area in <main id="main-content" role="main"> */}
+          <main id="main-content" role="main" className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* FILTERS SECTION */}
             {filtersOpen && (
               <FilterSection onClose={() => setFiltersOpen(false)} />
@@ -328,7 +358,7 @@ export default function App() {
                     Map
                   </h2>
                   <div className="flex items-center gap-4">
-                    <span className="text-sm text-amber-700">
+                    <span className="text-sm text-amber-700" aria-live="polite">
                       Active filters: {getActiveFilterCount()}
                     </span>
                     {!filtersOpen && (
@@ -343,9 +373,17 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* Read-only timeline year display */}
+                <div className="mb-4 text-center">
+                  <span className="text-lg font-semibold text-amber-900">
+                    Year: {timelineYear}
+                  </span>
+                </div>
+
                 <div 
                   ref={mapContainerRef}
                   className="w-full h-[400px] sm:h-[500px] md:h-[550px] lg:h-[600px] flex items-center justify-center border-4 border-dashed border-amber-300 rounded-lg bg-amber-50/30 overflow-hidden p-2"
+                  aria-label="Interactive map showing location markers"
                 >
                   <div ref={mapRef} className="map-container w-full h-full flex flex-col items-center justify-center overflow-auto"></div>
                 </div>
@@ -449,7 +487,7 @@ export default function App() {
                 </div>
               )}
             </div>
-          </div>
+          </main>
         </div>
       </div>
     </div>

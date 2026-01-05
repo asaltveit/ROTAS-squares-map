@@ -180,6 +180,25 @@ export default function FilterSection({ onClose }) {
     // Memoize option arrays to prevent unnecessary recalculations
     const typeOptions = useMemo(() => convertStringsToOptions(locationTypes || []), [locationTypes]);
 
+    // Helper function to create onChange handler for select dropdowns
+    const createSelectChangeHandler = (setter, normalizeToEmpty = true) => {
+        return (e) => {
+            const newValue = normalizeToEmpty ? (e.target.value || "") : e.target.value;
+            setter(newValue);
+        };
+    };
+
+    // Helper function to create onKeyDown handler for select dropdowns
+    const createSelectKeyDownHandler = (setter, normalizeToEmpty = true) => {
+        return (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const newValue = normalizeToEmpty ? (e.target.value || "") : e.target.value;
+                setter(newValue);
+            }
+        };
+    };
+
     // Sync local input state with store values, but only when not focused
     const startYearInputRef = useRef(null);
     const endYearInputRef = useRef(null);
@@ -242,6 +261,7 @@ export default function FilterSection({ onClose }) {
                             onClick={onClose}
                             className="p-1 hover:bg-amber-100 rounded transition-colors"
                             title="Close filters"
+                            aria-label="Close filters"
                         >
                             <X size={20} className="text-amber-800" />
                         </button>
@@ -259,8 +279,9 @@ export default function FilterSection({ onClose }) {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <label className="text-xs text-amber-700">Start Year</label>
+                                <label htmlFor="start-year-input" className="text-xs text-amber-700">Start Year</label>
                                 <input
+                                    id="start-year-input"
                                     ref={startYearInputRef}
                                     type="number"
                                     min="-100"
@@ -296,8 +317,9 @@ export default function FilterSection({ onClose }) {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs text-amber-700">End Year</label>
+                                <label htmlFor="end-year-input" className="text-xs text-amber-700">End Year</label>
                                 <input
+                                    id="end-year-input"
                                     ref={endYearInputRef}
                                     type="number"
                                     min={timelineStart + 1}
@@ -338,10 +360,12 @@ export default function FilterSection({ onClose }) {
 
                 {/* Year Type */}
                 <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-amber-900">Year Type</label>
+                    <label htmlFor="year-type-select" className="block text-sm font-semibold text-amber-900">Year Type</label>
                     <select
+                        id="year-type-select"
                         value={normalizeSelectValue(yearType, yearTypeOptions) || "created"}
-                        onChange={(e) => setYearType(e.target.value)}
+                        onChange={createSelectChangeHandler(setYearType, false)}
+                        onKeyDown={createSelectKeyDownHandler(setYearType, false)}
                         className="w-full px-3 py-2 border-2 border-amber-300 rounded focus:border-amber-600 focus:outline-none"
                     >
                         {yearTypeOptions.map(opt => (
@@ -352,13 +376,12 @@ export default function FilterSection({ onClose }) {
 
                 {/* Type */}
                 <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-amber-900">Type</label>
+                    <label htmlFor="type-select" className="block text-sm font-semibold text-amber-900">Type</label>
                     <select
+                        id="type-select"
                         value={normalizeSelectValue(type, typeOptions)}
-                        onChange={(e) => {
-                            const newValue = e.target.value || "";
-                            setTypeFilter(newValue);
-                        }}
+                        onChange={createSelectChangeHandler(setTypeFilter)}
+                        onKeyDown={createSelectKeyDownHandler(setTypeFilter)}
                         className="w-full px-3 py-2 border-2 border-amber-300 rounded focus:border-amber-600 focus:outline-none"
                     >
                         <option value="">All Types</option>
@@ -370,13 +393,12 @@ export default function FilterSection({ onClose }) {
 
                 {/* Script */}
                 <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-amber-900">Script</label>
+                    <label htmlFor="script-select" className="block text-sm font-semibold text-amber-900">Script</label>
                     <select
+                        id="script-select"
                         value={normalizeSelectValue(script, scripts)}
-                        onChange={(e) => {
-                            const newValue = e.target.value || "";
-                            setScriptFilter(newValue);
-                        }}
+                        onChange={createSelectChangeHandler(setScriptFilter)}
+                        onKeyDown={createSelectKeyDownHandler(setScriptFilter)}
                         className="w-full px-3 py-2 border-2 border-amber-300 rounded focus:border-amber-600 focus:outline-none"
                     >
                         <option value="">All Scripts</option>
@@ -388,13 +410,12 @@ export default function FilterSection({ onClose }) {
 
                 {/* First Word */}
                 <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-amber-900">First Word</label>
+                    <label htmlFor="first-word-select" className="block text-sm font-semibold text-amber-900">First Word</label>
                     <select
+                        id="first-word-select"
                         value={normalizeSelectValue(firstWord, firstWords)}
-                        onChange={(e) => {
-                            const newValue = e.target.value || "";
-                            setFirstWordFilter(newValue);
-                        }}
+                        onChange={createSelectChangeHandler(setFirstWordFilter)}
+                        onKeyDown={createSelectKeyDownHandler(setFirstWordFilter)}
                         className="w-full px-3 py-2 border-2 border-amber-300 rounded focus:border-amber-600 focus:outline-none"
                     >
                         <option value="">All First Words</option>
@@ -404,10 +425,13 @@ export default function FilterSection({ onClose }) {
                     </select>
                 </div>
 
-                {/* Text */}
+                {/* Removing these for now - these options don't seem very helpful
+                    Could also remove First Word
+                Text 
                 <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-amber-900">Text</label>
+                    <label htmlFor="text-select" className="block text-sm font-semibold text-amber-900">Text</label>
                     <select
+                        id="text-select"
                         value={normalizeSelectValue(text, texts)}
                         onChange={(e) => {
                             const newValue = e.target.value || "";
@@ -422,10 +446,11 @@ export default function FilterSection({ onClose }) {
                     </select>
                 </div>
 
-                {/* Place */}
+                /* Place 
                 <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-amber-900">Place</label>
+                    <label htmlFor="place-select" className="block text-sm font-semibold text-amber-900">Place</label>
                     <select
+                        id="place-select"
                         value={normalizeSelectValue(place, places)}
                         onChange={(e) => {
                             const newValue = e.target.value || "";
@@ -440,10 +465,11 @@ export default function FilterSection({ onClose }) {
                     </select>
                 </div>
 
-                {/* Location */}
+                /* Location 
                 <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-amber-900">Location</label>
+                    <label htmlFor="location-select" className="block text-sm font-semibold text-amber-900">Location</label>
                     <select
+                        id="location-select"
                         value={normalizeSelectValue(location, locs)}
                         onChange={(e) => {
                             const newValue = e.target.value || "";
@@ -456,7 +482,7 @@ export default function FilterSection({ onClose }) {
                             <option key={opt.value} value={opt.value}>{opt.title}</option>
                         ))}
                     </select>
-                </div>
+                </div>*/}
 
                 <button
                     onClick={clearAllFilters}

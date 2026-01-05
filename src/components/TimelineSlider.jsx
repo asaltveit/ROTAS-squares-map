@@ -2,32 +2,25 @@ import React, { useEffect, useState, memo } from 'react';
 import { useShallow } from 'zustand/react/shallow'
 import { convertYearTypetoView } from '@/utilities/UtilityFunctions'
 import { useFilterStore } from '@/stores/FilterStore';
-import { useMapStore} from '@/stores/MapStore'
 
 // TODO - Add breakpoints for smaller windows
-// TODO - Stop animation when slider clicked
-// TODO - make it look more like a timeline - ticks
+// TODO - make it look more like a timeline - ticks?
 
 const TimelineSlider = memo(function TimelineSlider({ onValueChange }) {
-    const [playAnimation, setPlayAnimation] = useState(false)
     const [min, setMin] = useState(0)
     const [max, setMax] = useState(2100)
 
-    const { yearType, timelineStart, timelineEnd, timelineYear, setTimelineYear } = useFilterStore(
+    const { yearType, timelineStart, timelineEnd, timelineYear, setTimelineYear, playAnimation, setPlayAnimation } = useFilterStore(
         useShallow((state) => ({ 
             yearType: state.yearType, 
             timelineStart: state.timelineStart,
             timelineEnd: state.timelineEnd,
             timelineYear: state.timelineYear,
             setTimelineYear: state.setTimelineYear,
+            playAnimation: state.playAnimation,
+            setPlayAnimation: state.setPlayAnimation,
         })),
     )
-
-    const { setStorePlayAnimation } = useMapStore(
-        useShallow((state) => ({ 
-          setStorePlayAnimation: state.setStorePlayAnimation,
-        })),
-      )
     // Set min from filter change
     useEffect(() => {
         if (timelineStart == null || typeof timelineStart == 'string') {
@@ -73,41 +66,6 @@ const TimelineSlider = memo(function TimelineSlider({ onValueChange }) {
     const playAnim = () => {
         setPlayAnimation(!playAnimation);
     }
-
-    //setStorePlayAnimation(playAnim)
-
-    useEffect(() => {
-        // TODO: Change rate of animation?
-        //    - through filters?
-        if (!playAnimation) {
-            return; // Don't set up interval if not playing
-        }
-
-        const anim = setInterval(() => {
-            // Read current value directly from store to avoid closure issues
-            const state = useFilterStore.getState();
-            const currentYear = state.timelineYear;
-            const currentMin = state.timelineStart;
-            const currentMax = state.timelineEnd;
-            
-            if (currentYear >= currentMax) {
-                setTimelineYear(currentMin); // Update store
-                if (onValueChange) {
-                    onValueChange(currentMin);
-                }
-            } else {
-                const nextYear = currentYear + 10;
-                setTimelineYear(nextYear); // Update store
-                if (onValueChange) {
-                    onValueChange(nextYear);
-                }
-            }
-        }, 500);
-
-        return () => {
-            clearInterval(anim);
-        };
-    }, [playAnimation]) // Depend on playAnimation and stable functions
     
     return (
         <div className="space-y-3">
@@ -118,7 +76,7 @@ const TimelineSlider = memo(function TimelineSlider({ onValueChange }) {
                 <button
                     onClick={playAnim}
                     className="px-3 py-1 bg-amber-800 text-white rounded hover:bg-amber-900 transition-colors text-sm"
-                    aria-label="play/stop button"
+                    aria-label={playAnimation ? "Stop timeline animation" : "Play timeline animation"}
                 >
                     {!playAnimation ? "Play" : "Stop"}
                 </button>
@@ -135,9 +93,10 @@ const TimelineSlider = memo(function TimelineSlider({ onValueChange }) {
                         }
                     }}
                     aria-label={`timeline-${yearType} year slider`}
+                    aria-describedby="year-display"
                     className="flex-1 accent-amber-800"
                 />
-                <div className="text-sm text-amber-900 min-w-[80px]">
+                <div id="year-display" className="text-sm text-amber-900 min-w-[80px]">
                     Year: {timelineYear}
                 </div>
             </div>
