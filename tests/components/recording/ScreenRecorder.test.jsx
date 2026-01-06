@@ -90,7 +90,7 @@ describe.skip('ScreenRecorder', () => {
         it('uses semantic HTML structure', () => {
             render(<ScreenRecorder />);
             
-            // Material-UI components should render semantic HTML
+            // Components should render semantic HTML
             const buttons = screen.getAllByRole('button');
             expect(buttons.length).toBeGreaterThan(0);
         });

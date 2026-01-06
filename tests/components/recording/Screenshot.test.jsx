@@ -68,7 +68,7 @@ describe.skip('Screenshot', () => {
         it('uses semantic HTML structure', () => {
             render(<Screenshot screenRef={mockScreenRef} />);
             
-            // Material-UI Button should render as button element
+            // Button should render as button element
             const button = screen.getByRole('button');
             expect(button.tagName).toBe('BUTTON');
         });
