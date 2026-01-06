@@ -41,7 +41,7 @@ export default function App() {
     })),
   )
 
-  const { filters, yearType, timelineYear, setTimelineYear, timelineStart, timelineEnd, playAnimation } = useFilterStore(
+  const { filters, yearType, timelineYear, setTimelineYear, timelineStart, timelineEnd, playAnimation, animationSpeed, animationStep } = useFilterStore(
     useShallow((state) => ({ 
       filters: state.filters, 
       yearType: state.yearType, 
@@ -50,6 +50,8 @@ export default function App() {
       timelineStart: state.timelineStart,
       timelineEnd: state.timelineEnd,
       playAnimation: state.playAnimation,
+      animationSpeed: state.animationSpeed,
+      animationStep: state.animationStep,
     })),
   )
 
@@ -197,26 +199,28 @@ export default function App() {
     if (!playAnimation) {
       return; // Don't set up interval if not playing
     }
-
+    // TODO: could use effect event here
     const anim = setInterval(() => {
+
       // Read current value directly from store to avoid closure issues
       const state = useFilterStore.getState();
       const currentYear = state.timelineYear;
       const currentMin = state.timelineStart;
       const currentMax = state.timelineEnd;
+      const step = state.animationStep;
       
       if (currentYear >= currentMax) {
         setTimelineYear(currentMin); // Update store
       } else {
-        const nextYear = currentYear + 10;
+        const nextYear = currentYear + step;
         setTimelineYear(nextYear); // Update store
       }
-    }, 500);
+    }, animationSpeed);
 
     return () => {
       clearInterval(anim);
     };
-  }, [playAnimation, setTimelineYear]);
+  }, [playAnimation, animationSpeed, animationStep]);
 
   async function getMapData() {
     const geojson = feature(geoData, geoData.objects.land);

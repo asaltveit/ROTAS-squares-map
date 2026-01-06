@@ -3,9 +3,6 @@ import { useState, useRef } from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
 import { useMapStore} from '@/stores/MapStore'
 import { useShallow } from 'zustand/react/shallow';
-import Stack from '@mui/material/Stack'; // direct imports are faster/smaller
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 // From - https://medium.com/@pritam-debnath/how-to-record-screen-in-a-react-app-0cd98e5d6879
 
 // TODO - add video recordings and savings to stats
@@ -44,16 +41,23 @@ const Recorder = () => {
     }
 
   return (
-    <Stack>
-        {/* ACCESSIBILITY FIX: Status should have aria-live="polite" for screen reader announcements
-            Currently the test expects aria-live attribute on the status element
-            Change: Add aria-live="polite" to the Typography component or wrap it in a div with aria-live */}
-        <Typography aria-live="polite">
+    <div className="flex flex-col gap-3">
+        <p className="text-base text-gray-700" aria-live="polite">
             {status}
-        </Typography>
-        <Button onClick={setupRecording}>Start Recording</Button>
-        <Button onClick={stopRecording}>Stop Recording</Button>
-    </Stack>
+        </p>
+        <button 
+          onClick={setupRecording}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+        >
+          Start Recording
+        </button>
+        <button 
+          onClick={stopRecording}
+          className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+        >
+          Stop Recording
+        </button>
+    </div>
   );
 }
 export default Recorder;

@@ -16,3 +16,4 @@ global.ResizeObserver = class ResizeObserver {
 afterEach(() => {
   cleanup();
 })
+

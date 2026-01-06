@@ -29,6 +29,8 @@ describe('TimelineSlider', () => {
     let mockStoreState;
     let mockSetPlayAnimation;
     let mockSetTimelineYear;
+    let mockSetAnimationSpeed;
+    let mockSetAnimationStep;
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -39,6 +41,8 @@ describe('TimelineSlider', () => {
             timelineEnd: 2100,
             timelineYear: 0,
             playAnimation: false,
+            animationSpeed: 500,
+            animationStep: 10,
         };
 
         // Make setters actually update the mock state
@@ -48,9 +52,17 @@ describe('TimelineSlider', () => {
         mockSetTimelineYear = vi.fn((value) => {
             mockStoreState.timelineYear = value;
         });
+        mockSetAnimationSpeed = vi.fn((value) => {
+            mockStoreState.animationSpeed = value;
+        });
+        mockSetAnimationStep = vi.fn((value) => {
+            mockStoreState.animationStep = value;
+        });
 
         mockStoreState.setTimelineYear = mockSetTimelineYear;
         mockStoreState.setPlayAnimation = mockSetPlayAnimation;
+        mockStoreState.setAnimationSpeed = mockSetAnimationSpeed;
+        mockStoreState.setAnimationStep = mockSetAnimationStep;
 
         useFilterStore.mockImplementation((selector) => {
             // Always return a fresh object so useShallow can detect changes
@@ -63,6 +75,10 @@ describe('TimelineSlider', () => {
                 setTimelineYear: mockStoreState.setTimelineYear,
                 playAnimation: mockStoreState.playAnimation,
                 setPlayAnimation: mockStoreState.setPlayAnimation,
+                animationSpeed: mockStoreState.animationSpeed,
+                animationStep: mockStoreState.animationStep,
+                setAnimationSpeed: mockStoreState.setAnimationSpeed,
+                setAnimationStep: mockStoreState.setAnimationStep,
             };
             // Call the selector (which is wrapped by useShallow in the component)
             // useShallow does shallow equality, but since we create a new object,
@@ -80,6 +96,9 @@ describe('TimelineSlider', () => {
         const slider = screen.getByLabelText('timeline-created year slider');
         expect(slider).toBeInTheDocument();
         expect(screen.getByText(/Year:/)).toHaveTextContent('Year: 0');
+        // Check that animation controls are rendered
+        expect(screen.getByLabelText('Animation speed in milliseconds')).toBeInTheDocument();
+        expect(screen.getByLabelText('Number of years to increment per animation step')).toBeInTheDocument();
     })
     describe('Buttons', () => {
         it('starts animation', async () => {
@@ -252,6 +271,104 @@ describe('TimelineSlider', () => {
         })
     })
 
+    describe('Animation Controls', () => {
+        it('renders animation speed control with default value', () => {
+            const onChange = () => {}
+            render(<TimelineSlider onValueChange={onChange} />);
+            const speedSlider = screen.getByLabelText('Animation speed in milliseconds');
+            expect(speedSlider).toBeInTheDocument();
+            expect(speedSlider).toHaveAttribute('type', 'range');
+            expect(speedSlider).toHaveAttribute('min', '100');
+            expect(speedSlider).toHaveAttribute('max', '2000');
+            expect(speedSlider).toHaveAttribute('step', '100');
+            expect(speedSlider).toHaveValue('500');
+            expect(screen.getByText('500ms')).toBeInTheDocument();
+        });
+
+        it('changes animation speed when slider is moved', async () => {
+            const onChange = () => {}
+            const { rerender } = render(<TimelineSlider onValueChange={onChange} />);
+            const speedSlider = screen.getByLabelText('Animation speed in milliseconds');
+            
+            await act(async () => {
+                fireEvent.change(speedSlider, { target: { value: '1000' } });
+            });
+
+            expect(mockSetAnimationSpeed).toHaveBeenCalledWith(1000);
+            expect(mockStoreState.animationSpeed).toBe(1000);
+
+            // Update mock state and rerender to see the change
+            rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            const updatedSlider = screen.getByLabelText('Animation speed in milliseconds');
+            expect(updatedSlider).toHaveValue('1000');
+            expect(screen.getByText('1000ms')).toBeInTheDocument();
+        });
+
+        it('renders animation step control with default value', () => {
+            const onChange = () => {}
+            render(<TimelineSlider onValueChange={onChange} />);
+            const stepInput = screen.getByLabelText('Number of years to increment per animation step');
+            expect(stepInput).toBeInTheDocument();
+            expect(stepInput).toHaveAttribute('type', 'number');
+            expect(stepInput).toHaveAttribute('min', '1');
+            expect(stepInput).toHaveAttribute('max', '1000');
+            expect(stepInput).toHaveValue(10);
+            expect(screen.getByText('years')).toBeInTheDocument();
+        });
+
+        it('changes animation step when input value changes', async () => {
+            const onChange = () => {}
+            const { rerender } = render(<TimelineSlider onValueChange={onChange} />);
+            const stepInput = screen.getByLabelText('Number of years to increment per animation step');
+            
+            await act(async () => {
+                fireEvent.change(stepInput, { target: { value: '25' } });
+            });
+
+            expect(mockSetAnimationStep).toHaveBeenCalledWith(25);
+            expect(mockStoreState.animationStep).toBe(25);
+
+            // Update mock state and rerender to see the change
+            rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            const updatedInput = screen.getByLabelText('Number of years to increment per animation step');
+            expect(updatedInput).toHaveValue(25);
+        });
+
+        it('does not update step if value is outside valid range', async () => {
+            const onChange = () => {}
+            render(<TimelineSlider onValueChange={onChange} />);
+            const stepInput = screen.getByLabelText('Number of years to increment per animation step');
+            
+            // Try to set a value outside the valid range
+            await act(async () => {
+                fireEvent.change(stepInput, { target: { value: '1500' } });
+            });
+
+            // Should not call setter for invalid value
+            expect(mockSetAnimationStep).not.toHaveBeenCalled();
+        });
+
+        it('updates step for valid values within range', async () => {
+            const onChange = () => {}
+            render(<TimelineSlider onValueChange={onChange} />);
+            const stepInput = screen.getByLabelText('Number of years to increment per animation step');
+            
+            // Test minimum value
+            await act(async () => {
+                fireEvent.change(stepInput, { target: { value: '1' } });
+            });
+            expect(mockSetAnimationStep).toHaveBeenCalledWith(1);
+
+            mockSetAnimationStep.mockClear();
+
+            // Test maximum value
+            await act(async () => {
+                fireEvent.change(stepInput, { target: { value: '1000' } });
+            });
+            expect(mockSetAnimationStep).toHaveBeenCalledWith(1000);
+        });
+    })
+
     describe('Accessibility', () => {
         it('has accessible slider with proper aria-label', () => {
             const onChange = () => {}
@@ -349,6 +466,66 @@ describe('TimelineSlider', () => {
             
             // The component should now see the updated state
             expect(screen.getByRole('button')).toHaveTextContent('Stop');
+        });
+
+        it('animation speed control has proper accessibility attributes', () => {
+            const onChange = () => {}
+            render(<TimelineSlider onValueChange={onChange} />);
+            const speedSlider = screen.getByLabelText('Animation speed in milliseconds');
+            const speedLabel = screen.getByText('Animation Speed');
+            
+            expect(speedLabel).toBeInTheDocument();
+            expect(speedLabel.tagName).toBe('LABEL');
+            expect(speedLabel).toHaveAttribute('for', 'animation-speed');
+            expect(speedSlider).toHaveAttribute('id', 'animation-speed');
+            expect(speedSlider).toHaveAttribute('aria-label', 'Animation speed in milliseconds');
+            expect(speedSlider).toHaveAttribute('aria-describedby', 'speed-display');
+            
+            const speedDisplay = screen.getByText('500ms');
+            expect(speedDisplay).toHaveAttribute('id', 'speed-display');
+        });
+
+        it('animation step control has proper accessibility attributes', () => {
+            const onChange = () => {}
+            render(<TimelineSlider onValueChange={onChange} />);
+            const stepInput = screen.getByLabelText('Number of years to increment per animation step');
+            const stepLabel = screen.getByText('Year Step');
+            
+            expect(stepLabel).toBeInTheDocument();
+            expect(stepLabel.tagName).toBe('LABEL');
+            expect(stepLabel).toHaveAttribute('for', 'animation-step');
+            expect(stepInput).toHaveAttribute('id', 'animation-step');
+            expect(stepInput).toHaveAttribute('aria-label', 'Number of years to increment per animation step');
+            expect(stepInput).toHaveAttribute('aria-describedby', 'step-display');
+            
+            const stepDisplay = screen.getByText('years');
+            expect(stepDisplay).toHaveAttribute('id', 'step-display');
+        });
+
+        it('animation speed control is keyboard accessible', async () => {
+            const onChange = () => {}
+            render(<TimelineSlider onValueChange={onChange} />);
+            const speedSlider = screen.getByLabelText('Animation speed in milliseconds');
+            
+            speedSlider.focus();
+            expect(speedSlider).toHaveFocus();
+            
+            // Can change value with arrow keys
+            await userEvent.keyboard('{ArrowRight}');
+            expect(speedSlider).toHaveFocus();
+        });
+
+        it('animation step control is keyboard accessible', async () => {
+            const onChange = () => {}
+            render(<TimelineSlider onValueChange={onChange} />);
+            const stepInput = screen.getByLabelText('Number of years to increment per animation step');
+            
+            stepInput.focus();
+            expect(stepInput).toHaveFocus();
+            
+            // Can type in the input
+            await userEvent.keyboard('25');
+            expect(stepInput).toHaveFocus();
         });
     })
 })

@@ -10,7 +10,7 @@ const TimelineSlider = memo(function TimelineSlider({ onValueChange }) {
     const [min, setMin] = useState(0)
     const [max, setMax] = useState(2100)
 
-    const { yearType, timelineStart, timelineEnd, timelineYear, setTimelineYear, playAnimation, setPlayAnimation } = useFilterStore(
+    const { yearType, timelineStart, timelineEnd, timelineYear, setTimelineYear, playAnimation, setPlayAnimation, animationSpeed, animationStep, setAnimationSpeed, setAnimationStep } = useFilterStore(
         useShallow((state) => ({ 
             yearType: state.yearType, 
             timelineStart: state.timelineStart,
@@ -19,6 +19,10 @@ const TimelineSlider = memo(function TimelineSlider({ onValueChange }) {
             setTimelineYear: state.setTimelineYear,
             playAnimation: state.playAnimation,
             setPlayAnimation: state.setPlayAnimation,
+            animationSpeed: state.animationSpeed,
+            animationStep: state.animationStep,
+            setAnimationSpeed: state.setAnimationSpeed,
+            setAnimationStep: state.setAnimationStep,
         })),
     )
     // Set min from filter change
@@ -66,6 +70,18 @@ const TimelineSlider = memo(function TimelineSlider({ onValueChange }) {
     const playAnim = () => {
         setPlayAnimation(!playAnimation);
     }
+
+    const handleSpeedChange = (event) => {
+        const newSpeed = parseInt(event.target.value);
+        setAnimationSpeed(newSpeed);
+    }
+
+    const handleStepChange = (event) => {
+        const newStep = parseInt(event.target.value);
+        if (!isNaN(newStep) && newStep >= 1 && newStep <= 1000) {
+            setAnimationStep(newStep);
+        }
+    }
     
     return (
         <div className="space-y-3">
@@ -98,6 +114,52 @@ const TimelineSlider = memo(function TimelineSlider({ onValueChange }) {
                 />
                 <div id="year-display" className="text-sm text-amber-900 min-w-[80px]">
                     Year: {timelineYear}
+                </div>
+            </div>
+            {/* Animation Controls */}
+            <div className="grid grid-cols-2 gap-4 pt-2 border-t border-amber-200">
+                <div className="space-y-2">
+                    <label htmlFor="animation-speed" className="block text-xs font-semibold text-amber-900">
+                        Animation Speed
+                    </label>
+                    <div className="flex items-center gap-2">
+                        <input
+                            id="animation-speed"
+                            type="range"
+                            min="100"
+                            max="2000"
+                            step="100"
+                            value={animationSpeed}
+                            onChange={handleSpeedChange}
+                            aria-label="Animation speed in milliseconds"
+                            aria-describedby="speed-display"
+                            className="flex-1 accent-amber-800"
+                        />
+                        <div id="speed-display" className="text-xs text-amber-700 min-w-[60px]">
+                            {animationSpeed}ms
+                        </div>
+                    </div>
+                </div>
+                <div className="space-y-2">
+                    <label htmlFor="animation-step" className="block text-xs font-semibold text-amber-900">
+                        Year Step
+                    </label>
+                    <div className="flex items-center gap-2">
+                        <input
+                            id="animation-step"
+                            type="number"
+                            min="1"
+                            max="1000"
+                            value={animationStep}
+                            onChange={handleStepChange}
+                            aria-label="Number of years to increment per animation step"
+                            aria-describedby="step-display"
+                            className="w-full px-2 py-1 border-2 border-amber-300 rounded focus:border-amber-600 focus:outline-none text-sm"
+                        />
+                        <div id="step-display" className="text-xs text-amber-700 min-w-[40px]">
+                            years
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

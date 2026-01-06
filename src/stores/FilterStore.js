@@ -30,6 +30,8 @@ export const useFilterStore = create()(
     timelineStart: 0,
     timelineEnd: 2100,
     playAnimation: false,
+    animationSpeed: 500, // milliseconds between animation steps
+    animationStep: 10, // years to increment per step
     setFiltersOpen: (open) =>
         set((state) => {
             state.filtersOpen = open;
@@ -82,6 +84,16 @@ export const useFilterStore = create()(
     setPlayAnimation: (playing) =>
       set((state) => {
         state.playAnimation = playing
+      }
+    ),
+    setAnimationSpeed: (speed) =>
+      set((state) => {
+        state.animationSpeed = speed
+      }
+    ),
+    setAnimationStep: (step) =>
+      set((state) => {
+        state.animationStep = step
       }
     ),
     // Set filters to be searched

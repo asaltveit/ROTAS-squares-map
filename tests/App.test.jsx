@@ -99,6 +99,7 @@ describe('App', () => {
             timelineYear: 0,
             timelineStart: 0,
             timelineEnd: 2100,
+            animationStep: 10,
         };
 
         useMapStore.mockReturnValue({
@@ -117,6 +118,8 @@ describe('App', () => {
             timelineStart: 0,
             timelineEnd: 2100,
             playAnimation: false,
+            animationSpeed: 500,
+            animationStep: 10,
         });
 
         // Mock getState() method for the animation logic
@@ -124,6 +127,7 @@ describe('App', () => {
             timelineYear: mockStoreState.timelineYear,
             timelineStart: mockStoreState.timelineStart,
             timelineEnd: mockStoreState.timelineEnd,
+            animationStep: mockStoreState.animationStep,
         }));
     });
 
@@ -312,6 +316,8 @@ describe('App', () => {
                 timelineStart: 0,
                 timelineEnd: 2100,
                 playAnimation: true,
+                animationSpeed: 500,
+                animationStep: 10,
             });
 
             mockStoreState.timelineYear = 0;
@@ -330,11 +336,6 @@ describe('App', () => {
             
             // Update mock state to reflect the change
             mockStoreState.timelineYear = 10;
-            useFilterStore.getState.mockReturnValue({
-                timelineYear: 10,
-                timelineStart: 0,
-                timelineEnd: 2100,
-            });
             mockSetTimelineYear.mockClear();
             
             // Advance another 500ms - should increment again
@@ -361,12 +362,8 @@ describe('App', () => {
                 timelineStart: 0,
                 timelineEnd: 2100,
                 playAnimation: true,
-            });
-
-            useFilterStore.getState.mockReturnValue({
-                timelineYear: 2100,
-                timelineStart: 0,
-                timelineEnd: 2100,
+                animationSpeed: 500,
+                animationStep: 10,
             });
 
             render(<App />);
@@ -395,15 +392,11 @@ describe('App', () => {
                 timelineStart: 0,
                 timelineEnd: 2100,
                 playAnimation: true,
+                animationSpeed: 500,
+                animationStep: 10,
             });
 
             mockStoreState.timelineYear = 0;
-            useFilterStore.getState.mockReturnValue({
-                timelineYear: 0,
-                timelineStart: 0,
-                timelineEnd: 2100,
-            });
-
             rerender(<App />);
             mockSetTimelineYear.mockClear();
             
@@ -448,15 +441,11 @@ describe('App', () => {
                 timelineStart: 0,
                 timelineEnd: 2100,
                 playAnimation: true,
+                animationSpeed: 500,
+                animationStep: 10,
             });
 
             mockStoreState.timelineYear = 0;
-            useFilterStore.getState.mockReturnValue({
-                timelineYear: 0,
-                timelineStart: 0,
-                timelineEnd: 2100,
-            });
-
             render(<App />);
             mockSetTimelineYear.mockClear();
             
@@ -470,11 +459,6 @@ describe('App', () => {
             
             // Update state for next tick
             mockStoreState.timelineYear = 10;
-            useFilterStore.getState.mockReturnValue({
-                timelineYear: 10,
-                timelineStart: 0,
-                timelineEnd: 2100,
-            });
             mockSetTimelineYear.mockClear();
             
             // Second tick - should read updated state
@@ -501,12 +485,8 @@ describe('App', () => {
                 timelineStart: 100,
                 timelineEnd: 200,
                 playAnimation: true,
-            });
-
-            useFilterStore.getState.mockReturnValue({
-                timelineYear: 100,
-                timelineStart: 100,
-                timelineEnd: 200,
+                animationSpeed: 500,
+                animationStep: 10,
             });
 
             render(<App />);
@@ -521,11 +501,6 @@ describe('App', () => {
             
             // Update to at or above end to trigger loop
             mockStoreState.timelineYear = 200;
-            useFilterStore.getState.mockReturnValue({
-                timelineYear: 200,
-                timelineStart: 100,
-                timelineEnd: 200,
-            });
             mockSetTimelineYear.mockClear();
             
             // Next increment should loop back to 100 (since 200 >= 200)
