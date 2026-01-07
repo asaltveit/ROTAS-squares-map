@@ -97,7 +97,7 @@ describe('TimelineSlider', () => {
         expect(slider).toBeInTheDocument();
         expect(screen.getByText(/Year:/)).toHaveTextContent('Year: 0');
         // Check that animation controls are rendered
-        expect(screen.getByLabelText('Animation speed in milliseconds')).toBeInTheDocument();
+        expect(screen.getByLabelText(/Delay between animation steps/i)).toBeInTheDocument();
         expect(screen.getByLabelText('Number of years to increment per animation step')).toBeInTheDocument();
     })
     describe('Buttons', () => {
@@ -275,7 +275,7 @@ describe('TimelineSlider', () => {
         it('renders animation speed control with default value', () => {
             const onChange = () => {}
             render(<TimelineSlider onValueChange={onChange} />);
-            const speedSlider = screen.getByLabelText('Animation speed in milliseconds');
+            const speedSlider = screen.getByLabelText(/Delay between animation steps/i);
             expect(speedSlider).toBeInTheDocument();
             expect(speedSlider).toHaveAttribute('type', 'range');
             expect(speedSlider).toHaveAttribute('min', '100');
@@ -288,7 +288,7 @@ describe('TimelineSlider', () => {
         it('changes animation speed when slider is moved', async () => {
             const onChange = () => {}
             const { rerender } = render(<TimelineSlider onValueChange={onChange} />);
-            const speedSlider = screen.getByLabelText('Animation speed in milliseconds');
+            const speedSlider = screen.getByLabelText(/Delay between animation steps/i);
             
             await act(async () => {
                 fireEvent.change(speedSlider, { target: { value: '1000' } });
@@ -299,7 +299,7 @@ describe('TimelineSlider', () => {
 
             // Update mock state and rerender to see the change
             rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
-            const updatedSlider = screen.getByLabelText('Animation speed in milliseconds');
+            const updatedSlider = screen.getByLabelText(/Delay between animation steps/i);
             expect(updatedSlider).toHaveValue('1000');
             expect(screen.getByText('1000ms')).toBeInTheDocument();
         });
@@ -471,14 +471,14 @@ describe('TimelineSlider', () => {
         it('animation speed control has proper accessibility attributes', () => {
             const onChange = () => {}
             render(<TimelineSlider onValueChange={onChange} />);
-            const speedSlider = screen.getByLabelText('Animation speed in milliseconds');
-            const speedLabel = screen.getByText('Animation Speed');
+            const speedSlider = screen.getByLabelText(/Delay between animation steps/i);
+            const speedLabel = screen.getByText('Step Delay');
             
             expect(speedLabel).toBeInTheDocument();
             expect(speedLabel.tagName).toBe('LABEL');
             expect(speedLabel).toHaveAttribute('for', 'animation-speed');
             expect(speedSlider).toHaveAttribute('id', 'animation-speed');
-            expect(speedSlider).toHaveAttribute('aria-label', 'Animation speed in milliseconds');
+            expect(speedSlider).toHaveAttribute('aria-label', 'Delay between animation steps in milliseconds (higher values mean slower animation)');
             expect(speedSlider).toHaveAttribute('aria-describedby', 'speed-display');
             
             const speedDisplay = screen.getByText('500ms');
@@ -505,7 +505,7 @@ describe('TimelineSlider', () => {
         it('animation speed control is keyboard accessible', async () => {
             const onChange = () => {}
             render(<TimelineSlider onValueChange={onChange} />);
-            const speedSlider = screen.getByLabelText('Animation speed in milliseconds');
+            const speedSlider = screen.getByLabelText(/Delay between animation steps/i);
             
             speedSlider.focus();
             expect(speedSlider).toHaveFocus();

@@ -117,12 +117,18 @@ const TimelineSlider = memo(function TimelineSlider({ onValueChange }) {
                 </div>
             </div>
             {/* Animation Controls */}
-            <div className="grid grid-cols-2 gap-4 pt-2 border-t border-amber-200">
-                <div className="space-y-2">
+            <div className="pt-2 border-t border-amber-200">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
                     <label htmlFor="animation-speed" className="block text-xs font-semibold text-amber-900">
-                        Animation Speed
+                        Step Delay
+                        <span className="block text-xs font-normal text-amber-600 mt-0.5">
+                            (higher = slower)
+                        </span>
                     </label>
-                    <div className="flex items-center gap-2">
+                    <label htmlFor="animation-step" className="block text-xs font-semibold text-amber-900">
+                        Year Step
+                    </label>
+                    <div className="flex items-center gap-2 min-w-0">
                         <input
                             id="animation-speed"
                             type="range"
@@ -131,20 +137,15 @@ const TimelineSlider = memo(function TimelineSlider({ onValueChange }) {
                             step="100"
                             value={animationSpeed}
                             onChange={handleSpeedChange}
-                            aria-label="Animation speed in milliseconds"
+                            aria-label="Delay between animation steps in milliseconds (higher values mean slower animation)"
                             aria-describedby="speed-display"
-                            className="flex-1 accent-amber-800"
+                            className="flex-1 accent-amber-800 min-w-0"
                         />
-                        <div id="speed-display" className="text-xs text-amber-700 min-w-[60px]">
+                        <div id="speed-display" className="text-xs text-amber-700 whitespace-nowrap flex-shrink-0">
                             {animationSpeed}ms
                         </div>
                     </div>
-                </div>
-                <div className="space-y-2">
-                    <label htmlFor="animation-step" className="block text-xs font-semibold text-amber-900">
-                        Year Step
-                    </label>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
                         <input
                             id="animation-step"
                             type="number"
@@ -154,9 +155,9 @@ const TimelineSlider = memo(function TimelineSlider({ onValueChange }) {
                             onChange={handleStepChange}
                             aria-label="Number of years to increment per animation step"
                             aria-describedby="step-display"
-                            className="w-full px-2 py-1 border-2 border-amber-300 rounded focus:border-amber-600 focus:outline-none text-sm"
+                            className="flex-1 px-2 py-1 border-2 border-amber-300 rounded focus:border-amber-600 focus:outline-none text-sm min-w-0"
                         />
-                        <div id="step-display" className="text-xs text-amber-700 min-w-[40px]">
+                        <div id="step-display" className="text-xs text-amber-700 whitespace-nowrap flex-shrink-0">
                             years
                         </div>
                     </div>
