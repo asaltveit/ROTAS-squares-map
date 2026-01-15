@@ -345,9 +345,11 @@ describe('UtilityFunctions', () => {
             expect(nonce).toMatch(/^[A-Za-z0-9+/]+=*$/);
         });
 
-        it('returns a promise', () => {
+        it('returns a promise', async () => {
             const result = generateNonce();
             expect(result).toBeInstanceOf(Promise);
+            // Await the promise to prevent unhandled promise rejection
+            await result;
         });
 
         it('handles multiple concurrent calls', async () => {

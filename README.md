@@ -20,6 +20,7 @@ Per the request of someone doing historical research.
 - Better screen recording / image functionality
 
 ## Local Development:
+- This project requires Node.js v24.13.0 or higher. If you're using nvm, run `nvm use` to switch to the correct version (specified in `.nvmrc`).
 - In a terminal, run ``` npm install ``` to install dependencies.
 - In a terminal, run ``` npm run dev ``` to start.
 

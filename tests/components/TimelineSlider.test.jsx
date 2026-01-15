@@ -117,7 +117,9 @@ describe('TimelineSlider', () => {
             expect(mockStoreState.playAnimation).toBe(true);
             
             // Force rerender with updated state - use a key to force fresh render
-            rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            act(() => {
+                rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            });
             
             // The component should now see the updated state
             expect(screen.getByRole('button')).toHaveTextContent('Stop');
@@ -133,7 +135,9 @@ describe('TimelineSlider', () => {
             await act(async () => {
                 await new Promise(resolve => setTimeout(resolve, 0));
             });
-            rerender(<TimelineSlider onValueChange={onChange} />);
+            act(() => {
+                rerender(<TimelineSlider onValueChange={onChange} />);
+            });
             
             await waitFor(() => {
                 expect(screen.getByText(/Year:/)).toHaveTextContent('Year: 10');
@@ -153,7 +157,9 @@ describe('TimelineSlider', () => {
             expect(mockSetPlayAnimation).toHaveBeenCalledWith(true);
             expect(mockStoreState.playAnimation).toBe(true);
             
-            rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            act(() => {
+                rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            });
             expect(screen.getByRole('button')).toHaveTextContent('Stop');
             
             // Simulate animation running
@@ -162,7 +168,9 @@ describe('TimelineSlider', () => {
             });
             
             expect(mockStoreState.timelineYear).toBe(10);
-            rerender(<TimelineSlider key="test-2" onValueChange={onChange} />);
+            act(() => {
+                rerender(<TimelineSlider key="test-2" onValueChange={onChange} />);
+            });
             expect(screen.getByText(/Year:/)).toHaveTextContent('Year: 10');
             
             // Stop animation - get fresh button reference after state update
@@ -178,7 +186,9 @@ describe('TimelineSlider', () => {
             expect(mockSetPlayAnimation).toHaveBeenCalledWith(false);
             expect(mockStoreState.playAnimation).toBe(false);
             
-            rerender(<TimelineSlider key="test-3" onValueChange={onChange} />);
+            act(() => {
+                rerender(<TimelineSlider key="test-3" onValueChange={onChange} />);
+            });
             expect(screen.getByRole('button')).toHaveTextContent('Play');
             
             // Year should remain at 10 after stopping
@@ -201,7 +211,9 @@ describe('TimelineSlider', () => {
             expect(mockStoreState.timelineYear).toBe(20);
             
             // Rerender to pick up the state change
-            rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            act(() => {
+                rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            });
             
             expect(screen.getByText(/Year:/)).toHaveTextContent('Year: 20');
         })
@@ -220,7 +232,9 @@ describe('TimelineSlider', () => {
             expect(mockStoreState.playAnimation).toBe(true);
             
             // Rerender to pick up animation state
-            rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            act(() => {
+                rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            });
             expect(screen.getByRole('button')).toHaveTextContent('Stop');
             
             // Simulate animation running - set year to 20
@@ -229,7 +243,9 @@ describe('TimelineSlider', () => {
             });
             
             expect(mockStoreState.timelineYear).toBe(20);
-            rerender(<TimelineSlider key="test-2" onValueChange={onChange} />);
+            act(() => {
+                rerender(<TimelineSlider key="test-2" onValueChange={onChange} />);
+            });
             expect(screen.getByText(/Year:/)).toHaveTextContent('Year: 20');
             
             // Clear previous calls to verify only the slider change calls
@@ -255,7 +271,9 @@ describe('TimelineSlider', () => {
             expect(onChange).toHaveBeenCalledWith(50);
             
             // Rerender to pick up the state changes
-            rerender(<TimelineSlider key="test-3" onValueChange={onChange} />);
+            act(() => {
+                rerender(<TimelineSlider key="test-3" onValueChange={onChange} />);
+            });
             
             // Verify the UI reflects the changes
             expect(screen.getByRole('button')).toHaveTextContent('Play'); // Animation stopped
@@ -266,7 +284,9 @@ describe('TimelineSlider', () => {
                 await new Promise(resolve => setTimeout(resolve, 100));
             });
             
-            rerender(<TimelineSlider key="test-4" onValueChange={onChange} />);
+            act(() => {
+                rerender(<TimelineSlider key="test-4" onValueChange={onChange} />);
+            });
             expect(screen.getByText(/Year:/)).toHaveTextContent('Year: 50'); // Still at 50
         })
     })
@@ -298,7 +318,9 @@ describe('TimelineSlider', () => {
             expect(mockStoreState.animationSpeed).toBe(1000);
 
             // Update mock state and rerender to see the change
-            rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            act(() => {
+                rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            });
             const updatedSlider = screen.getByLabelText(/Delay between animation steps/i);
             expect(updatedSlider).toHaveValue('1000');
             expect(screen.getByText('1000ms')).toBeInTheDocument();
@@ -329,7 +351,9 @@ describe('TimelineSlider', () => {
             expect(mockStoreState.animationStep).toBe(25);
 
             // Update mock state and rerender to see the change
-            rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            act(() => {
+                rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            });
             const updatedInput = screen.getByLabelText('Number of years to increment per animation step');
             expect(updatedInput).toHaveValue(25);
         });
@@ -404,7 +428,9 @@ describe('TimelineSlider', () => {
             expect(mockStoreState.playAnimation).toBe(true);
             
             // Rerender to pick up the state change
-            rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            act(() => {
+                rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            });
             
             expect(screen.getByRole('button')).toHaveTextContent('Stop');
         });
@@ -414,11 +440,15 @@ describe('TimelineSlider', () => {
             render(<TimelineSlider onValueChange={onChange} />);
             const slider = screen.getByLabelText('timeline-created year slider');
             
-            slider.focus();
+            act(() => {
+                slider.focus();
+            });
             expect(slider).toHaveFocus();
             
             // Can change value with arrow keys
-            await userEvent.keyboard('{ArrowRight}');
+            await act(async () => {
+                await userEvent.keyboard('{ArrowRight}');
+            });
             expect(slider).toHaveFocus();
         });
 
@@ -451,7 +481,9 @@ describe('TimelineSlider', () => {
             
             const playButton = screen.getByRole('button');
             
-            playButton.focus();
+            act(() => {
+                playButton.focus();
+            });
             expect(playButton).toHaveFocus();
             
             await act(async () => {
@@ -462,7 +494,9 @@ describe('TimelineSlider', () => {
             expect(mockStoreState.playAnimation).toBe(true);
             
             // Rerender to pick up the state change
-            rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            act(() => {
+                rerender(<TimelineSlider key="test-1" onValueChange={onChange} />);
+            });
             
             // The component should now see the updated state
             expect(screen.getByRole('button')).toHaveTextContent('Stop');
@@ -507,11 +541,15 @@ describe('TimelineSlider', () => {
             render(<TimelineSlider onValueChange={onChange} />);
             const speedSlider = screen.getByLabelText(/Delay between animation steps/i);
             
-            speedSlider.focus();
+            act(() => {
+                speedSlider.focus();
+            });
             expect(speedSlider).toHaveFocus();
             
             // Can change value with arrow keys
-            await userEvent.keyboard('{ArrowRight}');
+            await act(async () => {
+                await userEvent.keyboard('{ArrowRight}');
+            });
             expect(speedSlider).toHaveFocus();
         });
 
@@ -520,11 +558,15 @@ describe('TimelineSlider', () => {
             render(<TimelineSlider onValueChange={onChange} />);
             const stepInput = screen.getByLabelText('Number of years to increment per animation step');
             
-            stepInput.focus();
+            act(() => {
+                stepInput.focus();
+            });
             expect(stepInput).toHaveFocus();
             
             // Can type in the input
-            await userEvent.keyboard('25');
+            await act(async () => {
+                await userEvent.keyboard('25');
+            });
             expect(stepInput).toHaveFocus();
         });
     })

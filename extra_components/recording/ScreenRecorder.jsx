@@ -28,14 +28,22 @@ const Recorder = () => {
     //<video src={mediaBlobUrl} controls autoPlay loop />
 
     const setupRecording = async () => {
-        scrollToMap() // scrolls to map
         try {
+          if (scrollToMap) {
+            scrollToMap(); // scrolls to map
+          }
+          // Check if mediaDevices API is available
+          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error('MediaDevices API is not available in this browser');
+          }
           // Option 2: Manual permission request before starting
           await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-          startRecording();
+          if (startRecording) {
+            startRecording();
+          }
         } catch (err) {
           console.error("Permission denied or media not found:", err);
-          // Handle permission denial or errors
+          // Handle permission denial or errors gracefully
         }
         //playAnimation() // play the timeline - TODO: fix - state problem
     }
@@ -52,7 +60,13 @@ const Recorder = () => {
           Start Recording
         </button>
         <button 
-          onClick={stopRecording}
+          onClick={() => {
+            try {
+              stopRecording();
+            } catch (err) {
+              console.error("Error stopping recording:", err);
+            }
+          }}
           className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
         >
           Stop Recording

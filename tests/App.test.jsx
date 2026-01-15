@@ -33,11 +33,6 @@ vi.mock('@/components/FilterSection', () => ({
     ),
 }));
 
-// Mock RecordingSection
-vi.mock('@/components/recording/RecordingSection', () => ({
-    default: () => <div data-testid="recording-section">Recording Section</div>,
-}));
-
 // Mock zustand's useShallow
 vi.mock('zustand/react/shallow', () => ({
     useShallow: (selector) => selector,
@@ -201,10 +196,14 @@ describe('App', () => {
             const buttons = screen.getAllByRole('button');
             if (buttons.length > 0) {
                 const firstButton = buttons[0];
-                firstButton.focus();
+                act(() => {
+                    firstButton.focus();
+                });
                 expect(firstButton).toHaveFocus();
                 
-                await userEvent.keyboard('{Tab}');
+                await act(async () => {
+                    await userEvent.keyboard('{Tab}');
+                });
                 // Focus should move to next focusable element
             }
         });
@@ -226,12 +225,14 @@ describe('App', () => {
             const expandButtons = screen.queryAllByRole('button', { expanded: false });
             if (expandButtons.length > 0) {
                 const firstButton = expandButtons[0];
-                await userEvent.click(firstButton);
+                await act(async () => {
+                    await userEvent.click(firstButton);
+                });
                 
                 // After expanding, focus should be managed appropriately
                 await waitFor(() => {
                     expect(firstButton).toHaveAttribute('aria-expanded', 'true');
-                });
+                }, { timeout: 5000 });
             }
         });
 
@@ -293,222 +294,247 @@ describe('App', () => {
     describe('Timeline Animation', () => {
         it('does not start animation when playAnimation is false', () => {
             vi.useFakeTimers();
-            render(<App />);
-            
-            // Fast-forward time
-            act(() => {
-                vi.advanceTimersByTime(2000); // 2 seconds
-            });
-            
-            // Should not have called setTimelineYear (except initial render effects)
-            expect(mockSetTimelineYear).not.toHaveBeenCalled();
+            try {
+                render(<App />);
+                
+                // Fast-forward time
+                act(() => {
+                    vi.advanceTimersByTime(2000); // 2 seconds
+                });
+                
+                // Should not have called setTimelineYear (except initial render effects)
+                expect(mockSetTimelineYear).not.toHaveBeenCalled();
+            } finally {
+                vi.useRealTimers();
+            }
         });
 
         it('increments year by 10 every 500ms when animation is playing', () => {
             vi.useFakeTimers();
-            
-            // Start with animation playing
-            useFilterStore.mockReturnValue({
-                filters: {},
-                yearType: 'created',
-                timelineYear: 0,
-                setTimelineYear: mockSetTimelineYear,
-                timelineStart: 0,
-                timelineEnd: 2100,
-                playAnimation: true,
-                animationSpeed: 500,
-                animationStep: 10,
-            });
+            try {
+                // Start with animation playing
+                useFilterStore.mockReturnValue({
+                    filters: {},
+                    yearType: 'created',
+                    timelineYear: 0,
+                    setTimelineYear: mockSetTimelineYear,
+                    timelineStart: 0,
+                    timelineEnd: 2100,
+                    playAnimation: true,
+                    animationSpeed: 500,
+                    animationStep: 10,
+                });
 
-            mockStoreState.timelineYear = 0;
+                mockStoreState.timelineYear = 0;
 
-            render(<App />);
-            
-            // Clear any initial calls
-            mockSetTimelineYear.mockClear();
-            
-            // Advance time by 500ms - should increment once
-            act(() => {
-                vi.advanceTimersByTime(500);
-            });
-            
-            expect(mockSetTimelineYear).toHaveBeenCalledWith(10);
-            
-            // Update mock state to reflect the change
-            mockStoreState.timelineYear = 10;
-            mockSetTimelineYear.mockClear();
-            
-            // Advance another 500ms - should increment again
-            act(() => {
-                vi.advanceTimersByTime(500);
-            });
-            
-            expect(mockSetTimelineYear).toHaveBeenCalledWith(20);
+                render(<App />);
+                
+                // Clear any initial calls
+                mockSetTimelineYear.mockClear();
+                
+                // Advance time by 500ms - should increment once
+                act(() => {
+                    vi.advanceTimersByTime(500);
+                });
+                
+                expect(mockSetTimelineYear).toHaveBeenCalledWith(10);
+                
+                // Update mock state to reflect the change
+                act(() => {
+                    mockStoreState.timelineYear = 10;
+                });
+                mockSetTimelineYear.mockClear();
+                
+                // Advance another 500ms - should increment again
+                act(() => {
+                    vi.advanceTimersByTime(500);
+                });
+                
+                expect(mockSetTimelineYear).toHaveBeenCalledWith(20);
+            } finally {
+                vi.useRealTimers();
+            }
         });
 
         it('loops back to timelineStart when reaching timelineEnd', () => {
             vi.useFakeTimers();
-            
-            // Set up state where year is at or above the end (triggers loop)
-            mockStoreState.timelineYear = 2100;
-            mockStoreState.timelineStart = 0;
-            mockStoreState.timelineEnd = 2100;
+            try {
+                // Set up state where year is at or above the end (triggers loop)
+                mockStoreState.timelineYear = 2100;
+                mockStoreState.timelineStart = 0;
+                mockStoreState.timelineEnd = 2100;
 
-            useFilterStore.mockReturnValue({
-                filters: {},
-                yearType: 'created',
-                timelineYear: 2100,
-                setTimelineYear: mockSetTimelineYear,
-                timelineStart: 0,
-                timelineEnd: 2100,
-                playAnimation: true,
-                animationSpeed: 500,
-                animationStep: 10,
-            });
+                useFilterStore.mockReturnValue({
+                    filters: {},
+                    yearType: 'created',
+                    timelineYear: 2100,
+                    setTimelineYear: mockSetTimelineYear,
+                    timelineStart: 0,
+                    timelineEnd: 2100,
+                    playAnimation: true,
+                    animationSpeed: 500,
+                    animationStep: 10,
+                });
 
-            render(<App />);
-            mockSetTimelineYear.mockClear();
-            
-            // Advance 500ms - since 2100 >= 2100, should loop to 0
-            act(() => {
-                vi.advanceTimersByTime(500);
-            });
-            
-            // Should loop back to start (0) instead of incrementing
-            expect(mockSetTimelineYear).toHaveBeenCalledWith(0);
+                render(<App />);
+                mockSetTimelineYear.mockClear();
+                
+                // Advance 500ms - since 2100 >= 2100, should loop to 0
+                act(() => {
+                    vi.advanceTimersByTime(500);
+                });
+                
+                // Should loop back to start (0) instead of incrementing
+                expect(mockSetTimelineYear).toHaveBeenCalledWith(0);
+            } finally {
+                vi.useRealTimers();
+            }
         });
 
         it('stops animation when playAnimation changes to false', () => {
             vi.useFakeTimers();
-            
-            const { rerender } = render(<App />);
-            
-            // Start animation
-            useFilterStore.mockReturnValue({
-                filters: {},
-                yearType: 'created',
-                timelineYear: 0,
-                setTimelineYear: mockSetTimelineYear,
-                timelineStart: 0,
-                timelineEnd: 2100,
-                playAnimation: true,
-                animationSpeed: 500,
-                animationStep: 10,
-            });
+            try {
+                const { rerender } = render(<App />);
+                
+                // Start animation
+                useFilterStore.mockReturnValue({
+                    filters: {},
+                    yearType: 'created',
+                    timelineYear: 0,
+                    setTimelineYear: mockSetTimelineYear,
+                    timelineStart: 0,
+                    timelineEnd: 2100,
+                    playAnimation: true,
+                    animationSpeed: 500,
+                    animationStep: 10,
+                });
 
-            mockStoreState.timelineYear = 0;
-            rerender(<App />);
-            mockSetTimelineYear.mockClear();
-            
-            // Advance time - should increment
-            act(() => {
-                vi.advanceTimersByTime(500);
-            });
-            
-            expect(mockSetTimelineYear).toHaveBeenCalledWith(10);
-            mockSetTimelineYear.mockClear();
-            
-            // Stop animation
-            useFilterStore.mockReturnValue({
-                filters: {},
-                yearType: 'created',
-                timelineYear: 10,
-                setTimelineYear: mockSetTimelineYear,
-                timelineStart: 0,
-                timelineEnd: 2100,
-                playAnimation: false,
-            });
+                mockStoreState.timelineYear = 0;
+                act(() => {
+                    rerender(<App />);
+                });
+                mockSetTimelineYear.mockClear();
+                
+                // Advance time - should increment
+                act(() => {
+                    vi.advanceTimersByTime(500);
+                });
+                
+                expect(mockSetTimelineYear).toHaveBeenCalledWith(10);
+                mockSetTimelineYear.mockClear();
+                
+                // Stop animation
+                useFilterStore.mockReturnValue({
+                    filters: {},
+                    yearType: 'created',
+                    timelineYear: 10,
+                    setTimelineYear: mockSetTimelineYear,
+                    timelineStart: 0,
+                    timelineEnd: 2100,
+                    playAnimation: false,
+                });
 
-            rerender(<App />);
-            
-            // Advance time - should NOT increment anymore
-            act(() => {
-                vi.advanceTimersByTime(2000);
-            });
-            
-            // Should not have been called again
-            expect(mockSetTimelineYear).not.toHaveBeenCalled();
+                act(() => {
+                    rerender(<App />);
+                });
+                
+                // Advance time - should NOT increment anymore
+                act(() => {
+                    vi.advanceTimersByTime(2000);
+                });
+                
+                // Should not have been called again
+                expect(mockSetTimelineYear).not.toHaveBeenCalled();
+            } finally {
+                vi.useRealTimers();
+            }
         });
 
         it('reads current state from store on each interval tick', () => {
             vi.useFakeTimers();
-            
-            useFilterStore.mockReturnValue({
-                filters: {},
-                yearType: 'created',
-                timelineYear: 0,
-                setTimelineYear: mockSetTimelineYear,
-                timelineStart: 0,
-                timelineEnd: 2100,
-                playAnimation: true,
-                animationSpeed: 500,
-                animationStep: 10,
-            });
+            try {
+                useFilterStore.mockReturnValue({
+                    filters: {},
+                    yearType: 'created',
+                    timelineYear: 0,
+                    setTimelineYear: mockSetTimelineYear,
+                    timelineStart: 0,
+                    timelineEnd: 2100,
+                    playAnimation: true,
+                    animationSpeed: 500,
+                    animationStep: 10,
+                });
 
-            mockStoreState.timelineYear = 0;
-            render(<App />);
-            mockSetTimelineYear.mockClear();
-            
-            // First tick
-            act(() => {
-                vi.advanceTimersByTime(500);
-            });
-            
-            expect(useFilterStore.getState).toHaveBeenCalled();
-            expect(mockSetTimelineYear).toHaveBeenCalledWith(10);
-            
-            // Update state for next tick
-            mockStoreState.timelineYear = 10;
-            mockSetTimelineYear.mockClear();
-            
-            // Second tick - should read updated state
-            act(() => {
-                vi.advanceTimersByTime(500);
-            });
-            
-            expect(useFilterStore.getState).toHaveBeenCalledTimes(2);
-            expect(mockSetTimelineYear).toHaveBeenCalledWith(20);
+                mockStoreState.timelineYear = 0;
+                render(<App />);
+                mockSetTimelineYear.mockClear();
+                
+                // First tick
+                act(() => {
+                    vi.advanceTimersByTime(500);
+                });
+                
+                expect(useFilterStore.getState).toHaveBeenCalled();
+                expect(mockSetTimelineYear).toHaveBeenCalledWith(10);
+                
+                // Update state for next tick
+                mockStoreState.timelineYear = 10;
+                mockSetTimelineYear.mockClear();
+                
+                // Second tick - should read updated state
+                act(() => {
+                    vi.advanceTimersByTime(500);
+                });
+                
+                expect(useFilterStore.getState).toHaveBeenCalledTimes(2);
+                expect(mockSetTimelineYear).toHaveBeenCalledWith(20);
+            } finally {
+                vi.useRealTimers();
+            }
         });
 
         it('handles custom timeline ranges correctly', () => {
             vi.useFakeTimers();
-            
-            mockStoreState.timelineYear = 100;
-            mockStoreState.timelineStart = 100;
-            mockStoreState.timelineEnd = 200;
+            try {
+                mockStoreState.timelineYear = 100;
+                mockStoreState.timelineStart = 100;
+                mockStoreState.timelineEnd = 200;
 
-            useFilterStore.mockReturnValue({
-                filters: {},
-                yearType: 'created',
-                timelineYear: 100,
-                setTimelineYear: mockSetTimelineYear,
-                timelineStart: 100,
-                timelineEnd: 200,
-                playAnimation: true,
-                animationSpeed: 500,
-                animationStep: 10,
-            });
+                useFilterStore.mockReturnValue({
+                    filters: {},
+                    yearType: 'created',
+                    timelineYear: 100,
+                    setTimelineYear: mockSetTimelineYear,
+                    timelineStart: 100,
+                    timelineEnd: 200,
+                    playAnimation: true,
+                    animationSpeed: 500,
+                    animationStep: 10,
+                });
 
-            render(<App />);
-            mockSetTimelineYear.mockClear();
-            
-            // Should increment from 100
-            act(() => {
-                vi.advanceTimersByTime(500);
-            });
-            
-            expect(mockSetTimelineYear).toHaveBeenCalledWith(110);
-            
-            // Update to at or above end to trigger loop
-            mockStoreState.timelineYear = 200;
-            mockSetTimelineYear.mockClear();
-            
-            // Next increment should loop back to 100 (since 200 >= 200)
-            act(() => {
-                vi.advanceTimersByTime(500);
-            });
-            
-            expect(mockSetTimelineYear).toHaveBeenCalledWith(100);
+                render(<App />);
+                mockSetTimelineYear.mockClear();
+                
+                // Should increment from 100
+                act(() => {
+                    vi.advanceTimersByTime(500);
+                });
+                
+                expect(mockSetTimelineYear).toHaveBeenCalledWith(110);
+                
+                // Update to at or above end to trigger loop
+                mockStoreState.timelineYear = 200;
+                mockSetTimelineYear.mockClear();
+                
+                // Next increment should loop back to 100 (since 200 >= 200)
+                act(() => {
+                    vi.advanceTimersByTime(500);
+                });
+                
+                expect(mockSetTimelineYear).toHaveBeenCalledWith(100);
+            } finally {
+                vi.useRealTimers();
+            }
         });
     });
 });

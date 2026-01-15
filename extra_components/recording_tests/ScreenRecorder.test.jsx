@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import ScreenRecorder from '@/components/recording/ScreenRecorder';
@@ -24,7 +24,7 @@ vi.mock('@/stores/MapStore', () => ({
     useMapStore: vi.fn(),
 }));
 
-describe.skip('ScreenRecorder', () => {
+describe('ScreenRecorder', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         useMapStore.mockReturnValue({
@@ -60,21 +60,25 @@ describe.skip('ScreenRecorder', () => {
             render(<ScreenRecorder />);
             
             const startButton = screen.getByRole('button', { name: /start recording/i });
-            startButton.focus();
+            act(() => {
+                startButton.focus();
+            });
             expect(startButton).toHaveFocus();
             
-            await userEvent.keyboard('{Enter}');
+            await act(async () => {
+                await userEvent.keyboard('{Enter}');
+            });
             expect(startButton).toBeInTheDocument();
         });
 
         it('has descriptive status text', () => {
             render(<ScreenRecorder />);
-            // Test currently failing: Status text should be associated with recording controls via aria-live
+            // Status text should be associated with recording controls via aria-live
             // The status should be announced to screen readers when it changes
             const statusText = screen.getByText('idle');
             expect(statusText).toBeInTheDocument();
-            // This test will fail - status should have aria-live="polite" for screen reader announcements
-            expect(statusText.closest('div') || statusText.parentElement).toHaveAttribute('aria-live', 'polite');
+            // The status element itself should have aria-live="polite" for screen reader announcements
+            expect(statusText).toHaveAttribute('aria-live', 'polite');
         });
 
         it('buttons have proper focus indicators', () => {

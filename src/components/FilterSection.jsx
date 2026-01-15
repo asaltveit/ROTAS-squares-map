@@ -8,6 +8,14 @@ import { useFilterStore } from '@/stores/FilterStore.js'
 import { supabase } from '@/supabaseClient';
 import TimelineSlider from '@/components/TimelineSlider';
 
+/*
+TODO: 
+- Should individual filters be memoized?
+     - especially when timeline is running?
+
+
+*/
+
 export default function FilterSection({ onClose }) {
     const scrollContainerRef = useRef(null);
     
@@ -250,7 +258,7 @@ export default function FilterSection({ onClose }) {
     }, [timelineStart, timelineEnd, timelineYear]);
 
     return (
-        <div className="lg:col-span-3 flex flex-col h-full max-h-[calc(100vh-12rem)]">
+        <div className="lg:col-span-3 flex flex-col h-full">
             <div className="bg-white rounded-lg shadow-lg border-2 border-amber-200 flex flex-col h-full overflow-hidden">
                 <div className="flex items-center justify-between p-6 pb-4 border-b-2 border-amber-800 flex-shrink-0">
                     <h2 className="text-2xl font-serif font-bold text-amber-900">

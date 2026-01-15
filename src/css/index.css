@@ -1,1 +1,36 @@
 @import "tailwindcss";
+
+html {
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  background-color: #fffbeb;
+}
+
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fffbeb;
+}
+
+#root {
+  width: 100vw;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: #fffbeb;
+}
+
+.app-scale-wrapper {
+  transform: scale(0.75);
+  transform-origin: top left;
+  width: 133.333333vw;
+  height: 133.333333vh;
+  background-color: #fffbeb;
+  overflow-x: hidden;
+  overflow-y: auto;
+}

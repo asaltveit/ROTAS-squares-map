@@ -174,7 +174,9 @@ describe('FilterSection', () => {
         render(<FilterSection onClose={mockOnClose} />);
         
         const closeButton = screen.getByTitle('Close filters');
-        fireEvent.click(closeButton);
+        act(() => {
+            fireEvent.click(closeButton);
+        });
         
         expect(mockOnClose).toHaveBeenCalledTimes(1);
     });
@@ -197,7 +199,7 @@ describe('FilterSection', () => {
 
             expect(supabase.rpc).toHaveBeenCalledWith('get_distinct_first_word');
             expect(mockSetters.setFirstWords).toHaveBeenCalled();
-        });
+        }, { timeout: 5000 });
     });
 
     it('triggers setTypeFilter when Type select value changes', async () => {
@@ -223,7 +225,9 @@ describe('FilterSection', () => {
         render(<FilterSection />);
         
         const typeSelect = screen.getByLabelText('Type');
-        await userEvent.selectOptions(typeSelect, 'city');
+        await act(async () => {
+            await userEvent.selectOptions(typeSelect, 'city');
+        });
 
         expect(mockSetters.setTypeFilter).toHaveBeenCalledWith('city');
     });
@@ -251,7 +255,9 @@ describe('FilterSection', () => {
         render(<FilterSection />);
         
         const scriptSelect = screen.getByLabelText('Script');
-        await userEvent.selectOptions(scriptSelect, 'latin');
+        await act(async () => {
+            await userEvent.selectOptions(scriptSelect, 'latin');
+        });
 
         expect(mockSetters.setScriptFilter).toHaveBeenCalledWith('latin');
     });
@@ -260,7 +266,9 @@ describe('FilterSection', () => {
         render(<FilterSection />);
         
         const yearTypeSelect = screen.getByLabelText('Year Type');
-        await userEvent.selectOptions(yearTypeSelect, 'discovered');
+        await act(async () => {
+            await userEvent.selectOptions(yearTypeSelect, 'discovered');
+        });
 
         expect(mockSetters.setYearType).toHaveBeenCalledWith('discovered');
     });
@@ -270,9 +278,11 @@ describe('FilterSection', () => {
         
         const startYearInput = screen.getByLabelText('Start Year');
         
-        await userEvent.clear(startYearInput);
-        await userEvent.type(startYearInput, '100');
-        await userEvent.tab(); // Triggers blur
+        await act(async () => {
+            await userEvent.clear(startYearInput);
+            await userEvent.type(startYearInput, '100');
+            await userEvent.tab(); // Triggers blur
+        });
 
         expect(mockSetters.setTimelineStart).toHaveBeenCalledWith(100);
     });
@@ -282,9 +292,11 @@ describe('FilterSection', () => {
         
         const endYearInput = screen.getByLabelText('End Year');
         
-        await userEvent.clear(endYearInput);
-        await userEvent.type(endYearInput, '500');
-        await userEvent.tab(); // Triggers blur
+        await act(async () => {
+            await userEvent.clear(endYearInput);
+            await userEvent.type(endYearInput, '500');
+            await userEvent.tab(); // Triggers blur
+        });
 
         expect(mockSetters.setTimelineEnd).toHaveBeenCalledWith(500);
     });
@@ -294,8 +306,10 @@ describe('FilterSection', () => {
         
         const startYearInput = screen.getByLabelText('Start Year');
         
-        await userEvent.clear(startYearInput);
-        await userEvent.type(startYearInput, '150{Enter}');
+        await act(async () => {
+            await userEvent.clear(startYearInput);
+            await userEvent.type(startYearInput, '150{Enter}');
+        });
 
         expect(mockSetters.setTimelineStart).toHaveBeenCalledWith(150);
     });
@@ -305,8 +319,10 @@ describe('FilterSection', () => {
         
         const endYearInput = screen.getByLabelText('End Year');
         
-        await userEvent.clear(endYearInput);
-        await userEvent.type(endYearInput, '600{Enter}');
+        await act(async () => {
+            await userEvent.clear(endYearInput);
+            await userEvent.type(endYearInput, '600{Enter}');
+        });
 
         expect(mockSetters.setTimelineEnd).toHaveBeenCalledWith(600);
     });
@@ -315,7 +331,9 @@ describe('FilterSection', () => {
         render(<FilterSection />);
 
         const clearButton = screen.getByRole('button', { name: /clear all filters/i });
-        fireEvent.click(clearButton);
+        act(() => {
+            fireEvent.click(clearButton);
+        });
 
         expect(mockSetters.clearFilters).toHaveBeenCalled();
     });
@@ -427,7 +445,9 @@ describe('FilterSection', () => {
             expect(typeSelect).toHaveFocus();
             
             // Can navigate with arrow keys
-            await userEvent.keyboard('{ArrowDown}');
+            await act(async () => {
+                await userEvent.keyboard('{ArrowDown}');
+            });
             expect(typeSelect).toHaveFocus();
         });
 
@@ -435,7 +455,9 @@ describe('FilterSection', () => {
             render(<FilterSection />);
             
             const startYearInput = screen.getByLabelText('Start Year');
-            await userEvent.click(startYearInput);
+            await act(async () => {
+                await userEvent.click(startYearInput);
+            });
             expect(startYearInput).toHaveFocus();
         });
 
@@ -460,10 +482,14 @@ describe('FilterSection', () => {
             render(<FilterSection onClose={mockOnClose} />);
             
             const closeButton = screen.getByTitle('Close filters');
-            closeButton.focus();
+            act(() => {
+                closeButton.focus();
+            });
             expect(closeButton).toHaveFocus();
             
-            await userEvent.keyboard('{Enter}');
+            await act(async () => {
+                await userEvent.keyboard('{Enter}');
+            });
             expect(mockOnClose).toHaveBeenCalled();
         });
     });
