@@ -13,7 +13,7 @@
   "dependencies": {
     "@observablehq/plot": "^0.6.16",
     "@sparkstone/fingerprintjs": "^3.5.1",
-    "@supabase/supabase-js": "^2.93.3",
+    "@supabase/supabase-js": "^2.94.0",
     "@tailwindcss/vite": "^4.1.18",
     "html-to-image": "^1.11.13",
     "immer": "^11.1.3",
