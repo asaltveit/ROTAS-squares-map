@@ -241,11 +241,13 @@ export default function App() {
       if (mapContainerRef.current) {
         const rect = mapContainerRef.current.getBoundingClientRect();
         // Account for padding (p-2 = 8px on each side = 16px total)
-        // Use the full container size - Plot will handle margins internally
-        const width = Math.max(500, rect.width - 26);
-        const height = Math.max(500, rect.height - 66); // Add space for legend
+        // Allow the map to shrink with the container so the full plot (and legend)
+        // stays visible instead of being clipped on small widths.
+        const width = Math.max(320, rect.width - 26);
+        const height = Math.max(320, rect.height - 66); // Provide baseline space for legend
+
         // Only update if dimensions are valid
-        if (width > 0 && height > 0 && (rect.width > 0 || rect.height > 0)) {
+        if (width > 0 && height > 0 && rect.width > 0 && rect.height > 0) {
           setMapDimensions({ width, height });
         }
       }
@@ -274,7 +276,7 @@ export default function App() {
     if (!mapData) return;
     if (!mapRef.current) return;
     // Ensure dimensions are valid before rendering
-    if (!mapDimensions.width || !mapDimensions.height || mapDimensions.width < 400 || mapDimensions.height < 400) {
+    if (!mapDimensions.width || !mapDimensions.height || mapDimensions.width < 200 || mapDimensions.height < 200) {
       return;
     }
 
@@ -383,7 +385,7 @@ export default function App() {
 
                 <div 
                   ref={mapContainerRef}
-                  className="w-full h-[400px] sm:h-[500px] md:h-[550px] lg:h-[600px] flex items-center justify-center border-4 border-dashed border-amber-300 rounded-lg bg-amber-50/30 overflow-hidden p-2"
+                  className="w-full h-[400px] sm:h-[500px] md:h-[550px] lg:h-[600px] flex items-center justify-center border-4 border-dashed border-amber-300 rounded-lg bg-amber-50/30 overflow-auto p-2"
                   aria-label="Interactive map showing location markers"
                 >
                   <div ref={mapRef} className="map-container w-full h-full flex flex-col items-center justify-center overflow-auto"></div>
