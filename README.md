@@ -13,7 +13,7 @@ Per the request of someone doing historical research.
 - I decided on Supabase and Vercel, because their free tiers were least likely to disable the project.
 - I wanted to work with d3, and found that Observable Plot (which is built off of d3) had the functionality I needed to create the map.
 - I used Zustand for state management because I wanted to avoid some of the boiler plate from Redux.
-- I originally used Material UI because styling was not a focus for this project and it had an accordion component that I wanted. But I later removed Material UI in favor of TailwindCSS so that I could have easier control of styling.
+- I originally used Material UI because it had an accordion component that I wanted. But I later removed Material UI in favor of TailwindCSS so that I could have easier control of styling.
 
 
 ## Future Work
