@@ -17,7 +17,7 @@
     "@observablehq/plot": "^0.6.16",
     "@sparkstone/fingerprintjs": "^3.5.1",
     "@supabase/supabase-js": "^2.97.0",
-    "@tailwindcss/vite": "^4.2.0",
+    "@tailwindcss/vite": "^4.2.1",
     "immer": "^11.1.4",
     "lucide-react": "^0.575.0",
     "react": "^19.2.4",
