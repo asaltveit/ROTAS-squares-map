@@ -18,8 +18,8 @@ import FilterSection from '@/components/FilterSection';
 //import RecordingSection from '@/components/recording/RecordingSection';
 // DB
 import { supabase } from '@/supabaseClient';
-//Fingerprint
-import FingerprintJS from '@sparkstone/fingerprintjs';
+// Analytics (Fingerprint + search_results) — disabled; existing Supabase rows unchanged
+// import FingerprintJS from '@sparkstone/fingerprintjs';
 
 // TODO: Endpoints getting called in groups of threes?
 export default function App() {
@@ -28,7 +28,7 @@ export default function App() {
   const screenshotRef = useRef(null);
   const [visibleLocations, setVisibleLocations] = useState([]);
   const [mapData, setMapData] = useState([]);
-  const [FPResults, setFPResults] = useState({});
+  // const [FPResults, setFPResults] = useState({});
   const [mapDimensions, setMapDimensions] = useState({ width: 850, height: 600 });
 
   const { locations, setLocations, locationTypes, setLocationTypes, setScrollToMap } = useMapStore(
@@ -86,7 +86,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    getVisitorInfo(); // collecting stats
+    // getVisitorInfo(); // analytics — disabled
     // Sends scroll to ScreenRecorder
     const scrollToElement = () => { // doesn't quite scroll to where I want it
       screenshotRef.current?.scrollIntoView({ behavior: 'smooth' }); // 'smooth' for animated scrolling
@@ -98,48 +98,41 @@ export default function App() {
   // indiviudal calls for each filter change
   useEffect(() => {
     getLocations();
-    setSearchResults();
+    // setSearchResults(); // analytics — disabled
   }, [filters, timelineStart, timelineEnd]);
 
   useEffect(() => {
     getTypes();
   }, []);
 
-  async function getVisitorInfo() {
-    // Initialize fingerprint agent
-    const fp = await FingerprintJS.load();
-    const results = await fp.get()
-    setFPResults(results);
-  }
+  // async function getVisitorInfo() {
+  //   const fp = await FingerprintJS.load();
+  //   const results = await fp.get();
+  //   setFPResults(results);
+  // }
 
-  // Save filter events
-  async function setSearchResults() {
-    // FPResults is empty on initialization
-    if (FPResults && FPResults.components) {
-      const resultFilters = Object
-        .keys(filters)
-        .reduce((r,key) => 
-          (filters[key] && (r[key]=filters[key]), r),{})
-    const notNullResultFilters = Object.keys(resultFilters);
-    
-    let filter = null;
-    if (notNullResultFilters.length) {
-      filter = notNullResultFilters[0];
-    }
-    const data = {
-      timezone: FPResults.components.timezone.value,
-      visitorId: FPResults.visitorId,
-      platform: FPResults.components.platform.value,
-      filter_type: filter,
-      // languages should be an array?
-      language: FPResults.components.languages.value[0][0],
-      filter_value: resultFilters[filter]
-    }
-    await supabase
-      .from('search_results')
-      .insert(data)
-    }
-  }
+  // async function setSearchResults() {
+  //   if (FPResults && FPResults.components) {
+  //     const resultFilters = Object.keys(filters).reduce(
+  //       (r, key) => (filters[key] && (r[key] = filters[key]), r),
+  //       {},
+  //     );
+  //     const notNullResultFilters = Object.keys(resultFilters);
+  //     let filter = null;
+  //     if (notNullResultFilters.length) {
+  //       filter = notNullResultFilters[0];
+  //     }
+  //     const data = {
+  //       timezone: FPResults.components.timezone.value,
+  //       visitorId: FPResults.visitorId,
+  //       platform: FPResults.components.platform.value,
+  //       filter_type: filter,
+  //       language: FPResults.components.languages.value[0][0],
+  //       filter_value: resultFilters[filter],
+  //     };
+  //     await supabase.from('search_results').insert(data);
+  //   }
+  // }
 
   async function getLocations() {
     let resultFilters = Object

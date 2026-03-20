@@ -7,22 +7,6 @@ import { useFilterStore } from '@/stores/FilterStore';
 import { supabase } from '@/supabaseClient';
 import '@testing-library/jest-dom';
 
-// Mock FingerprintJS
-vi.mock('@sparkstone/fingerprintjs', () => ({
-    default: {
-        load: vi.fn(() => Promise.resolve({
-            get: vi.fn(() => Promise.resolve({
-                visitorId: 'test-id',
-                components: {
-                    timezone: { value: 'UTC' },
-                    platform: { value: 'test' },
-                    languages: { value: [['en']] },
-                },
-            })),
-        })),
-    },
-}));
-
 // Mock FilterSection
 vi.mock('@/components/FilterSection', () => ({
     default: ({ onClose }) => (
