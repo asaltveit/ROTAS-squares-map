@@ -6,7 +6,6 @@ import { yearTypeOptions } from '@/constants'
 import { useMapStore } from '@/stores/MapStore.js'
 import { useFilterStore } from '@/stores/FilterStore.js'
 import { supabase } from '@/supabaseClient';
-import TimelineSlider from '@/components/TimelineSlider';
 
 /*
 TODO: 
@@ -258,7 +257,7 @@ export default function FilterSection({ onClose }) {
     }, [timelineStart, timelineEnd, timelineYear]);
 
     return (
-        <div className="lg:col-span-3 flex flex-col h-full">
+        <div className="flex flex-col h-full min-w-0">
             <div className="bg-white rounded-lg shadow-lg border-2 border-amber-200 flex flex-col h-full overflow-hidden">
                 <div className="flex items-center justify-between p-6 pb-4 border-b-2 border-amber-800 flex-shrink-0">
                     <h2 className="text-2xl font-serif font-bold text-amber-900">
@@ -277,7 +276,6 @@ export default function FilterSection({ onClose }) {
                 </div>
 
                 <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-6 pt-4 space-y-4">
-                <TimelineSlider />
                 {/* Temporal Range */}
                 <div className="space-y-2">
                     <label className="block text-sm font-semibold text-amber-900">Temporal Range</label>

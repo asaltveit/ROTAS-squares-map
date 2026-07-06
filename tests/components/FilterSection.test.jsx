@@ -7,11 +7,6 @@ import { useFilterStore } from '@/stores/FilterStore';
 import { supabase } from '@/supabaseClient';
 import '@testing-library/jest-dom';
 
-// Mock TimelineSlider component
-vi.mock('@/components/TimelineSlider', () => ({
-    default: () => <div data-testid="timeline-slider">Timeline Slider</div>,
-}));
-
 // Mock lucide-react icons
 vi.mock('lucide-react', () => ({
     X: () => <svg data-testid="x-icon" />,
@@ -113,11 +108,6 @@ describe('FilterSection', () => {
     it('renders the Filters heading', () => {
         render(<FilterSection />);
         expect(screen.getByText('Filters')).toBeInTheDocument();
-    });
-
-    it('renders TimelineSlider component', () => {
-        render(<FilterSection />);
-        expect(screen.getByTestId('timeline-slider')).toBeInTheDocument();
     });
 
     it('renders Temporal Range section with year inputs', () => {

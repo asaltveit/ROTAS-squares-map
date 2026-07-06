@@ -34,3 +34,20 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
 }
+
+.main-layout {
+  grid-template-columns: 1fr;
+  width: 100%;
+  min-width: 0;
+}
+
+.app-container {
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .main-layout {
+    grid-template-columns: var(--grid-cols, 3fr 6fr 3fr);
+    transition: grid-template-columns 300ms ease-in-out;
+  }
+}

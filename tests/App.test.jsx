@@ -17,6 +17,18 @@ vi.mock('@/components/FilterSection', () => ({
     ),
 }));
 
+// Mock RecordingExportSection
+vi.mock('@/components/RecordingExportSection', () => ({
+    default: ({ onClose }) => (
+        <div data-testid="recording-export-section">
+            Recording & Export
+            {onClose && <button onClick={onClose}>Close Recording</button>}
+            <button aria-expanded={false}>Recording Session</button>
+            <button aria-expanded={false}>Export & Share</button>
+        </div>
+    ),
+}));
+
 // Mock zustand's useShallow
 vi.mock('zustand/react/shallow', () => ({
     useShallow: (selector) => selector,
@@ -124,6 +136,30 @@ describe('App', () => {
         expect(screen.getByText('Map')).toBeInTheDocument();
     });
 
+    it('shows recording and export toggle when panel is closed', () => {
+        render(<App />);
+        expect(screen.getByRole('button', { name: /show recording and export/i })).toBeInTheDocument();
+    });
+
+    it('does not render recording export section when panel is closed', () => {
+        render(<App />);
+        expect(screen.queryByTestId('recording-export-section')).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /recording session/i })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /export & share/i })).not.toBeInTheDocument();
+    });
+
+    it('opens recording export section when toggle is clicked', async () => {
+        render(<App />);
+        const toggleButton = screen.getByRole('button', { name: /show recording and export/i });
+
+        await act(async () => {
+            await userEvent.click(toggleButton);
+        });
+
+        expect(screen.getByTestId('recording-export-section')).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /show recording and export/i })).not.toBeInTheDocument();
+    });
+
     // Accessibility tests
     describe('Accessibility', () => {
         it('has proper heading hierarchy', () => {
@@ -166,7 +202,7 @@ describe('App', () => {
                 expect(showFiltersButton).toBeInTheDocument();
             }
             
-            // Save Current View button
+            // Save Current View button (visible when recording panel is open)
             const saveButton = screen.queryByRole('button', { name: /save current view/i });
             if (saveButton) {
                 expect(saveButton).toBeInTheDocument();
