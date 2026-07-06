@@ -63,6 +63,49 @@ export function numberTransform(value) {
     }
 }
 */
+export function estimateLegendHeight(typeCount, containerWidth) {
+    const swatchesPerRow = Math.max(1, Math.floor(containerWidth / 120));
+    const rows = Math.ceil(typeCount / swatchesPerRow);
+    return rows * 18 + 20;
+}
+
+export function getMapProjection(locations, markerRadius = 7) {
+    const validLocations = (locations ?? []).filter(
+        (loc) => loc.longitude != null && loc.latitude != null
+    );
+
+    if (validLocations.length === 0) {
+        return {
+            type: "orthographic",
+            rotate: [-15, -43],
+            domain: { type: "Sphere" },
+            inset: 12,
+        };
+    }
+
+    const lons = validLocations.map((loc) => Number(loc.longitude));
+    const lats = validLocations.map((loc) => Number(loc.latitude));
+    const centerLon = (Math.min(...lons) + Math.max(...lons)) / 2;
+    const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
+
+    return {
+        type: "orthographic",
+        rotate: [-centerLon, -centerLat],
+        domain: {
+            type: "FeatureCollection",
+            features: validLocations.map((loc) => ({
+                type: "Feature",
+                geometry: {
+                    type: "Point",
+                    coordinates: [Number(loc.longitude), Number(loc.latitude)],
+                },
+                properties: {},
+            })),
+        },
+        inset: markerRadius * 2 + 10,
+    };
+}
+
 export function plotPointTitle(point) {
     let title = "Created from: " + point.created_year_start
     if (point.created_year_end) {

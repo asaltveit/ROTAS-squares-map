@@ -257,9 +257,9 @@ export default function FilterSection({ onClose }) {
     }, [timelineStart, timelineEnd, timelineYear]);
 
     return (
-        <div className="flex flex-col h-full min-w-0">
-            <div className="bg-white rounded-lg shadow-lg border-2 border-amber-200 flex flex-col h-full overflow-hidden">
-                <div className="flex items-center justify-between p-6 pb-4 border-b-2 border-amber-800 flex-shrink-0">
+        <div className="flex flex-col min-w-0 self-start w-full">
+            <div className="bg-white rounded-lg shadow-lg border-2 border-amber-200 flex flex-col overflow-hidden max-h-[calc(100vh-4rem)]">
+                <div className="flex items-center justify-between p-4 sm:p-6 lg:p-8 pb-3 lg:pb-4 border-b-2 border-amber-800 flex-shrink-0">
                     <h2 className="text-2xl font-serif font-bold text-amber-900">
                         Filters
                     </h2>
@@ -275,7 +275,7 @@ export default function FilterSection({ onClose }) {
                     )}
                 </div>
 
-                <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-6 pt-4 space-y-4">
+                <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pt-3 lg:pt-4 space-y-4">
                 {/* Temporal Range */}
                 <div className="space-y-2">
                     <label className="block text-sm font-semibold text-amber-900">Temporal Range</label>

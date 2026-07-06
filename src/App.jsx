@@ -10,7 +10,7 @@ import geoData from "@/data/countries-geo.json"
 // Utilities
 import { useMapStore} from '@/stores/MapStore'
 import { useFilterStore } from '@/stores/FilterStore';
-import { plotPointTitle } from '@/utilities/UtilityFunctions';
+import { plotPointTitle, estimateLegendHeight, getMapProjection } from '@/utilities/UtilityFunctions';
 import { yearType as yrType } from '@/constants';
 import { allSymbols } from '@/constants';
 // Components
@@ -207,15 +207,12 @@ export default function App() {
   useEffect(() => {
     const updateDimensions = () => {
       if (mapContainerRef.current) {
-        const rect = mapContainerRef.current.getBoundingClientRect();
-        // Account for padding (p-2 = 8px on each side = 16px total)
-        // Allow the map to shrink with the container so the full plot (and legend)
-        // stays visible instead of being clipped on small widths.
-        const width = Math.max(320, rect.width - 26);
-        const height = Math.max(320, rect.height - 66); // Provide baseline space for legend
+        const container = mapContainerRef.current;
+        const width = Math.max(320, container.clientWidth);
+        const legendHeight = estimateLegendHeight(locationTypes.length, width);
+        const height = Math.max(320, container.clientHeight - legendHeight);
 
-        // Only update if dimensions are valid
-        if (width > 0 && height > 0 && rect.width > 0 && rect.height > 0) {
+        if (width > 0 && height > 0 && container.clientWidth > 0 && container.clientHeight > 0) {
           setMapDimensions({ width, height });
         }
       }
@@ -237,7 +234,7 @@ export default function App() {
       resizeObserver.disconnect();
       window.removeEventListener('resize', updateDimensions);
     };
-  }, [filtersOpen, recordingExportOpen]); // Recalculate when side panels open/close
+  }, [filtersOpen, recordingExportOpen, locationTypes]); // Recalculate when side panels or legend size changes
 
   useEffect(() => {
     if (visibleLocations === undefined) return;
@@ -256,7 +253,7 @@ export default function App() {
       style: {
         background: "lightBlue",
       },
-      projection: {type: "orthographic", inset: -800, rotate: [-15, -43]},
+      projection: getMapProjection(locations),
         marks: [
           Plot.geo(mapData, {fill: "#638a5c "}),
           Plot.dot(visibleLocations, {
@@ -288,7 +285,7 @@ export default function App() {
     return () => {
       if (chart) chart.remove();
     };
-  }, [visibleLocations, mapData, locationTypes, mapDimensions]);
+  }, [visibleLocations, mapData, locationTypes, mapDimensions, locations]);
 
   const getActiveFilterCount = () => {
     let count = 0;
@@ -302,20 +299,20 @@ export default function App() {
   };
 
   const getGridTemplateColumns = () => {
-    if (filtersOpen && recordingExportOpen) return '3fr 6fr 3fr';
+    if (filtersOpen && recordingExportOpen) return '3fr 7fr 2fr';
     if (filtersOpen) return '3fr 9fr';
-    if (recordingExportOpen) return '9fr 3fr';
+    if (recordingExportOpen) return '10fr 2fr';
     return '1fr';
   };
 
   const gridTemplateColumns = getGridTemplateColumns();
 
   return (
-    <div className="min-h-screen w-full bg-amber-50 flex flex-col overflow-x-hidden">
-      <div className="w-full flex-1 p-4 sm:p-6 flex flex-col">
-        <div className="app-container w-full max-w-[1600px] mx-auto flex-1 flex flex-col min-w-0">
+    <div className="w-full bg-amber-50 overflow-x-hidden">
+      <div className="w-full p-4 sm:p-6 lg:p-10 xl:p-12">
+        <div className="app-container w-full max-w-[1600px] mx-auto min-w-0">
           {/* Header */}
-          <header className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mb-4 sm:mb-6 border-b-4 border-amber-800 flex-shrink-0 w-full" role="banner">
+          <header className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 lg:mb-8 border-b-4 border-amber-800 flex-shrink-0 w-full" role="banner">
             <h1 className="text-4xl font-serif font-bold text-amber-900 mb-2">
               ROTAS SQUARES MAP
             </h1>
@@ -327,7 +324,7 @@ export default function App() {
           <main
             id="main-content"
             role="main"
-            className="main-layout grid gap-4 sm:gap-5 lg:gap-6 flex-1 min-h-0 w-full min-w-0"
+            className="main-layout grid items-start gap-4 sm:gap-5 lg:gap-6 w-full min-w-0"
             style={{ '--grid-cols': gridTemplateColumns }}
           >
             {/* FILTERS SECTION */}
@@ -340,12 +337,12 @@ export default function App() {
             {/* MAP AREA */}
             <div className="min-w-0 w-full">
               {/* Timeline — always visible */}
-              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mb-4 border-2 border-amber-200 w-full min-w-0">
+              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8 mb-4 lg:mb-6 border-2 border-amber-200 w-full min-w-0">
                 <h2 className="text-2xl font-serif font-bold text-amber-900 mb-4">Timeline</h2>
                 <TimelineSlider />
               </div>
 
-              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 h-full min-h-[600px] border-4 border-amber-200 w-full min-w-0" ref={screenshotRef}>
+              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8 border-4 border-amber-200 w-full min-w-0" ref={screenshotRef}>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
                   <h2 className="text-2xl font-serif font-bold text-amber-900">
                     Map
@@ -378,10 +375,10 @@ export default function App() {
 
                 <div 
                   ref={mapContainerRef}
-                  className="w-full h-[400px] sm:h-[500px] md:h-[550px] lg:h-[600px] flex items-center justify-center border-4 border-dashed border-amber-300 rounded-lg bg-amber-50/30 overflow-auto p-2"
+                  className="w-full h-[400px] sm:h-[500px] md:h-[550px] lg:h-[600px] flex flex-col border-4 border-dashed border-amber-300 rounded-lg bg-amber-50/30 overflow-hidden"
                   aria-label="Interactive map showing location markers"
                 >
-                  <div ref={mapRef} className="map-container w-full h-full flex flex-col items-center justify-center overflow-auto"></div>
+                  <div ref={mapRef} className="map-container w-full h-full flex flex-col items-stretch justify-start overflow-hidden"></div>
                 </div>
               </div>
             </div>

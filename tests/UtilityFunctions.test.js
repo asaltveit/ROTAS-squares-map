@@ -6,6 +6,8 @@ import {
     convertYearTypetoView,
     plotPointTitle,
     generateNonce,
+    getMapProjection,
+    estimateLegendHeight,
 } from '@/utilities/UtilityFunctions';
 
 describe('UtilityFunctions', () => {
@@ -301,6 +303,40 @@ describe('UtilityFunctions', () => {
             const result = plotPointTitle(point);
             expect(result).toContain('Created from: 100-150');
             expect(result).toContain('\n\n Year Discovered: 200');
+        });
+    });
+
+    describe('estimateLegendHeight', () => {
+        it('returns a positive height that grows with more legend rows', () => {
+            expect(estimateLegendHeight(2, 600)).toBe(38);
+            expect(estimateLegendHeight(10, 240)).toBe(110);
+        });
+    });
+
+    describe('getMapProjection', () => {
+        it('returns a sphere fallback when no locations are available', () => {
+            const projection = getMapProjection([]);
+            expect(projection.type).toBe('orthographic');
+            expect(projection.domain).toEqual({ type: 'Sphere' });
+        });
+
+        it('centers rotation on the location bounds', () => {
+            const projection = getMapProjection([
+                { longitude: -2, latitude: 52 },
+                { longitude: 31, latitude: 30 },
+            ]);
+            expect(projection.rotate).toEqual([-14.5, -41]);
+            expect(projection.domain.features).toHaveLength(2);
+            expect(projection.inset).toBe(24);
+        });
+
+        it('ignores locations without coordinates', () => {
+            const projection = getMapProjection([
+                { longitude: 12, latitude: 41 },
+                { longitude: null, latitude: 30 },
+            ]);
+            expect(projection.domain.features).toHaveLength(1);
+            expect(projection.rotate).toEqual([-12, -41]);
         });
     });
 

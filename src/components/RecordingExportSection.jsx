@@ -40,10 +40,10 @@ export default function RecordingExportSection({ onClose }) {
   };
 
   return (
-    <div className="flex flex-col h-full min-w-0">
-      <div className="bg-white rounded-lg shadow-lg border-2 border-amber-200 flex flex-col h-full overflow-hidden">
-        <div className="flex items-center justify-between p-6 pb-4 border-b-2 border-amber-800 flex-shrink-0">
-          <h2 className="text-2xl font-serif font-bold text-amber-900">
+    <div className="flex flex-col min-w-0 self-start w-full text-left">
+      <div className="bg-white rounded-lg shadow-lg border-2 border-amber-200 flex flex-col overflow-hidden max-h-[calc(100vh-4rem)]">
+        <div className="flex items-center justify-between p-4 sm:p-6 lg:p-8 pb-3 lg:pb-4 border-b-2 border-amber-800 flex-shrink-0">
+          <h2 className="text-xl font-serif font-bold text-amber-900">
             Recording & Export
           </h2>
           {onClose && (
@@ -58,7 +58,7 @@ export default function RecordingExportSection({ onClose }) {
           )}
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 pt-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pt-3 lg:pt-4 space-y-3">
           {/* Recording Controls */}
           <div>
             <button
@@ -66,7 +66,7 @@ export default function RecordingExportSection({ onClose }) {
               className="w-full flex items-center justify-between hover:bg-amber-50 transition-colors p-2 rounded"
               aria-expanded={expandedSections.recording}
             >
-              <h3 className="text-xl font-serif font-bold text-amber-900">
+              <h3 className="text-lg font-serif font-bold text-amber-900">
                 Recording Session
               </h3>
               {expandedSections.recording ? (
@@ -82,7 +82,7 @@ export default function RecordingExportSection({ onClose }) {
 
                 <button
                   onClick={saveView}
-                  className="w-full mb-2 px-4 py-2 bg-amber-800 text-white rounded hover:bg-amber-900 transition-colors flex items-center justify-center gap-2"
+                  className="w-full mb-2 px-4 py-2 bg-amber-800 text-white rounded hover:bg-amber-900 transition-colors flex items-center justify-start gap-2"
                 >
                   <Save size={18} />
                   Save Current View
@@ -90,7 +90,7 @@ export default function RecordingExportSection({ onClose }) {
 
                 <button
                   onClick={() => setRecording((prev) => ({ ...prev, bookmarked: !prev.bookmarked }))}
-                  className="w-full px-4 py-2 border-2 border-amber-800 text-amber-900 rounded hover:bg-amber-50 transition-colors flex items-center justify-center gap-2"
+                  className="w-full px-4 py-2 border-2 border-amber-800 text-amber-900 rounded hover:bg-amber-50 transition-colors flex items-center justify-start gap-2"
                 >
                   <Bookmark size={18} fill={recording.bookmarked ? 'currentColor' : 'none'} />
                   {recording.bookmarked ? 'Bookmarked' : 'Bookmark'}
@@ -106,7 +106,7 @@ export default function RecordingExportSection({ onClose }) {
               className="w-full flex items-center justify-between hover:bg-amber-50 transition-colors p-2 rounded"
               aria-expanded={expandedSections.export}
             >
-              <h3 className="text-xl font-serif font-bold text-amber-900">
+              <h3 className="text-lg font-serif font-bold text-amber-900">
                 Export & Share
               </h3>
               {expandedSections.export ? (
@@ -118,15 +118,15 @@ export default function RecordingExportSection({ onClose }) {
 
             {expandedSections.export && (
               <div className="space-y-2 mt-4">
-                <button className="w-full px-4 py-2 border-2 border-amber-800 text-amber-900 rounded hover:bg-amber-50 transition-colors flex items-center justify-center gap-2">
+                <button className="w-full px-4 py-2 border-2 border-amber-800 text-amber-900 rounded hover:bg-amber-50 transition-colors flex items-center justify-start gap-2">
                   <Download size={18} />
                   Export as CSV
                 </button>
-                <button className="w-full px-4 py-2 border-2 border-amber-800 text-amber-900 rounded hover:bg-amber-50 transition-colors flex items-center justify-center gap-2">
+                <button className="w-full px-4 py-2 border-2 border-amber-800 text-amber-900 rounded hover:bg-amber-50 transition-colors flex items-center justify-start gap-2">
                   <Download size={18} />
                   Export as PDF
                 </button>
-                <button className="w-full px-4 py-2 border-2 border-amber-800 text-amber-900 rounded hover:bg-amber-50 transition-colors flex items-center justify-center gap-2">
+                <button className="w-full px-4 py-2 border-2 border-amber-800 text-amber-900 rounded hover:bg-amber-50 transition-colors flex items-center justify-start gap-2">
                   <Share size={18} />
                   Share Configuration
                 </button>
@@ -142,7 +142,7 @@ export default function RecordingExportSection({ onClose }) {
                 className="w-full flex items-center justify-between hover:bg-amber-50 transition-colors p-2 rounded"
                 aria-expanded={expandedSections.savedViews}
               >
-                <h3 className="text-xl font-serif font-bold text-amber-900">
+                <h3 className="text-lg font-serif font-bold text-amber-900">
                   Saved Views ({recording.savedViews.length})
                 </h3>
                 {expandedSections.savedViews ? (
