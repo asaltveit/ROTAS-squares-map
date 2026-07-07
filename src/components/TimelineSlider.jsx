@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { useShallow } from 'zustand/react/shallow'
 import { convertYearTypetoView } from '@/utilities/UtilityFunctions'
 import { useFilterStore } from '@/stores/FilterStore';
@@ -102,7 +102,7 @@ const TimelineSlider = memo(function TimelineSlider({ onValueChange }) {
                     max={max}
                     value={timelineYear}
                     onChange={handleChange}
-                    onClick={(e) => {
+                    onClick={() => {
                         // Stop animation when user clicks on the slider
                         if (playAnimation) {
                             setPlayAnimation(false);
@@ -122,7 +122,7 @@ const TimelineSlider = memo(function TimelineSlider({ onValueChange }) {
                     <div className="space-y-2">
                         <label htmlFor="animation-speed" className="block text-xs font-semibold text-amber-900">
                             Step Delay
-                            <span className="ml-1 text-xs font-normal text-amber-600">(higher = slower)</span>
+                            <span className="ml-1 text-xs font-normal text-amber-800">(higher = slower)</span>
                         </label>
                         <div className="flex items-center gap-2 min-w-0">
                             <input

@@ -3,9 +3,10 @@ import globals from 'globals'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
 
 export default [
-  { ignores: ['dist'] },
+  { ignores: ['dist', 'extra_components/**'] },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
@@ -29,10 +30,21 @@ export default [
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
       'react/jsx-no-target-blank': 'off',
+      'react/prop-types': 'off',
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
       ],
+    },
+  },
+  {
+    files: ['src/**/*.{js,jsx}'],
+    ...jsxA11y.flatConfigs.recommended,
+  },
+  {
+    files: ['vite.config.js', 'playwright.config.js', 'tests/**/*.{js,jsx}', 'e2e/**/*.{js,jsx}'],
+    languageOptions: {
+      globals: globals.node,
     },
   },
 ]

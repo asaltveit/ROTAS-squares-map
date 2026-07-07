@@ -100,7 +100,7 @@ describe('FilterSection', () => {
             places: [],
         });
 
-        supabase.rpc.mockImplementation((name) =>
+        supabase.rpc.mockImplementation(() =>
             Promise.resolve(createRpcMock(['City', 'Village']))
         );
     });

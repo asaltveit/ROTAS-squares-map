@@ -1,6 +1,6 @@
 
 // React
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { Filter, Download } from 'lucide-react';
 // Map
@@ -28,7 +28,6 @@ export default function App() {
   const mapRef = useRef(null);
   const mapContainerRef = useRef(null);
   const screenshotRef = useRef(null);
-  const [visibleLocations, setVisibleLocations] = useState([]);
   const [mapData, setMapData] = useState([]);
   // const [FPResults, setFPResults] = useState({});
   const [mapDimensions, setMapDimensions] = useState({ width: 850, height: 600 });
@@ -59,6 +58,46 @@ export default function App() {
 
   const [filtersOpen, setFiltersOpen] = useState(true);
   const [recordingExportOpen, setRecordingExportOpen] = useState(false);
+
+  async function getLocations() {
+    let resultFilters = Object
+        .keys(filters)
+        .reduce((r,key) => 
+          (filters[key] && (r[key]=filters[key]), r),{})
+
+    if (Object.keys(resultFilters).length > 0) {
+      const { data, error } = await supabase.from("locations")
+      .select().match(resultFilters)
+      .gte('created_year_start', timelineStart)
+      .or(`created_year_end.is.null,created_year_end.lte.${timelineEnd}`);
+      
+      if (error) {
+        console.error("getLocations filters error: ", error)
+      } else {
+        setLocations(data);
+      }
+    } else {
+      const { data, error } = await supabase.from("locations")
+      .select()
+      .gte('created_year_start', timelineStart)
+      .or(`created_year_end.is.null,created_year_end.lte.${timelineEnd}`);
+      
+      if (error) {
+        console.error("getLocations without filters error: ", error)
+      } else {
+        setLocations(data);
+      }
+    }
+  }
+
+  async function getTypes() {
+    const { data, error } = await supabase.rpc('get_distinct_type');
+    if (error) {
+      console.error("getTypes error: ", error)
+    } else {
+      setLocationTypes(data);
+    }
+  }
 
   useEffect(() => {
     // getVisitorInfo(); // analytics — disabled
@@ -109,57 +148,11 @@ export default function App() {
   //   }
   // }
 
-  async function getLocations() {
-    let resultFilters = Object
-        .keys(filters)
-        .reduce((r,key) => 
-          (filters[key] && (r[key]=filters[key]), r),{})
-
-    if (Object.keys(resultFilters).length > 0) {
-      const { data, error } = await supabase.from("locations")
-      .select().match(resultFilters)
-      .gte('created_year_start', timelineStart)
-      .or(`created_year_end.is.null,created_year_end.lte.${timelineEnd}`);
-      
-      if (error) {
-        console.error("getLocations filters error: ", error)
-      } else {
-        setLocations(data);
-      }
-    } else {
-      const { data, error } = await supabase.from("locations")
-      .select()
-      .gte('created_year_start', timelineStart)
-      .or(`created_year_end.is.null,created_year_end.lte.${timelineEnd}`);
-      
-      if (error) {
-        console.error("getLocations without filters error: ", error)
-      } else {
-        setLocations(data);
-      }
-    }
-  }
-
-  async function getTypes() {
-    const { data, error } = await supabase.rpc('get_distinct_type');
-    if (error) {
-      console.error("getTypes error: ", error)
-    } else {
-      setLocationTypes(data);
-    }
-  }
-
-  useEffect(() => {
+  const visibleLocations = useMemo(() => {
     if (yearType == yrType.created) {
-      setVisibleLocations(locations.filter((loc) => {
-        return loc.created_year_start <= timelineYear;
-      }))
-    } else {
-      setVisibleLocations(locations.filter((loc) => {
-        return loc.discovered_year <= timelineYear;
-      }))
+      return locations.filter((loc) => loc.created_year_start <= timelineYear);
     }
-
+    return locations.filter((loc) => loc.discovered_year <= timelineYear);
   }, [timelineYear, locations, yearType]);
 
   // Timeline animation - persists even when filters are closed

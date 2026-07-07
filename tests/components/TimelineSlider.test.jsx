@@ -1,5 +1,4 @@
 import TimelineSlider from '@/components/TimelineSlider'
-import React from 'react';
 import { expect, describe, it, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
@@ -220,7 +219,6 @@ describe('TimelineSlider', () => {
         it('changes position when clicked and animation is playing', async () => {
             const onChange = vi.fn();
             const { rerender } = render(<TimelineSlider onValueChange={onChange} />);
-            const slider = screen.getByLabelText('timeline-created year slider');
             const playButton = screen.getByText('Play');
             
             // Start animation

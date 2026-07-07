@@ -30,10 +30,7 @@ export default function FilterSection({ onClose }) {
 
     const { 
         scripts,
-        texts,
-        locs,
         firstWords,
-        places,
 
         setPlaces,
         setFirstWords,
@@ -43,10 +40,7 @@ export default function FilterSection({ onClose }) {
 
         type,
         script,
-        text,
         firstWord,
-        place,
-        location,
         yearType,
         timelineStart,
         timelineEnd,
@@ -56,19 +50,13 @@ export default function FilterSection({ onClose }) {
 
         setTypeFilter,
         setScriptFilter,
-        setTextFilter,
         setFirstWordFilter,
-        setPlaceFilter,
-        setLocationFilter,
         setYearType,
         clearFilters, 
     } = useFilterStore(
         useShallow((state) => ({ 
             scripts: state.scripts,
-            texts: state.texts,
-            locs: state.locs,
             firstWords: state.firstWords,
-            places: state.places,
 
             setPlaces: state.setPlaces,
             setFirstWords: state.setFirstWords,
@@ -78,19 +66,13 @@ export default function FilterSection({ onClose }) {
 
             setTypeFilter: state.setTypeFilter,
             setScriptFilter: state.setScriptFilter,
-            setTextFilter: state.setTextFilter,
             setFirstWordFilter: state.setFirstWordFilter,
-            setPlaceFilter: state.setPlaceFilter,
-            setLocationFilter: state.setLocationFilter,
             setYearType: state.setYearType,
             clearFilters: state.clearFilters,
 
             type: state.filters.location_type,
             script: state.filters.script,
-            text: state.filters.text,
             firstWord: state.filters.first_word,
-            place: state.filters.place,
-            location: state.filters.location,
             yearType: state.yearType,
             timelineStart: state.timelineStart,
             timelineEnd: state.timelineEnd,
@@ -213,14 +195,18 @@ export default function FilterSection({ onClose }) {
     useEffect(() => {
         // Only update if input is not focused
         if (document.activeElement !== startYearInputRef.current) {
-            setStartYearInput(timelineStart?.toString() || '0');
+            queueMicrotask(() => {
+                setStartYearInput(timelineStart?.toString() || '0');
+            });
         }
     }, [timelineStart]);
 
     useEffect(() => {
         // Only update if input is not focused
         if (document.activeElement !== endYearInputRef.current) {
-            setEndYearInput(timelineEnd?.toString() || '2100');
+            queueMicrotask(() => {
+                setEndYearInput(timelineEnd?.toString() || '2100');
+            });
         }
     }, [timelineEnd]);
 
@@ -277,8 +263,8 @@ export default function FilterSection({ onClose }) {
 
                 <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pt-3 lg:pt-4 space-y-4">
                 {/* Temporal Range */}
-                <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-amber-900">Temporal Range</label>
+                <fieldset className="space-y-2 border-0 p-0 m-0 min-w-0">
+                    <legend className="block text-sm font-semibold text-amber-900 mb-2 px-0">Temporal Range</legend>
                     <div className="space-y-4">
                         <div className="text-sm text-amber-900">
                             {timelineStart} CE - {timelineEnd} CE
@@ -362,7 +348,7 @@ export default function FilterSection({ onClose }) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </fieldset>
 
                 {/* Year Type */}
                 <div className="space-y-2">

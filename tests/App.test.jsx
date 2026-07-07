@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event';
 import App from '@/App';
 import { useMapStore } from '@/stores/MapStore';
 import { useFilterStore } from '@/stores/FilterStore';
-import { supabase } from '@/supabaseClient';
 import '@testing-library/jest-dom';
 
 // Mock FilterSection
