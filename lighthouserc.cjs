@@ -1,9 +1,12 @@
 module.exports = {
   ci: {
     collect: {
-      url: ['http://localhost:4173/'],
-      startServerCommand: 'npm run preview -- --host 127.0.0.1 --port 4173',
-      startServerReadyPattern: 'Local:',
+      // Serve ./dist with LHCI's built-in static server instead of `vite preview`.
+      // `npm run preview` often buffers stdout in CI, so startServerReadyPattern
+      // never matches and LHCI times out before the server is detected.
+      staticDistDir: './dist',
+      isSinglePageApplication: true,
+      url: ['http://localhost/'],
       numberOfRuns: 3,
       puppeteerScript: './scripts/lhci-puppeteer.cjs',
       settings: {
