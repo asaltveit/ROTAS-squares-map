@@ -1,26 +1,41 @@
+import { expect } from '@playwright/test';
+import { attachPageDiagnostics, formatAppLoadFailure } from './diagnostics.js';
+
 /**
  * Wait for the app to finish loading Supabase data and render the map.
  */
 export async function waitForAppReady(page) {
-  const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const diagnostics = attachPageDiagnostics(page);
 
-  if (response && !response.ok()) {
-    throw new Error(`App failed to load (${response.status()} ${response.statusText()})`);
+  const response = await page.goto('/', { waitUntil: 'load' });
+
+  expect(response, 'Navigation did not return a response').not.toBeNull();
+  expect(response.ok(), `App failed to load (${response.status()} ${response.statusText()})`).toBeTruthy();
+
+  try {
+    // expect() auto-retries and produces clearer assertion output than locator.waitFor().
+    await expect(page.getByRole('heading', { name: /rotas squares map/i })).toBeVisible({
+      timeout: 60_000,
+    });
+  } catch (error) {
+    throw new Error(`${error.message}\n\n${await formatAppLoadFailure(page, diagnostics)}`);
   }
 
-  // Wait for React to mount before role-based queries.
-  await page.locator('#root h1').waitFor({ state: 'visible', timeout: 60_000 });
-  await page.getByRole('heading', { name: /rotas squares map/i }).waitFor();
-  await page.getByRole('main').waitFor();
-  await page.getByRole('heading', { name: /^timeline$/i }).waitFor();
-  await page.getByRole('heading', { name: /^map$/i }).waitFor();
+  await expect(page.getByRole('main')).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^timeline$/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^map$/i })).toBeVisible();
 
   const typeSelect = page.locator('#type-select');
-  await typeSelect.waitFor();
-  await page.waitForFunction(() => {
-    const select = document.querySelector('#type-select');
-    return select && select.options.length > 1;
-  });
+  await expect(typeSelect).toBeVisible();
 
-  await page.locator('.map-container svg[class^="plot-"]').waitFor({ timeout: 60_000 });
+  await expect
+    .poll(
+      async () => typeSelect.locator('option').count(),
+      { timeout: 60_000, message: 'Waiting for Supabase filter options to load' },
+    )
+    .toBeGreaterThan(1);
+
+  await expect(page.locator('.map-container svg[class^="plot-"]')).toBeVisible({
+    timeout: 60_000,
+  });
 }

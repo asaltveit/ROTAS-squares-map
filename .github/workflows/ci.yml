@@ -38,6 +38,16 @@ jobs:
 
       - run: npm ci
 
+      - name: Require Supabase env for production build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$VITE_SUPABASE_URL" ] || [ -z "$VITE_SUPABASE_ANON_KEY" ]; then
+            echo "::error::Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY repository secrets. E2E builds embed these at build time."
+            exit 1
+          fi
+
       - run: npm run build
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
@@ -67,6 +77,9 @@ jobs:
         with:
           name: dist
           path: dist/
+
+      - name: Verify build artifact
+        run: test -f dist/index.html && grep -q '/assets/' dist/index.html
 
       - uses: actions/cache@v4
         id: playwright-cache
