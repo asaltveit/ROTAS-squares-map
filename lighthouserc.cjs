@@ -1,10 +1,11 @@
 module.exports = {
   ci: {
     collect: {
-      url: ['http://localhost:4173/'],
-      startServerCommand: 'npm run preview -- --host 127.0.0.1 --port 4173',
-      startServerReadyPattern: 'Local:',
-      numberOfRuns: 3,
+      // Serve prebuilt ./dist — avoids vite preview stdout buffering in CI.
+      staticDistDir: './dist',
+      isSinglePageApplication: true,
+      url: ['http://localhost/'],
+      numberOfRuns: 1,
       puppeteerScript: './scripts/lhci-puppeteer.cjs',
       settings: {
         preset: 'desktop',

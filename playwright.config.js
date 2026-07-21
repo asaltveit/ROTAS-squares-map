@@ -1,14 +1,20 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const isCI = !!process.env.CI;
+const port = 5173;
+const host = isCI ? '127.0.0.1' : 'localhost';
+const baseURL = `http://${host}:${port}`;
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: false,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
+  forbidOnly: isCI,
+  retries: isCI ? 1 : 0,
   workers: 1,
-  reporter: process.env.CI ? 'github' : 'list',
+  timeout: isCI ? 90_000 : 30_000,
+  reporter: isCI ? 'github' : 'list',
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL,
     trace: 'on-first-retry',
   },
   projects: [
@@ -17,13 +23,17 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
-    env: {
-      VITE_SUPABASE_URL: process.env.VITE_SUPABASE_URL ?? '',
-      VITE_SUPABASE_ANON_KEY: process.env.VITE_SUPABASE_ANON_KEY ?? '',
-    },
-  },
+  webServer: isCI
+    ? {
+        command: `npm run preview -- --host ${host} --port ${port}`,
+        url: baseURL,
+        reuseExistingServer: false,
+        timeout: 60_000,
+      }
+    : {
+        command: 'npm run dev',
+        url: baseURL,
+        reuseExistingServer: true,
+        timeout: 120_000,
+      },
 });
