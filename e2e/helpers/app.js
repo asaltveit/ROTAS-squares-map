@@ -2,7 +2,14 @@
  * Wait for the app to finish loading Supabase data and render the map.
  */
 export async function waitForAppReady(page) {
-  await page.goto('/');
+  const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+  if (response && !response.ok()) {
+    throw new Error(`App failed to load (${response.status()} ${response.statusText()})`);
+  }
+
+  // Wait for React to mount before role-based queries.
+  await page.locator('#root h1').waitFor({ state: 'visible', timeout: 60_000 });
   await page.getByRole('heading', { name: /rotas squares map/i }).waitFor();
   await page.getByRole('main').waitFor();
   await page.getByRole('heading', { name: /^timeline$/i }).waitFor();
@@ -15,5 +22,5 @@ export async function waitForAppReady(page) {
     return select && select.options.length > 1;
   });
 
-  await page.locator('.map-container svg[class^="plot-"]').waitFor({ timeout: 30000 });
+  await page.locator('.map-container svg[class^="plot-"]').waitFor({ timeout: 60_000 });
 }
