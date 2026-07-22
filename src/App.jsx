@@ -56,7 +56,7 @@ export default function App() {
     })),
   )
 
-  const [filtersOpen, setFiltersOpen] = useState(true);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [recordingExportOpen, setRecordingExportOpen] = useState(false);
 
   async function getLocations() {
