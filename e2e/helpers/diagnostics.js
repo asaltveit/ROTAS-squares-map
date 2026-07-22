@@ -41,6 +41,6 @@ export async function formatAppLoadFailure(page, diagnostics) {
       ? `Scripts: ${state.scriptSrcs.join(', ')}`
       : 'Scripts: (none loaded)',
     diagnostics.summary(),
-    'If running in CI, confirm VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set on the build job.',
+    'If running in CI, confirm VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY are set on the build job.',
   ].join('\n');
 }
