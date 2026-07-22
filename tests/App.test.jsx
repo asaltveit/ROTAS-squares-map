@@ -118,6 +118,7 @@ describe('App', () => {
             timelineStart: mockStoreState.timelineStart,
             timelineEnd: mockStoreState.timelineEnd,
             animationStep: mockStoreState.animationStep,
+            setTimelineYear: mockSetTimelineYear,
         }));
     });
 
