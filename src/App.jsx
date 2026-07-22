@@ -1,6 +1,6 @@
 
 // React
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { Filter, Download } from 'lucide-react';
 // Map
@@ -42,7 +42,7 @@ export default function App() {
     })),
   )
 
-  const { filters, yearType, timelineYear, setTimelineYear, timelineStart, timelineEnd, playAnimation, animationSpeed, animationStep } = useFilterStore(
+  const { filters, yearType, timelineYear, timelineStart, timelineEnd, playAnimation, animationSpeed, animationStep } = useFilterStore(
     useShallow((state) => ({ 
       filters: state.filters, 
       yearType: state.yearType, 
@@ -59,7 +59,7 @@ export default function App() {
   const [filtersOpen, setFiltersOpen] = useState(true);
   const [recordingExportOpen, setRecordingExportOpen] = useState(false);
 
-  async function getLocations() {
+  const getLocations = useCallback(async () => {
     let resultFilters = Object
         .keys(filters)
         .reduce((r,key) => 
@@ -88,16 +88,16 @@ export default function App() {
         setLocations(data);
       }
     }
-  }
+  }, [filters, timelineStart, timelineEnd, setLocations]);
 
-  async function getTypes() {
+  const getTypes = useCallback(async () => {
     const { data, error } = await supabase.rpc('get_distinct_type');
     if (error) {
       console.error("getTypes error: ", error)
     } else {
       setLocationTypes(data);
     }
-  }
+  }, [setLocationTypes]);
 
   useEffect(() => {
     // getVisitorInfo(); // analytics — disabled
@@ -106,18 +106,18 @@ export default function App() {
       screenshotRef.current?.scrollIntoView({ behavior: 'smooth' }); // 'smooth' for animated scrolling
     };
     setScrollToMap(scrollToElement)
-  }, []);
+  }, [setScrollToMap]);
 
   // TODO - all gets getting called twice?
   // indiviudal calls for each filter change
   useEffect(() => {
     getLocations();
     // setSearchResults(); // analytics — disabled
-  }, [filters, timelineStart, timelineEnd]);
+  }, [filters, timelineStart, timelineEnd, getLocations]);
 
   useEffect(() => {
     getTypes();
-  }, []);
+  }, [getTypes]);
 
   // async function getVisitorInfo() {
   //   const fp = await FingerprintJS.load();
@@ -171,10 +171,10 @@ export default function App() {
       const step = state.animationStep;
       
       if (currentYear >= currentMax) {
-        setTimelineYear(currentMin); // Update store
+        state.setTimelineYear(currentMin);
       } else {
         const nextYear = currentYear + step;
-        setTimelineYear(nextYear); // Update store
+        state.setTimelineYear(nextYear);
       }
     }, animationSpeed);
 
