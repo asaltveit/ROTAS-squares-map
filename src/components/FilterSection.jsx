@@ -82,58 +82,69 @@ export default function FilterSection({ onClose }) {
         })),
     )
 
-    async function getTexts() {
-        const { data, error } = await supabase.rpc('get_distinct_text');
-        if (error) {
-          console.error("getTexts error: ", error)
-        } else {
-            setTexts(convertStringsToOptions(data));
-        }
-    }
-
-    async function getScripts() {
-        const { data, error } = await supabase.rpc('get_distinct_script');
-        if (error) {
-            console.error("getScripts error: ", error)
-        } else {
-            setScripts(convertStringsToOptions(data));
-        }
-    }
-
-    async function getLocations() {
-        const { data, error } = await supabase.rpc('get_distinct_location');
-        if (error) {
-            console.error("getLocations error: ", error)
-        } else {
-            setLocs(convertStringsToOptions(data));
-        }
-    }
-
-    async function getPlaces() {
-        const { data, error } = await supabase.rpc('get_distinct_place');
-        if (error) {
-            console.error("getPlaces error: ", error)
-        } else {
-            setPlaces(convertStringsToOptions(data));
-        }
-    }
-
-    async function getFirstWords() {
-        const { data, error } = await supabase.rpc('get_distinct_first_word');
-        if (error) {
-            console.error("getFirstWords error: ", error)
-        } else {
-            setFirstWords(convertStringsToOptions(data));
-        }
-    }
-
     useEffect(() => {
-        getScripts()
-        getLocations()
-        getTexts()
-        getPlaces()
-        getFirstWords()
-    }, []);
+        let cancelled = false;
+
+        async function loadFilterOptions() {
+            const [
+                scriptsResult,
+                locationsResult,
+                textsResult,
+                placesResult,
+                firstWordsResult,
+            ] = await Promise.all([
+                supabase.rpc('get_distinct_script'),
+                supabase.rpc('get_distinct_location'),
+                supabase.rpc('get_distinct_text'),
+                supabase.rpc('get_distinct_place'),
+                supabase.rpc('get_distinct_first_word'),
+            ]);
+
+            if (cancelled) {
+                return;
+            }
+
+            if (scriptsResult.error) {
+                console.error("getScripts error: ", scriptsResult.error)
+            } else {
+                setScripts(convertStringsToOptions(scriptsResult.data));
+            }
+
+            if (locationsResult.error) {
+                console.error("getLocations error: ", locationsResult.error)
+            } else {
+                setLocs(convertStringsToOptions(locationsResult.data));
+            }
+
+            if (textsResult.error) {
+                console.error("getTexts error: ", textsResult.error)
+            } else {
+                setTexts(convertStringsToOptions(textsResult.data));
+            }
+
+            if (placesResult.error) {
+                console.error("getPlaces error: ", placesResult.error)
+            } else {
+                setPlaces(convertStringsToOptions(placesResult.data));
+            }
+
+            if (firstWordsResult.error) {
+                console.error("getFirstWords error: ", firstWordsResult.error)
+            } else {
+                setFirstWords(convertStringsToOptions(firstWordsResult.data));
+            }
+        }
+
+        loadFilterOptions().catch((error) => {
+            if (!cancelled) {
+                console.error('loadFilterOptions error: ', error);
+            }
+        });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [setScripts, setLocs, setTexts, setPlaces, setFirstWords]);
 
     const clearAllFilters = () => {
         clearFilters()
