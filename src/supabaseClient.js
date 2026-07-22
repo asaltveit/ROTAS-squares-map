@@ -13,4 +13,4 @@ const options = {
   },
 };
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, options);
+export const supabase = createClient(supabaseUrl, supabasePublishableKey, options);
