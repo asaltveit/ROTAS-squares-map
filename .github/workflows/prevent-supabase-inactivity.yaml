@@ -4,12 +4,12 @@ on:
   schedule:
     - cron: '0 0 * * 0'  # Runs at midnight every Sunday
 
-env:
-  VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.VITE_SUPABASE_PUBLISHABLE_KEY || vars.VITE_SUPABASE_ANON_KEY || secrets.VITE_SUPABASE_ANON_KEY }}
-
 jobs:
   ping-database:
     runs-on: ubuntu-latest
+    environment: Production
+    env:
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.VITE_SUPABASE_PUBLISHABLE_KEY || vars.VITE_SUPABASE_ANON_KEY || secrets.VITE_SUPABASE_ANON_KEY }}
     steps:
       - name: Make an API request to Supabase
         run: |

@@ -7,10 +7,6 @@ concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-env:
-  VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL || secrets.VITE_SUPABASE_URL }}
-  VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.VITE_SUPABASE_PUBLISHABLE_KEY || vars.VITE_SUPABASE_ANON_KEY || secrets.VITE_SUPABASE_ANON_KEY }}
-
 jobs:
   quality:
     name: Lint & unit tests
@@ -30,9 +26,12 @@ jobs:
       - run: npm run test:unit
 
   build:
-    environment: production
     name: Production build
     runs-on: ubuntu-latest
+    environment: Production
+    env:
+      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL || secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.VITE_SUPABASE_PUBLISHABLE_KEY || vars.VITE_SUPABASE_ANON_KEY || secrets.VITE_SUPABASE_ANON_KEY }}
     steps:
       - uses: actions/checkout@v7
 
@@ -47,7 +46,7 @@ jobs:
         run: |
           if [ -z "$VITE_SUPABASE_URL" ] || [ -z "$VITE_SUPABASE_PUBLISHABLE_KEY" ]; then
             echo "::error::Missing Supabase config for the production build."
-            echo "Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY as repository secrets or variables (Settings → Secrets and variables → Actions)."
+            echo "Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY as repository or Production environment secrets/variables (Settings → Environments → Production, or Secrets and variables → Actions)."
             echo "Legacy name VITE_SUPABASE_ANON_KEY is also accepted for the publishable key."
             exit 1
           fi
