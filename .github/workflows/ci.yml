@@ -46,7 +46,8 @@ jobs:
         run: |
           if [ -z "$VITE_SUPABASE_URL" ] || [ -z "$VITE_SUPABASE_PUBLISHABLE_KEY" ]; then
             echo "::error::Missing Supabase config for the production build."
-            echo "Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY as repository or Production environment secrets/variables (Settings → Environments → Production, or Secrets and variables → Actions)."
+            echo "Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY as repository variables (Settings → Secrets and variables → Actions → Variables)."
+            echo "Dependabot PRs cannot read secrets; use variables for both values (they are embedded in the client bundle anyway)."
             echo "Legacy name VITE_SUPABASE_ANON_KEY is also accepted for the publishable key."
             exit 1
           fi

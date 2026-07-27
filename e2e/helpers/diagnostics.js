@@ -41,6 +41,6 @@ export async function formatAppLoadFailure(page, diagnostics) {
       ? `Scripts: ${state.scriptSrcs.join(', ')}`
       : 'Scripts: (none loaded)',
     diagnostics.summary(),
-    'If running in CI, confirm VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY are set as repository or Production environment secrets/variables on the build job.',
+    'If running in CI, confirm VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY are set as repository variables (Dependabot PRs cannot read secrets).',
   ].join('\n');
 }
