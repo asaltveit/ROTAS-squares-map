@@ -54,7 +54,7 @@ jobs:
 
       - run: npm run build
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
@@ -74,7 +74,7 @@ jobs:
 
       - run: npm ci
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist/
@@ -82,7 +82,7 @@ jobs:
       - name: Verify build artifact
         run: test -f dist/index.html && grep -q '/assets/' dist/index.html
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
