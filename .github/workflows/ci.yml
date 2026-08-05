@@ -7,10 +7,6 @@ concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-env:
-  VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL || secrets.VITE_SUPABASE_URL }}
-  VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.VITE_SUPABASE_PUBLISHABLE_KEY || vars.VITE_SUPABASE_ANON_KEY || secrets.VITE_SUPABASE_ANON_KEY }}
-
 jobs:
   quality:
     name: Lint & unit tests
@@ -30,9 +26,12 @@ jobs:
       - run: npm run test:unit
 
   build:
-    environment: production
     name: Production build
     runs-on: ubuntu-latest
+    environment: Production
+    env:
+      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL || secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.VITE_SUPABASE_PUBLISHABLE_KEY || vars.VITE_SUPABASE_ANON_KEY || secrets.VITE_SUPABASE_ANON_KEY }}
     steps:
       - uses: actions/checkout@v7
 
@@ -47,14 +46,15 @@ jobs:
         run: |
           if [ -z "$VITE_SUPABASE_URL" ] || [ -z "$VITE_SUPABASE_PUBLISHABLE_KEY" ]; then
             echo "::error::Missing Supabase config for the production build."
-            echo "Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY as repository secrets or variables (Settings → Secrets and variables → Actions)."
+            echo "Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY as repository variables (Settings → Secrets and variables → Actions → Variables)."
+            echo "Dependabot PRs cannot read secrets; use variables for both values (they are embedded in the client bundle anyway)."
             echo "Legacy name VITE_SUPABASE_ANON_KEY is also accepted for the publishable key."
             exit 1
           fi
 
       - run: npm run build
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
@@ -74,7 +74,7 @@ jobs:
 
       - run: npm ci
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist/
@@ -82,7 +82,7 @@ jobs:
       - name: Verify build artifact
         run: test -f dist/index.html && grep -q '/assets/' dist/index.html
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
