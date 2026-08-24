@@ -59,7 +59,7 @@
     "proxy-agent": "^8.0.2",
     "puppeteer": "^25.8.0",
     "react-test-renderer": "^19.2.8",
-    "vite": "^8.2.1",
+    "vite": "^8.2.2",
     "vitest": "^4.1.10"
   },
   "optionalDependencies": {
