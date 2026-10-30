@@ -21,7 +21,7 @@
     "@supabase/supabase-js": "^2.118.0",
     "@tailwindcss/vite": "^4.3.3",
     "immer": "^11.2.9",
-    "lucide-react": "^1.61.0",
+    "lucide-react": "^1.62.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-media-recorder": "^1.7.2",
