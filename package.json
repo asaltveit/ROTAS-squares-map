@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@observablehq/plot": "^0.6.19",
-    "@supabase/supabase-js": "^2.119.0",
+    "@supabase/supabase-js": "^2.119.2",
     "@tailwindcss/vite": "^4.3.5",
     "immer": "^11.2.10",
     "lucide-react": "^1.77.0",
