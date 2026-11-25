@@ -60,7 +60,7 @@
     "puppeteer": "^25.18.1",
     "react-test-renderer": "^19.3.1",
     "vite": "^8.3.8",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.1"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.68.4"
